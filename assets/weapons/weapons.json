@@ -1,0 +1,13 @@
+[
+    {
+        "Name": "AutoBoltRifle",
+        "Range": 24,
+        "WeaponType": {
+            "id": "Assault",
+            "Number": 3
+        },
+        "Strength": 4,
+        "ArmorPiercing": 0,
+        "Damange": 1
+    }
+]

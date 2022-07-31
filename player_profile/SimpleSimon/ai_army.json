@@ -1,0 +1,9 @@
+{
+    "ID": "ai_army",
+    "Name": "AI Army",
+    "Squads": [
+        {
+            "Name": "Intercessor Squad"
+        }
+    ]
+}

@@ -1,0 +1,9 @@
+{
+    "ID": "test_army",
+    "Name": "Test Army",
+    "Squads": [
+        {
+            "Name": "Intercessor Squad"
+        }
+    ]
+}

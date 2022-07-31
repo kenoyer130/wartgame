@@ -1,0 +1,43 @@
+{
+    "Name": "Intercessor Squad",
+    "Army": "Space Marines",
+    "Power": 5,
+    "Units": [
+        {
+            "Name": "Intercessor",
+            "UnitNumber": {
+                "Min": 4,
+                "Max": 9
+            },
+            "Movement": 6,
+            "WeaponSkill": "3+",
+            "BallisticSkill": "3+",
+            "Strength": 4,
+            "Toughness": 4,
+            "Wounds": 2,
+            "Attackes": 2,
+            "Leadership": 7,
+            "Save": "3+"
+        },
+        {
+            "Name": "Intercessor Sergeant",
+            "UnitNumber": {
+                "min": 1,
+                "max": 1
+            },
+            "Movement": 6,
+            "WeaponSkill": "3+",
+            "BallisticSkill": "3+",
+            "Strength": 4,
+            "Toughness": 4,
+            "Wounds": 2,
+            "Attackes": 3,
+            "Leadership": 8,
+            "Save": "3+",
+            "UnitType": "Leader"
+        }
+    ],
+    "DefaultWeapons": [
+        "AutoBoltRifle"
+    ]
+}
