@@ -4,39 +4,46 @@ import "fmt"
 
 type BattleGround struct {
 	Size     Size
-	ViewPort Location
+	ViewPort ViewPort
 	// we store the grid as a sparse array
-	grid map[string]Entity
+	Grid map[string]Entity
+}
+
+type ViewPort struct {
+	X int
+	Y int
+	Height int
+	Width int
 }
 
 func NewBattleGround(x int, y int) *BattleGround {
 	var b BattleGround
 
-	b.Size.x = x
-	b.Size.y = y
+	b.Size.X = x
+	b.Size.Y = y
 
-	b.grid = make(map[string]Entity)
+	b.Grid = make(map[string]Entity)
 
-	b.ViewPort = Location{ }
+	b.ViewPort = ViewPort{ X: x/2, Y: y/2, Height: 20, Width: 40}
 
 	return &b
 }
 
 type Size struct {
-	y int
-	x int
+	Y int
+	X int
 }
 
 // put an entity on the battleground thus taking up space
 func PlaceBattleGroundEntity(entity Entity, battleGround *BattleGround) {
 	locationKey := getLocationKey(entity.GetLocation())
-	battleGround.grid[locationKey] = entity
+	battleGround.Grid[locationKey] = entity
 }
 
 // check if a location is empty
 func IsBattleGroundLocationFree(location Location, battleGround *BattleGround) bool {
 	locationKey := getLocationKey(location)
-	_, ok := battleGround.grid[locationKey]
+	_, ok := battleGround.Grid[locationKey]
 
 	if ok {
 		return false

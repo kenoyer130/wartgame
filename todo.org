@@ -1,0 +1,3 @@
+* Get scrolling of viewport working
+    ** grid lines are all jacked up
+    ** viewport render check messed up

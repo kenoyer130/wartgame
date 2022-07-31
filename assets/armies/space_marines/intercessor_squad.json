@@ -17,7 +17,16 @@
             "Wounds": 2,
             "Attackes": 2,
             "Leadership": 7,
-            "Save": "3+"
+            "Save": "3+",
+            "Token": {
+                "ID": "Int",
+                "RGBA": {
+                    "R": 0,
+                    "G": 0,
+                    "B": 255,
+                    "A": 1
+                }
+            }
         },
         {
             "Name": "Intercessor Sergeant",
@@ -34,7 +43,16 @@
             "Attackes": 3,
             "Leadership": 8,
             "Save": "3+",
-            "UnitType": "Leader"
+            "UnitType": "Leader",
+            "Token": {
+                "ID": "InS",
+                "RGBA": {
+                    "R": 0,
+                    "G": 0,
+                    "B": 255,
+                    "A": 1
+                }
+            }
         }
     ],
     "DefaultWeapons": [

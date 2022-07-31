@@ -15,7 +15,7 @@ func loadAssets(g *engine.Game) error {
 	g.Assets = *models.NewAssets()
 
 	// todo: hardcoded battle ground size
-	g.BattleGround = *models.NewBattleGround(48, 24)
+	g.BattleGround = *models.NewBattleGround(72, 48)
 
 	err := loadAssetFiles(g)
 

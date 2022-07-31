@@ -6,7 +6,7 @@ import (
 )
 
 func StartGame(g *engine.Game) error {
-
+	
 	loadAssets(g)
 
 	// todo: hardcoded players for now
@@ -27,7 +27,8 @@ func StartGame(g *engine.Game) error {
 	// for now just place units across from each other
 	for _, squad := range g.Players[0].Army.Squads {
 
-		squad.Location = models.Location{ X: 24, Y: 24}
+		squad.Location = models.Location{X: 24, Y: 12}
+		models.SetSquadFormation(models.StandardSquadFormation, &squad, &g.BattleGround)
 	}
 
 	return nil

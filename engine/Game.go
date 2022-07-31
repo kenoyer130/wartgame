@@ -10,5 +10,6 @@ type Game struct {
 	CurrentPhase     models.Phase
 	Players          [models.MaxPlayers]models.Player
 	CurrentPlayer    models.Player
-	Assets           models.Assets	
+	Assets           models.Assets
+	ShowGrid         bool
 }

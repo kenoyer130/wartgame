@@ -34,8 +34,6 @@ func LoadPlayerArmy(p *models.Player, assets models.Assets) error {
 
 		armySquad := assetSquad
 
-		army.Squads[i] = armySquad
-
 		// break out units into individual
 		for _, unit := range assetSquad.Units {
 			count := unit.UnitNumber.Min
@@ -48,6 +46,9 @@ func LoadPlayerArmy(p *models.Player, assets models.Assets) error {
 		}
 
 		assignWeapons(&armySquad, &assetSquad, assets.Weapons)
+
+		army.Squads[i] = armySquad
+
 	}
 
 	p.Army = army
