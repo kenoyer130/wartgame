@@ -9,5 +9,16 @@
         "Strength": 4,
         "ArmorPiercing": 0,
         "Damange": 1
+    },
+    {
+        "Name": "ShurikenCatapult",
+        "Range": 18,
+        "WeaponType": {
+            "id": "Assault",
+            "Number": 2
+        },
+        "Strength": 4,
+        "ArmorPiercing": -1,
+        "Damange": 1
     }
 ]

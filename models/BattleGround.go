@@ -16,6 +16,10 @@ type ViewPort struct {
 	Width int
 }
 
+func (re ViewPort) GetPixelRectangle() Rectangle {
+	return Rectangle{X: re.X * TileSize, Y: re.Y * TileSize, Width: re.Width * TileSize, Height: re.Height * TileSize}
+}
+
 func NewBattleGround(x int, y int) *BattleGround {
 	var b BattleGround
 
@@ -24,7 +28,7 @@ func NewBattleGround(x int, y int) *BattleGround {
 
 	b.Grid = make(map[string]Entity)
 
-	b.ViewPort = ViewPort{ X: x/2, Y: y/2, Height: 20, Width: 40}
+	b.ViewPort = ViewPort{ X: 0, Y: 0, Height: 30, Width: 45}
 
 	return &b
 }
@@ -42,7 +46,7 @@ func PlaceBattleGroundEntity(entity Entity, battleGround *BattleGround) {
 
 // check if a location is empty
 func IsBattleGroundLocationFree(location Location, battleGround *BattleGround) bool {
-	locationKey := getLocationKey(location)
+ 	locationKey := getLocationKey(location)
 	_, ok := battleGround.Grid[locationKey]
 
 	if ok {

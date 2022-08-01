@@ -23,7 +23,7 @@ type Unit struct {
 	Strength       int
 	Toughness      int
 	Wounds         int
-	Attackes       int
+	Attacks       int
 	Leadership     int
 	Save           string
 	Weapons        []Weapon

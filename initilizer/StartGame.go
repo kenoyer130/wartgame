@@ -1,6 +1,8 @@
 package initilizer
 
 import (
+	"math/rand"
+
 	"github.com/kenoyer130/wartgame/engine"
 	"github.com/kenoyer130/wartgame/models"
 )
@@ -30,6 +32,20 @@ func StartGame(g *engine.Game) error {
 		squad.Location = models.Location{X: 24, Y: 12}
 		models.SetSquadFormation(models.StandardSquadFormation, &squad, &g.BattleGround)
 	}
+
+	// for now just place units across from each other
+	for _, squad := range g.Players[1].Army.Squads {
+
+		squad.Location = models.Location{X: 4, Y: 12}
+		models.SetSquadFormation(models.StandardSquadFormation, &squad, &g.BattleGround)
+	}
+
+	// roll and set first player
+	die := rand.Intn(models.MaxPlayers)
+
+	g.CurrentPlayer = &g.Players[die]
+
+	g.Round  = 1
 
 	return nil
 }

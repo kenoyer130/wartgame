@@ -4,19 +4,51 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kenoyer130/wartgame/models"
+	"github.com/kenoyer130/wartgame/ui"
 )
 
 func (g *Game) Draw(screen *ebiten.Image) {
 
-	image := ebiten.NewImage(g.BattleGround.ViewPort.Width*32, g.BattleGround.ViewPort.Height*32)
-	image.Fill(color.RGBA{166, 142, 154, 1})
+	background := ebiten.NewImage(g.BattleGround.ViewPort.Width*models.TileSize, g.BattleGround.ViewPort.Height*models.TileSize)
+	background.Fill(color.RGBA{166, 142, 154, 1})
 
-	screen.DrawImage(image, nil)
-
-	if g.ShowGrid {
-		drawGrid(screen, g)
+	if g.UIState.ShowGrid {
+		drawGrid(background, g)
 	}
 
+	drawSelectedUnitInfo(g, background)
+
+	drawEntities(g, background)
+
+	screen.DrawImage(background, nil)
+
+	drawGameInfoPanel(g, screen)
+	drawUnitPanel(g, screen)
+}
+
+func drawGameInfoPanel(g *Game, screen *ebiten.Image) {
+	gameInfoPanel := getGameInfoPanel(g)
+
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(float64(g.BattleGround.ViewPort.GetPixelRectangle().Width+ui.Margin), 0)
+	screen.DrawImage(gameInfoPanel, op)
+}
+
+func drawUnitPanel(g *Game, screen *ebiten.Image) {
+	unitPanel := getUnitPanel(g)
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(float64(g.BattleGround.ViewPort.GetPixelRectangle().Width+ui.Margin), 210)
+	screen.DrawImage(unitPanel, op)
+}
+
+func drawSelectedUnitInfo(g *Game, background *ebiten.Image) {
+	if g.SelectedUnit == nil {
+		return
+	}
+}
+
+func drawEntities(g *Game, background *ebiten.Image) {
 	entites := g.BattleGround.Grid
 
 	for _, entity := range entites {
@@ -26,13 +58,14 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		entitY := entity.GetLocation().Y
 
 		// no need to render if outside viewport
-		if ((entityX < g.BattleGround.ViewPort.X && entitY > g.BattleGround.ViewPort.Y) ||  (entityX < g.BattleGround.ViewPort.X && entitY > g.BattleGround.ViewPort.Y)) {
+
+		if (entityX < g.BattleGround.ViewPort.X && entitY > g.BattleGround.ViewPort.Y) || (entityX < g.BattleGround.ViewPort.X && entitY > g.BattleGround.ViewPort.Y) {
 			continue
 		}
 
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64((entity.GetLocation().X*32)+1), float64((entity.GetLocation().Y*32)+1))
-		screen.DrawImage(token, op)
+		background.DrawImage(token, op)
 	}
 }
 

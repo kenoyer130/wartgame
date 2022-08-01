@@ -3,6 +3,7 @@ module github.com/kenoyer130/wartgame
 go 1.18
 
 require (
+	github.com/hajimehoshi/ebiten v1.12.12
 	github.com/hajimehoshi/ebiten/v2 v2.3.7
 	golang.org/x/image v0.0.0-20220321031419-a8550c1d254a
 )

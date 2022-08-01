@@ -25,7 +25,9 @@ func setStandardFormation(squad *Squad, battleGround *BattleGround) {
 
 	// loop through all remaining units in a 3 x ? pattern until all units placed
 
-	unitX := squad.Location.X
+	rank := squad.Location.X
+
+	unitX := rank
 	unitY := squad.Location.Y
 
 	for _, unit := range squad.Units {
@@ -51,7 +53,8 @@ func setStandardFormation(squad *Squad, battleGround *BattleGround) {
 				unitY = unitY + 2
 
 				if unitY > squad.Location.Y+4 {
-					unitX = squad.Location.X + 2
+					rank = rank + 2
+					unitX = rank
 					unitY = squad.Location.Y
 				}
 			}

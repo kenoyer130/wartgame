@@ -15,16 +15,17 @@
             "Strength": 4,
             "Toughness": 4,
             "Wounds": 2,
-            "Attackes": 2,
+            "Attacks": 2,
             "Leadership": 7,
             "Save": "3+",
+            "Base": 1,
             "Token": {
                 "ID": "Int",
                 "RGBA": {
-                    "R": 0,
-                    "G": 0,
-                    "B": 255,
-                    "A": 1
+                    "R": 47,
+                    "G": 82,
+                    "B": 145,
+                    "A": 255
                 }
             }
         },
@@ -40,17 +41,18 @@
             "Strength": 4,
             "Toughness": 4,
             "Wounds": 2,
-            "Attackes": 3,
+            "Attacks": 3,
             "Leadership": 8,
             "Save": "3+",
             "UnitType": "Leader",
+            "Base": 1,
             "Token": {
                 "ID": "InS",
                 "RGBA": {
-                    "R": 0,
-                    "G": 0,
-                    "B": 255,
-                    "A": 1
+                    "R": 47,
+                    "G": 82,
+                    "B": 145,
+                    "A": 255
                 }
             }
         }
