@@ -25,21 +25,34 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	drawGameInfoPanel(g, screen)
 	drawModelPanel(g, screen)
+	drawMessagePanel(g, screen)
+}
+
+func drawMessagePanel(g *Game, screen *ebiten.Image) {
+	messagePanel := getMessagePanel(g)
+
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(getLeftXStartingPixel(g), 125)
+	screen.DrawImage(messagePanel, op)
 }
 
 func drawGameInfoPanel(g *Game, screen *ebiten.Image) {
 	gameInfoPanel := getGameInfoPanel(g)
 
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(g.BattleGround.ViewPort.GetPixelRectangle().Width+ui.Margin), 0)
+	op.GeoM.Translate(getLeftXStartingPixel(g), 0)
 	screen.DrawImage(gameInfoPanel, op)
 }
 
 func drawModelPanel(g *Game, screen *ebiten.Image) {
 	ModelPanel := getModelPanel(g)
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(g.BattleGround.ViewPort.GetPixelRectangle().Width+ui.Margin), 210)
+	op.GeoM.Translate(getLeftXStartingPixel(g), 275)
 	screen.DrawImage(ModelPanel, op)
+}
+
+func getLeftXStartingPixel(g *Game) float64 {
+	return float64(g.BattleGround.ViewPort.GetPixelRectangle().Width+ui.Margin)
 }
 
 func drawSelectedModelInfo(g *Game, background *ebiten.Image) {
@@ -59,7 +72,7 @@ func drawEntities(g *Game, background *ebiten.Image) {
 
 		// no need to render if outside viewport
 
-		if (entityX < g.BattleGround.ViewPort.X && entitY > g.BattleGround.ViewPort.Y) || (entityX < g.BattleGround.ViewPort.X && entitY > g.BattleGround.ViewPort.Y) {
+		if (entityX < g.BattleGround.ViewPort.X && entitY > g.BattleGround.ViewPort.Y) {
 			continue
 		}
 

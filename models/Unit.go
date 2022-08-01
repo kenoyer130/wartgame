@@ -7,4 +7,11 @@ type Unit struct {
 	DefaultWeapons []string
 	Power          int
 	Location       Location
+	UnitState      UnitState
+}
+
+type UnitState struct {
+	Advanced bool
+	FellBack bool
+	Shot     bool
 }

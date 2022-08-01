@@ -10,6 +10,8 @@ import (
 
 func StartGame(g *engine.Game) error {
 
+	engine.WriteMessage("Wartgame!")
+
 	loadAssets(g)
 
 	// todo: hardcoded players for now
@@ -48,6 +50,6 @@ func StartGame(g *engine.Game) error {
 	g.CurrentPlayer = &g.Players[die]
 
 	g.Round = 1
-	engine.MoveToNextPhaseOrder(models.ShootingPhase_TargetSelection, g)
+	engine.MoveToNextPhaseOrder(models.ShootingPhase_UnitSelection, g)
 	return nil
 }

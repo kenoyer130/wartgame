@@ -14,7 +14,7 @@ type Panel struct {
 func NewPanel(x, y int) *Panel {
 	var p Panel
 
-	p.Img = ebiten.NewImage(x,y)
+	p.Img = ebiten.NewImage(x, y)
 	p.row = 2
 
 	return &p
@@ -22,6 +22,11 @@ func NewPanel(x, y int) *Panel {
 
 func (re Panel) addTitle(title string) {
 	text.Draw(re.Img, title, ui.GetFontBold(), ui.Margin, 25, ui.GetTextColor())
+}
+
+func (re *Panel) addMessage(msg string) {
+	text.Draw(re.Img, msg, ui.GetFontNormalFace(), ui.Margin + 10, re.row*25, ui.GetTextColor())
+	re.row++
 }
 
 func (re *Panel) addRow(label string, value string) {

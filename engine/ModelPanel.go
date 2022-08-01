@@ -23,8 +23,8 @@ func getModelPanel(g *Game) *ebiten.Image {
 	if g.SelectedModel == nil {
 		panel.addRow("No Model Selected", "")
 	} else {
-		panel.addRow("Model:", g.SelectedUnit.Name)
-		panel.addRow("Name:", g.SelectedModel.Name)
+		panel.addRow("Unit:", g.SelectedUnit.Name)
+		panel.addRow("Model:", g.SelectedModel.Name)
 		panel.addRow("Movement:", strconv.Itoa(g.SelectedModel.Movement))
 		panel.addRow("Weapon Skill:", g.SelectedModel.WeaponSkill)
 		panel.addRow("Ballistic Skill:", g.SelectedModel.BallisticSkill)
