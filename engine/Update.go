@@ -19,7 +19,7 @@ func updateState(g *Game, s models.GameState) {
 	checkInputs(g)
 
 	switch s {
-	case models.Start:
+	case models.GameStart:
 
 	}
 }
@@ -27,85 +27,85 @@ func updateState(g *Game, s models.GameState) {
 func checkInputs(g *Game) {
 	checkEsc()
 	checkGridInputs(g)
-	checkUnitNav(g)
+	checkModelNav(g)
 }
 
-func checkUnitNav(g *Game) {
+func checkModelNav(g *Game) {
 	
 	if inpututil.IsKeyJustReleased(ebiten.KeyB) {
-		squadSelector(1, g)
+		UnitSelector(1, g)
 	}
 	
 	if inpututil.IsKeyJustReleased(ebiten.KeyV) {
-		squadSelector(-1, g)
+		UnitSelector(-1, g)
 	}
 
 	if inpututil.IsKeyJustReleased(ebiten.KeyN) {
-		unitSelector(1, g)
+		ModelSelector(1, g)
 	}
 	
 	if inpututil.IsKeyJustReleased(ebiten.KeyM) {
-		unitSelector(-1, g)
+		ModelSelector(-1, g)
 	}
 }
 
-func squadSelector(direction int, g *Game) {
-	squadSelected := ensureSelectedSquad(g)
-	if squadSelected {
-		return
-	}
-
-	currentSquad := 0
-
-	// loop through squad array and find our selected squad
-	for i := 0; i < len(g.CurrentPlayer.Army.Squads); i++ {
-		if(&g.CurrentPlayer.Army.Squads[i] == g.SelectedSquad) {
-			currentSquad = i
-		}
-	}
-
-	currentSquad = currentSquad + direction
-
-	if currentSquad< 0 {
-		currentSquad = len(g.CurrentPlayer.Army.Squads) - 1
-	}
-
-	if currentSquad > len(g.CurrentPlayer.Army.Squads) - 1 {
-		currentSquad = 0
-	}
-
-	g.SelectedSquad = &g.CurrentPlayer.Army.Squads[currentSquad]
-	g.SelectedUnit = &g.CurrentPlayer.Army.Squads[currentSquad].Units[0]
-}
-
-func ensureSelectedSquad(g *Game) bool {
-	if g.SelectedSquad == nil {
-		g.SelectedSquad = &g.CurrentPlayer.Army.Squads[0]
-		g.SelectedUnit = &g.CurrentPlayer.Army.Squads[0].Units[0]
-		return true
-	}
-	return false
-}
-
-func unitSelector(direction int, g *Game) {
-	squadSelected := ensureSelectedSquad(g)
-	if squadSelected {
+func UnitSelector(direction int, g *Game) {
+	UnitSelected := ensureSelectedUnit(g)
+	if UnitSelected {
 		return
 	}
 
 	currentUnit := 0
 
+	// loop through Unit array and find our selected Unit
+	for i := 0; i < len(g.CurrentPlayer.Army.Units); i++ {
+		if(&g.CurrentPlayer.Army.Units[i] == g.SelectedUnit) {
+			currentUnit = i
+		}
+	}
+
 	currentUnit = currentUnit + direction
 
 	if currentUnit< 0 {
-		currentUnit = len(g.SelectedSquad.Units) - 1
+		currentUnit = len(g.CurrentPlayer.Army.Units) - 1
 	}
 
-	if currentUnit > len(g.SelectedSquad.Units) - 1 {
+	if currentUnit > len(g.CurrentPlayer.Army.Units) - 1 {
 		currentUnit = 0
 	}
 
-	g.SelectedUnit = &g.SelectedSquad.Units[currentUnit]
+	g.SelectedUnit = &g.CurrentPlayer.Army.Units[currentUnit]
+	g.SelectedModel = &g.CurrentPlayer.Army.Units[currentUnit].Models[0]
+}
+
+func ensureSelectedUnit(g *Game) bool {
+	if g.SelectedUnit == nil {
+		g.SelectedUnit = &g.CurrentPlayer.Army.Units[0]
+		g.SelectedModel = &g.CurrentPlayer.Army.Units[0].Models[0]
+		return true
+	}
+	return false
+}
+
+func ModelSelector(direction int, g *Game) {
+	UnitSelected := ensureSelectedUnit(g)
+	if UnitSelected {
+		return
+	}
+
+	currentModel := 0
+
+	currentModel = currentModel + direction
+
+	if currentModel< 0 {
+		currentModel = len(g.SelectedUnit.Models) - 1
+	}
+
+	if currentModel > len(g.SelectedUnit.Models) - 1 {
+		currentModel = 0
+	}
+
+	g.SelectedModel = &g.SelectedUnit.Models[currentModel]
 }
 
 func checkEsc() {

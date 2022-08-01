@@ -41,8 +41,8 @@ func loadAssetFiles(g *engine.Game) error {
 func loadByPath(g *engine.Game, path string) {
 
 	if isAsset(path, "armies") {
-		squad := loadSquad(path)
-		g.Assets.Squads[squad.Name] = squad
+		Unit := loadUnit(path)
+		g.Assets.Units[Unit.Name] = Unit
 	}
 
 	if isAsset(path, "weapons") {
@@ -54,10 +54,10 @@ func isAsset(path string, asset string) bool {
 	return strings.HasPrefix(path, "assets\\"+asset) && strings.HasSuffix(path, ".json")
 }
 
-func loadSquad(path string) models.Squad {
-	var squad models.Squad
-	engine.UnmarshalJson(&squad, path)
-	return squad
+func loadUnit(path string) models.Unit {
+	var Unit models.Unit
+	engine.UnmarshalJson(&Unit, path)
+	return Unit
 }
 
 func loadWeapons(g *engine.Game, path string) {

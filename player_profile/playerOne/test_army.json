@@ -1,9 +1,9 @@
 {
     "ID": "test_army",
     "Name": "Test Army",
-    "Squads": [
+    "Units": [
         {
-            "Name": "Intercessor Squad"
+            "Name": "Intercessor Unit"
         }
     ]
 }

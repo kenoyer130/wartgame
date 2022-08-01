@@ -21,33 +21,33 @@ func LoadPlayerArmy(p *models.Player, assets models.Assets) error {
 	var army models.Army
 	engine.UnmarshalJson(&army, path)
 
-	// copy squads and weapons from asset library (this allows customizations and choices per player)
+	// copy Units and weapons from asset library (this allows customizations and choices per player)
 
-	for i, squad := range army.Squads {
+	for i, Unit := range army.Units {
 
-		assetSquad, ok := assets.Squads[squad.Name]
+		assetUnit, ok := assets.Units[Unit.Name]
 
 		if !ok {
-			engine.Warn(fmt.Sprintf("%s squad id not found!", squad.Name))
+			engine.Warn(fmt.Sprintf("%s Unit id not found!", Unit.Name))
 			continue
 		}
 
-		armySquad := assetSquad
+		armyUnit := assetUnit
 
-		// break out units into individual
-		for _, unit := range assetSquad.Units {
-			count := unit.UnitNumber.Min
+		// break out Models into individual
+		for _, Model := range assetUnit.Models {
+			count := Model.ModelNumber.Min
 
 			for i := 0; i < count-1; i++ {
 
-				squadUnit := unit
-				armySquad.Units = append(armySquad.Units, squadUnit)
+				UnitModel := Model
+				armyUnit.Models = append(armyUnit.Models, UnitModel)
 			}
 		}
 
-		assignWeapons(&armySquad, &assetSquad, assets.Weapons)
+		assignWeapons(&armyUnit, &assetUnit, assets.Weapons)
 
-		army.Squads[i] = armySquad
+		army.Units[i] = armyUnit
 
 	}
 
@@ -56,15 +56,15 @@ func LoadPlayerArmy(p *models.Player, assets models.Assets) error {
 	return nil
 }
 
-func assignWeapons(squad *models.Squad, assetSquad *models.Squad, assetWeapons map[string]models.Weapon) {
+func assignWeapons(Unit *models.Unit, assetUnit *models.Unit, assetWeapons map[string]models.Weapon) {
 
-	for _, unit := range squad.Units {
-		assignUnitWeapons(assetSquad, assetWeapons, unit)
+	for _, Model := range Unit.Models {
+		assignModelWeapons(assetUnit, assetWeapons, Model)
 	}
 }
 
-func assignUnitWeapons(assetSquad *models.Squad, assetWeapons map[string]models.Weapon, unit models.Unit) {
-	for _, assetWeaponId := range assetSquad.DefaultWeapons {
+func assignModelWeapons(assetUnit *models.Unit, assetWeapons map[string]models.Weapon, Model models.Model) {
+	for _, assetWeaponId := range assetUnit.DefaultWeapons {
 
 		assetWeapon, ok := assetWeapons[assetWeaponId]
 
@@ -73,6 +73,6 @@ func assignUnitWeapons(assetSquad *models.Squad, assetWeapons map[string]models.
 			continue
 		}
 
-		unit.Weapons = append(unit.Weapons, assetWeapon)
+		Model.Weapons = append(Model.Weapons, assetWeapon)
 	}
 }

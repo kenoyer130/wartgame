@@ -1,7 +1,7 @@
 package models
 
-type GameState int64
+type GameState int16
 
 const (
-	Start GameState = 0
+	GameStart GameState = 0
 )

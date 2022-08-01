@@ -1,7 +1,7 @@
 package models
 
 type Army struct {
-	ID     string
-	Name   string
-	Squads []Squad
+	ID    string
+	Name  string
+	Units []Unit
 }

@@ -2,10 +2,10 @@
     "Name": "Guardian Defenders",
     "Army": "Aeldari",
     "Power": 4,
-    "Units": [
+    "Models": [
         {
             "Name": "Guardian Defender",
-            "UnitNumber": {
+            "ModelNumber": {
                 "Min": 10,
                 "Max": 20
             },
@@ -31,7 +31,7 @@
         },
         {
             "Name": "Heavy Weapon Platform",
-            "UnitNumber": {
+            "ModelNumber": {
                 "min": 0,
                 "max": 2
             },
@@ -44,7 +44,7 @@
             "Attacks": 1,
             "Leadership": 7,
             "Save": "3+",
-            "UnitType": "Leader",
+            "ModelType": "Leader",
             "Token": {
                 "ID": "HWP",
                 "Base": 2,

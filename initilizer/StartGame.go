@@ -2,13 +2,14 @@ package initilizer
 
 import (
 	"math/rand"
+	"time"
 
 	"github.com/kenoyer130/wartgame/engine"
 	"github.com/kenoyer130/wartgame/models"
 )
 
 func StartGame(g *engine.Game) error {
-	
+
 	loadAssets(g)
 
 	// todo: hardcoded players for now
@@ -27,25 +28,26 @@ func StartGame(g *engine.Game) error {
 	}
 
 	// for now just place units across from each other
-	for _, squad := range g.Players[0].Army.Squads {
+	for _, Unit := range g.Players[0].Army.Units {
 
-		squad.Location = models.Location{X: 24, Y: 12}
-		models.SetSquadFormation(models.StandardSquadFormation, &squad, &g.BattleGround)
+		Unit.Location = models.Location{X: 24, Y: 12}
+		models.SetUnitFormation(models.StandardUnitFormation, &Unit, &g.BattleGround)
 	}
 
 	// for now just place units across from each other
-	for _, squad := range g.Players[1].Army.Squads {
+	for _, Unit := range g.Players[1].Army.Units {
 
-		squad.Location = models.Location{X: 4, Y: 12}
-		models.SetSquadFormation(models.StandardSquadFormation, &squad, &g.BattleGround)
+		Unit.Location = models.Location{X: 4, Y: 12}
+		models.SetUnitFormation(models.StandardUnitFormation, &Unit, &g.BattleGround)
 	}
 
 	// roll and set first player
+	rand.Seed(time.Now().UnixNano())
 	die := rand.Intn(models.MaxPlayers)
 
 	g.CurrentPlayer = &g.Players[die]
 
-	g.Round  = 1
-
+	g.Round = 1
+	engine.MoveToNextPhaseOrder(models.ShootingPhase_TargetSelection, g)
 	return nil
 }

@@ -1,13 +1,13 @@
 package models
 
 type Assets struct {
-	Squads  map[string]Squad
+	Units   map[string]Unit
 	Weapons map[string]Weapon
 }
 
 func NewAssets() *Assets {
 	var a Assets
-	a.Squads = make(map[string]Squad)
+	a.Units = make(map[string]Unit)
 	a.Weapons = make(map[string]Weapon)
 	return &a
 }

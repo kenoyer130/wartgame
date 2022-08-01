@@ -17,14 +17,14 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		drawGrid(background, g)
 	}
 
-	drawSelectedUnitInfo(g, background)
+	drawSelectedModelInfo(g, background)
 
 	drawEntities(g, background)
 
 	screen.DrawImage(background, nil)
 
 	drawGameInfoPanel(g, screen)
-	drawUnitPanel(g, screen)
+	drawModelPanel(g, screen)
 }
 
 func drawGameInfoPanel(g *Game, screen *ebiten.Image) {
@@ -35,15 +35,15 @@ func drawGameInfoPanel(g *Game, screen *ebiten.Image) {
 	screen.DrawImage(gameInfoPanel, op)
 }
 
-func drawUnitPanel(g *Game, screen *ebiten.Image) {
-	unitPanel := getUnitPanel(g)
+func drawModelPanel(g *Game, screen *ebiten.Image) {
+	ModelPanel := getModelPanel(g)
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(g.BattleGround.ViewPort.GetPixelRectangle().Width+ui.Margin), 210)
-	screen.DrawImage(unitPanel, op)
+	screen.DrawImage(ModelPanel, op)
 }
 
-func drawSelectedUnitInfo(g *Game, background *ebiten.Image) {
-	if g.SelectedUnit == nil {
+func drawSelectedModelInfo(g *Game, background *ebiten.Image) {
+	if g.SelectedModel == nil {
 		return
 	}
 }

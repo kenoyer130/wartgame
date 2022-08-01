@@ -8,11 +8,11 @@ type Game struct {
 	CurrentGameState models.GameState
 	Round            int
 	BattleGround     models.BattleGround
-	CurrentPhase     models.Phase
+	CurrentPhase     models.GamePhase	
 	Players          [models.MaxPlayers]models.Player
 	CurrentPlayer    *models.Player
-	SelectedSquad    *models.Squad
-	SelectedUnit     *models.Unit
+	SelectedUnit    *models.Unit
+	SelectedModel     *models.Model
 	Assets           models.Assets
 	UIState          UIState
 }
