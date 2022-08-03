@@ -16,5 +16,5 @@ func selectValidShootingUnit(g *Game) bool {
 }
 
 func isValidShootingUnit(unit *models.Unit) bool {
-	return unit.
+	return true
 }

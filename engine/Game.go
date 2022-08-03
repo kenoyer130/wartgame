@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"github.com/kenoyer130/wartgame/consts"
 	"github.com/kenoyer130/wartgame/models"
 )
 
@@ -9,7 +10,7 @@ type Game struct {
 	Round            int
 	BattleGround     models.BattleGround
 	CurrentPhase     models.GamePhase	
-	Players          [models.MaxPlayers]models.Player
+	Players          [consts.MaxPlayers]models.Player
 	CurrentPlayer    *models.Player
 	SelectedUnit    *models.Unit
 	SelectedModel     *models.Model

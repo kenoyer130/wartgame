@@ -1,6 +1,10 @@
 package models
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/kenoyer130/wartgame/ui"
+)
 
 type BattleGround struct {
 	Size     Size
@@ -17,7 +21,7 @@ type ViewPort struct {
 }
 
 func (re ViewPort) GetPixelRectangle() Rectangle {
-	return Rectangle{X: re.X * TileSize, Y: re.Y * TileSize, Width: re.Width * TileSize, Height: re.Height * TileSize}
+	return Rectangle{X: re.X * ui.TileSize, Y: re.Y * ui.TileSize, Width: re.Width * ui.TileSize, Height: re.Height * ui.TileSize}
 }
 
 func NewBattleGround(x int, y int) *BattleGround {

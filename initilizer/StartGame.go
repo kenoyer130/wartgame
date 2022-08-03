@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/kenoyer130/wartgame/consts"
 	"github.com/kenoyer130/wartgame/engine"
 	"github.com/kenoyer130/wartgame/models"
 )
@@ -30,26 +31,27 @@ func StartGame(g *engine.Game) error {
 	}
 
 	// for now just place units across from each other
-	for _, Unit := range g.Players[0].Army.Units {
-
-		Unit.Location = models.Location{X: 24, Y: 12}
-		models.SetUnitFormation(models.StandardUnitFormation, &Unit, &g.BattleGround)
-	}
-
-	// for now just place units across from each other
-	for _, Unit := range g.Players[1].Army.Units {
-
-		Unit.Location = models.Location{X: 4, Y: 12}
-		models.SetUnitFormation(models.StandardUnitFormation, &Unit, &g.BattleGround)
-	}
+	setPlayerUnitStartingLocation(0, 24, 12, g)
+	setPlayerUnitStartingLocation(1, 4, 12, g)
 
 	// roll and set first player
 	rand.Seed(time.Now().UnixNano())
-	die := rand.Intn(models.MaxPlayers)
+	die := rand.Intn(consts.MaxPlayers)
 
 	g.CurrentPlayer = &g.Players[die]
 
 	g.Round = 1
 	engine.MoveToNextPhaseOrder(models.ShootingPhase_UnitSelection, g)
 	return nil
+}
+
+func setPlayerUnitStartingLocation(player int, x int, y int, g *engine.Game) {
+	for i := 0; i < len(g.Players[player].Army.Units); i++ {
+
+		unit := &g.Players[player].Army.Units[i]
+
+		unit.Location = models.Location{X: x, Y: y}
+
+		engine.SetUnitFormation(engine.StandardUnitFormation, unit, &g.BattleGround)
+	}
 }

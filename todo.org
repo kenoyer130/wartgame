@@ -1,3 +1,7 @@
 * Get scrolling of viewport working
     ** grid lines are all jacked up
     ** viewport render check messed up
+* TODO
+    ** fix grid
+    ** render weapons
+    ** do a round of shooting!

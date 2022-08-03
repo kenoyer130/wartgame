@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kenoyer130/wartgame/models"
+	"github.com/kenoyer130/wartgame/ui"
 )
 
 func (g *Game) Update() error {
@@ -28,14 +29,30 @@ func checkInputs(g *Game) {
 	checkEsc()
 	checkGridInputs(g)
 	checkModelNav(g)
+	checkUnitSelection(g)
+}
+
+func checkUnitSelection(g *Game) {
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		
+		for _, player := range g.Players {
+			for _, unit := range player.Army.Units {
+				cx, cy := ebiten.CursorPosition()
+				if unit.Rect.InPixelBounds(cx, cy) {
+					g.SelectedUnit = &unit
+					g.SelectedModel = &unit.Models[0]
+				}
+			}
+		}
+	}
 }
 
 func checkModelNav(g *Game) {
-	
+
 	if inpututil.IsKeyJustReleased(ebiten.KeyB) {
 		UnitSelector(1, g)
 	}
-	
+
 	if inpututil.IsKeyJustReleased(ebiten.KeyV) {
 		UnitSelector(-1, g)
 	}
@@ -43,7 +60,7 @@ func checkModelNav(g *Game) {
 	if inpututil.IsKeyJustReleased(ebiten.KeyN) {
 		ModelSelector(1, g)
 	}
-	
+
 	if inpututil.IsKeyJustReleased(ebiten.KeyM) {
 		ModelSelector(-1, g)
 	}
@@ -59,18 +76,18 @@ func UnitSelector(direction int, g *Game) {
 
 	// loop through Unit array and find our selected Unit
 	for i := 0; i < len(g.CurrentPlayer.Army.Units); i++ {
-		if(&g.CurrentPlayer.Army.Units[i] == g.SelectedUnit) {
+		if &g.CurrentPlayer.Army.Units[i] == g.SelectedUnit {
 			currentUnit = i
 		}
 	}
 
 	currentUnit = currentUnit + direction
 
-	if currentUnit< 0 {
+	if currentUnit < 0 {
 		currentUnit = len(g.CurrentPlayer.Army.Units) - 1
 	}
 
-	if currentUnit > len(g.CurrentPlayer.Army.Units) - 1 {
+	if currentUnit > len(g.CurrentPlayer.Army.Units)-1 {
 		currentUnit = 0
 	}
 
@@ -97,11 +114,11 @@ func ModelSelector(direction int, g *Game) {
 
 	currentModel = currentModel + direction
 
-	if currentModel< 0 {
+	if currentModel < 0 {
 		currentModel = len(g.SelectedUnit.Models) - 1
 	}
 
-	if currentModel > len(g.SelectedUnit.Models) - 1 {
+	if currentModel > len(g.SelectedUnit.Models)-1 {
 		currentModel = 0
 	}
 
@@ -129,14 +146,14 @@ func checkGridDrag(g *Game) {
 			cursorX, cursorY := ebiten.CursorPosition()
 
 			g.UIState.GridDragging = DraggingGrid{
-				InDrag: true,
+				InDrag:       true,
 				CursorStartX: cursorX,
-				CursorStartY: cursorY }
+				CursorStartY: cursorY}
 		}
 	}
 
 	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
-		g.UIState.GridDragging = DraggingGrid {}
+		g.UIState.GridDragging = DraggingGrid{}
 	}
 }
 
@@ -146,8 +163,8 @@ func cursorInViewport(g *Game) bool {
 	topViewPortX := 0
 	topViewPortY := 0
 
-	bottomViewPortX := (g.BattleGround.ViewPort.X) + (g.BattleGround.ViewPort.Width)*models.TileSize
-	bottomViewPortY := (g.BattleGround.ViewPort.Y) + (g.BattleGround.ViewPort.Height)*models.TileSize
+	bottomViewPortX := (g.BattleGround.ViewPort.X) + (g.BattleGround.ViewPort.Width)*ui.TileSize
+	bottomViewPortY := (g.BattleGround.ViewPort.Y) + (g.BattleGround.ViewPort.Height)*ui.TileSize
 
 	cursorInViewport := (cursorX > topViewPortX && cursorY > topViewPortY) && (cursorX < bottomViewPortX && cursorY < bottomViewPortY)
 
