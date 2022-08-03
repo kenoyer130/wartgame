@@ -1,30 +1,36 @@
 package engine
 
 import (
-	"image/color"
-
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kenoyer130/wartgame/ui"
 )
 
 func DrawGrid(screen *ebiten.Image, g *Game) {
-	for x := 0; x < g.BattleGround.ViewPort.Width; x++ {
+	drawXLines(g, screen)
+	drawYLines(g, screen)
+}
 
-		image := ebiten.NewImage((g.BattleGround.Size.X * 32), 1)
-		image.Fill(color.RGBA{35, 31, 33, 1})
+func drawXLines(g *Game, screen *ebiten.Image) {
+	for x := 0; x < g.BattleGround.ViewPort.Height; x++ {
+
+		image := ebiten.NewImage(screen.Bounds().Dx(), 1)
+		image.Fill(ui.GetBattleGroundBackgroundColor())
 
 		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(0, float64(x*32))
+		op.GeoM.Translate(0, float64(x*ui.TileSize))
 
 		screen.DrawImage(image, op)
 	}
+}
 
-	for y := 0; y < g.BattleGround.ViewPort.Height; y++ {
+func drawYLines(g *Game, screen *ebiten.Image) {
+	for y := 0; y < g.BattleGround.ViewPort.Width; y++ {
 
-		image := ebiten.NewImage(1, (g.BattleGround.Size.Y * 32))
-		image.Fill(color.RGBA{35, 31, 33, 1})
+		image := ebiten.NewImage(1, screen.Bounds().Dy())
+		image.Fill(ui.GetBattleGroundBackgroundColor())
 
 		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(float64(y*32), 0)
+		op.GeoM.Translate(float64(y*ui.TileSize), 0)
 
 		screen.DrawImage(image, op)
 	}
