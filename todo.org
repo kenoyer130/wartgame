@@ -3,4 +3,8 @@
     ** viewport render check messed up
 * TODO   
     ** render weapons
+    *** unit second model repeating
+    *** Crazy column width rendering
+    *** Type not loading
     ** do a round of shooting!
+        *** write out steps

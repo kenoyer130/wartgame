@@ -35,7 +35,7 @@ func drawGameInfoPanel(g *Game, screen *ebiten.Image) {
 }
 
 func drawModelPanel(g *Game, screen *ebiten.Image) {
-	ModelPanel := getModelPanel(g)
+	ModelPanel := getUnitPanel(g.SelectedUnit)
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(getLeftXStartingPixel(g), 275)
 	screen.DrawImage(ModelPanel, op)

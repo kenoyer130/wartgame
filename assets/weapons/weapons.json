@@ -3,7 +3,7 @@
         "Name": "AutoBoltRifle",
         "Range": 24,
         "WeaponType": {
-            "id": "Assault",
+            "id": "As",
             "Number": 3
         },
         "Strength": 4,
@@ -14,7 +14,7 @@
         "Name": "ShurikenCatapult",
         "Range": 18,
         "WeaponType": {
-            "id": "Assault",
+            "id": "As",
             "Number": 2
         },
         "Strength": 4,

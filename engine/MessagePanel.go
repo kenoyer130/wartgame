@@ -23,11 +23,13 @@ func getMessagePanel(g *Game) *ebiten.Image {
 	} else {
 		msgs = messages
 	}
-	
+
+	r := 2
+
 	for _, msg := range msgs {
-		panel.addMessage(msg)
+		panel.addMessage(msg, r)
+		r++
 	}
 
 	return panel.Img
 }
-

@@ -56,14 +56,14 @@ func LoadPlayerArmy(p *models.Player, assets models.Assets) error {
 	return nil
 }
 
-func assignWeapons(Unit *models.Unit, assetUnit *models.Unit, assetWeapons map[string]models.Weapon) {
+func assignWeapons(unit *models.Unit, assetUnit *models.Unit, assetWeapons map[string]models.Weapon) {
 
-	for _, Model := range Unit.Models {
-		assignModelWeapons(assetUnit, assetWeapons, Model)
+	for i := 0; i < len(unit.Models); i++ {
+		assignModelWeapons(assetUnit, assetWeapons, &unit.Models[i])
 	}
 }
 
-func assignModelWeapons(assetUnit *models.Unit, assetWeapons map[string]models.Weapon, Model models.Model) {
+func assignModelWeapons(assetUnit *models.Unit, assetWeapons map[string]models.Weapon, model *models.Model) {
 	for _, assetWeaponId := range assetUnit.DefaultWeapons {
 
 		assetWeapon, ok := assetWeapons[assetWeaponId]
@@ -73,6 +73,6 @@ func assignModelWeapons(assetUnit *models.Unit, assetWeapons map[string]models.W
 			continue
 		}
 
-		Model.Weapons = append(Model.Weapons, assetWeapon)
+		model.Weapons = append(model.Weapons, assetWeapon)
 	}
 }
