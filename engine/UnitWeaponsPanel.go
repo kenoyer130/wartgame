@@ -9,90 +9,106 @@ import (
 )
 
 type UnitWeaponsPanel struct {
-	ColWidths   map[int]int
 	WeaponPanel *PanelVertical
 	Unit        *models.Unit
 }
 
+var ColWidths = map[int]int{
+	0: 150,
+	1: 30,
+	2: 30,
+	3: 60,
+	4: 30,
+	5: 30,
+	6: 30,
+	7: 30,
+}
+
 func NewUnitWeaponsPanel(unit *models.Unit) *UnitWeaponsPanel {
 	var p UnitWeaponsPanel
-	p.ColWidths = map[int]int{
-		0: 40,
-		1: 100,
-		2: 40,
-		3: 40,
-		4: 40,
-		5: 40,
-	}
-
 	p.Unit = unit
-
 	return &p
 }
 
-func (re UnitWeaponsPanel) GetUnitWeaponsPanel() *ebiten.Image {
+func (re UnitWeaponsPanel) GetUnitWeaponsPanel(g *Game) *ebiten.Image {
 
-	re.WeaponPanel = NewPanelVertical(500, 400, re.ColWidths)
+	re.WeaponPanel = NewPanelVertical(500, 400)
 
 	re.WeaponPanel.addTitle("Weapons")
 
-	drawWeaponLabels(re.WeaponPanel)
+	re.drawWeaponLabels(re.WeaponPanel)
 
-	weapons := getModelWeapons(re.Unit)
-	drawWeapons(weapons, re.WeaponPanel)
+	re.drawWeapons(g, re.WeaponPanel)
 
 	return re.WeaponPanel.Img
 }
 
-func drawWeaponLabels(panel *PanelVertical) {
+func (re UnitWeaponsPanel) drawWeaponLabels(panel *PanelVertical) {
 	var labels []string
-	c := 0
 
+	labels = append(labels, "Name")
+	labels = append(labels, "#")
 	labels = append(labels, "R")
-	labels = append(labels, "Ty")
+	labels = append(labels, "Type")
 	labels = append(labels, "S")
 	labels = append(labels, "AP")
 	labels = append(labels, "D")
 	labels = append(labels, "Abilities")
 
-	for _, label := range labels {
-		panel.addLabel(label, c)
-		c++
+	totalWidth := 0
+
+	for i, label := range labels {
+		panel.addLabel(label, 2, i, totalWidth)
+		totalWidth = totalWidth + ColWidths[i]
 	}
 }
 
-func getModelWeapons(unit *models.Unit) map[string]*models.Weapon {
-	weapons := make(map[string]*models.Weapon)
+func (re UnitWeaponsPanel) drawWeapons(g *Game, weaponPanel *PanelVertical) {
 
-	for _, model := range unit.Models {
+	r := 3
+
+	assetWeapons := make(map[string]bool)
+	weaponCount := make(map[string]int)
+
+	for _, model := range re.Unit.Models {
+
 		for _, weapon := range model.Weapons {
-			if weapons[weapon.Name] == nil {
-				weapons[weapon.Name] = &weapon
-			}
+			total := weaponCount[weapon]
+			total++
+			weaponCount[weapon] = total
 		}
 	}
-	return weapons
-}
 
-func drawWeapons(weapons map[string]*models.Weapon, weaponPanel *PanelVertical) {
+	for _, model := range re.Unit.Models {
 
-	r := 2
+		for _, weapon := range model.Weapons {
+			if !assetWeapons[weapon] {
 
-	for _, weapon := range weapons {
-		var values []string
-		c := 0
+				var values []string
 
-		weaponType := fmt.Sprintf("%s %d%d", weapon.Type.Type, weapon.Type.Dice, weapon.Type.Number)
+				thisWeapon := g.Assets.Weapons[weapon]
 
-		values = append(values, strconv.Itoa(weapon.Range))
-		values = append(values, weaponType)
-		values = append(values, strconv.Itoa(weapon.Strength))
-		values = append(values, strconv.Itoa(weapon.ArmorPiercing))
-		values = append(values, strconv.Itoa(weapon.Damage))
+				weaponType := fmt.Sprintf("%s %d%d", thisWeapon.WeaponType.Type, thisWeapon.WeaponType.Dice, thisWeapon.WeaponType.Number)
 
-		for _, value := range values {
-			weaponPanel.addValue(value, r, c)
-			c++
+				values = append(values, thisWeapon.Name)
+				values = append(values, strconv.Itoa(weaponCount[thisWeapon.Name]))
+				values = append(values, strconv.Itoa(thisWeapon.Range))
+				values = append(values, weaponType)
+				values = append(values, strconv.Itoa(thisWeapon.Strength))
+				values = append(values, strconv.Itoa(thisWeapon.ArmorPiercing))
+				values = append(values, strconv.Itoa(thisWeapon.Damage))
+
+				totalWidth := 0
+
+				for i, value := range values {
+					weaponPanel.addValue(value, r, i, totalWidth)
+					totalWidth = totalWidth + ColWidths[i]
+				}
+
+				r++
+
+				assetWeapons[weapon] = true
+			}
 		}
 	}
 }

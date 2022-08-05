@@ -23,56 +23,37 @@ func LoadPlayerArmy(p *models.Player, assets models.Assets) error {
 
 	// copy Units and weapons from asset library (this allows customizations and choices per player)
 
-	for i, Unit := range army.Units {
+	for u, Unit := range army.Units {
 
-		assetUnit, ok := assets.Units[Unit.Name]
+		_, ok := assets.Units[Unit.Name]
 
 		if !ok {
 			engine.Warn(fmt.Sprintf("%s Unit id not found!", Unit.Name))
 			continue
 		}
 
-		armyUnit := assetUnit
+		loadedModels := []models.Model{}
 
 		// break out Models into individual
-		for _, Model := range assetUnit.Models {
-			count := Model.ModelNumber.Min
+		for _, Model := range Unit.Models {
+			count := Model.Count
 
-			for i := 0; i < count-1; i++ {
+			for i := 0; i < count; i++ {
 
-				UnitModel := Model
-				armyUnit.Models = append(armyUnit.Models, UnitModel)
+				for _, assetModel := range assets.Units[Unit.Name].Models {
+
+					// find matching asset model
+					if assetModel.Name == Model.Name {
+						loadedModels = append(loadedModels, assetModel)
+					}
+				}
 			}
 		}
 
-		assignWeapons(&armyUnit, &assetUnit, assets.Weapons)
-
-		army.Units[i] = armyUnit
-
+		army.Units[u].Models = loadedModels
 	}
 
 	p.Army = army
 
 	return nil
-}
-
-func assignWeapons(unit *models.Unit, assetUnit *models.Unit, assetWeapons map[string]models.Weapon) {
-
-	for i := 0; i < len(unit.Models); i++ {
-		assignModelWeapons(assetUnit, assetWeapons, &unit.Models[i])
-	}
-}
-
-func assignModelWeapons(assetUnit *models.Unit, assetWeapons map[string]models.Weapon, model *models.Model) {
-	for _, assetWeaponId := range assetUnit.DefaultWeapons {
-
-		assetWeapon, ok := assetWeapons[assetWeaponId]
-
-		if !ok {
-			engine.Warn(fmt.Sprintf("%s weapon id not found!", assetWeaponId))
-			continue
-		}
-
-		model.Weapons = append(model.Weapons, assetWeapon)
-	}
 }

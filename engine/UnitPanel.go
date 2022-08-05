@@ -17,7 +17,7 @@ import (
 	"github.com/kenoyer130/wartgame/ui"
 )
 
-func getUnitPanel(unit *models.Unit) *ebiten.Image {
+func getUnitPanel(unit *models.Unit, g *Game) *ebiten.Image {
 
 	panel := NewPanel(500, 800)
 
@@ -27,16 +27,16 @@ func getUnitPanel(unit *models.Unit) *ebiten.Image {
 		panel.addMessage("No Model Selected", 3)
 	} else {
 		drawModels(panel, unit)
-		drawWeaponsPanel(panel, unit)
+		drawWeaponsPanel(panel, unit, g)
 	}
 
 	return panel.Img
 }
 
-func drawWeaponsPanel(panel *Panel, unit *models.Unit) {
-	weaponPanel := NewUnitWeaponsPanel(unit).GetUnitWeaponsPanel()
+func drawWeaponsPanel(panel *Panel, unit *models.Unit, g *Game) {
+	weaponPanel := NewUnitWeaponsPanel(unit).GetUnitWeaponsPanel(g)
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(0, 260)
+	op.GeoM.Translate(0, 290)
 
 	panel.Img.DrawImage(weaponPanel, op)
 }
@@ -46,35 +46,26 @@ func drawModels(panel *Panel, unit *models.Unit) {
 
 	panel.addValue(unit.Name, 1, 0)
 
-	modelNames := getUnitModels(unit)
+	modelNames := make(map[string]bool)
 
 	c := 0
-
-	for k := range modelNames {
-		drawModelInfo(unit.Name, modelNames[k], panel, c)
-		c++
-	}
-
-	drawModelImage(&unit.Models[0], unit, panel)
-}
-
-func getUnitModels(unit *models.Unit) map[string]*models.Model {
-	modelNames := make(map[string]*models.Model)
-
 	for _, model := range unit.Models {
-		if modelNames[model.Name] == nil {
-			modelNames[model.Name] = &model
+		if !modelNames[model.Name] {
+			drawModelInfo(unit.Name, model, panel, c)
+			modelNames[model.Name] = true
+			c++
 		}
 	}
-	return modelNames
+
+	drawModelImage(unit.Models[0], unit, panel)
 }
 
 func drawLabels(panel *Panel) {
 
 	var labels []string
-	r := 1
+	r := 2
 
-	labels = append(labels, "Unit")
+	labels = append(labels, "Name")
 	labels = append(labels, "Movement")
 	labels = append(labels, "Weapon Skill")
 	labels = append(labels, "Ballistic Skill")
@@ -91,11 +82,12 @@ func drawLabels(panel *Panel) {
 	}
 }
 
-func drawModelInfo(unit string, model *models.Model, panel *Panel, c int) {
+func drawModelInfo(unit string, model models.Model, panel *Panel, c int) {
 
 	var values []string
 	r := 2
 
+	values = append(values, model.Token.ID)
 	values = append(values, strconv.Itoa(model.Movement))
 	values = append(values, model.WeaponSkill)
 	values = append(values, model.BallisticSkill)
@@ -112,7 +104,7 @@ func drawModelInfo(unit string, model *models.Model, panel *Panel, c int) {
 	}
 }
 
-func drawModelImage(model *models.Model, unit *models.Unit, panel *Panel) {
+func drawModelImage(model models.Model, unit *models.Unit, panel *Panel) {
 	ModelImg := getProfilePic(model, unit)
 
 	if ModelImg == nil {
@@ -129,7 +121,7 @@ func drawModelImage(model *models.Model, unit *models.Unit, panel *Panel) {
 
 var ModelPics = make(map[string]*ebiten.Image)
 
-func getProfilePic(model *models.Model, unit *models.Unit) *ebiten.Image {
+func getProfilePic(model models.Model, unit *models.Unit) *ebiten.Image {
 
 	imgPath := getImgPath(model.Name)
 

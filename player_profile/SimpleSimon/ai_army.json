@@ -3,7 +3,24 @@
     "Name": "AI Army",
     "Units": [
         {
-            "Name": "Guardian Defenders"
+            "Name": "Guardian Defenders",
+            "Army": "Aeldari",
+            "Models": [
+                {
+                    "Name": "Guardian Defender",
+                    "Count": 10,
+                    "Weapons": [
+                        "ShurikenCatapult"
+                    ]
+                },
+                {
+                    "Name": "Heavy Weapon Platform",
+                    "Count": 1,
+                    "Weapons": [
+                        "ShurikenCannon"
+                    ]
+                }
+            ]
         }
     ]
 }

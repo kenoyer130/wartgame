@@ -3,7 +3,7 @@ package models
 type Weapon struct {
 	Name          string
 	Range         int
-	Type          WeaponType
+	WeaponType    WeaponType
 	Strength      int
 	ArmorPiercing int
 	Damage        int

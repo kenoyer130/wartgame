@@ -3,22 +3,39 @@
         "Name": "AutoBoltRifle",
         "Range": 24,
         "WeaponType": {
-            "id": "As",
+            "Type": "As",
             "Number": 3
         },
         "Strength": 4,
         "ArmorPiercing": 0,
-        "Damange": 1
+        "Damage": 1
     },
     {
         "Name": "ShurikenCatapult",
         "Range": 18,
         "WeaponType": {
-            "id": "As",
+            "Type": "As",
             "Number": 2
         },
         "Strength": 4,
         "ArmorPiercing": -1,
-        "Damange": 1
+        "Damage": 1,
+        "Abilities" : [
+            "Shuriken"
+        ]
+    },
+    {
+        "Name": "ShurikenCannon",
+        "Range": 24,
+        "WeaponType": {
+            "Type": "He",
+            "Number": 3
+        },
+        "Strength": 6,
+        "ArmorPiercing": -1,
+        "Damage": 2,
+        "Abilities" : [
+            "Shuriken"
+        ]
     }
 ]

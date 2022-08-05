@@ -3,7 +3,24 @@
     "Name": "Test Army",
     "Units": [
         {
-            "Name": "Intercessor Unit"
+            "Name": "Intercessor Unit",
+            "Army": "Space Marines",
+            "Models": [
+                {
+                    "Name": "Intercessor",
+                    "Count": 4,
+                    "Weapons": [
+                        "AutoBoltRifle"
+                    ]
+                },
+                {
+                    "Name": "Intercessor Sergeant",
+                    "Count": 1,
+                    "Weapons": [
+                        "AutoBoltRifle"
+                    ]
+                }
+            ]
         }
     ]
 }

@@ -8,8 +8,7 @@ import (
 type Unit struct {
 	Name           string
 	Army           string
-	Models         []Model
-	DefaultWeapons []string
+	Models         []Model	
 	Power          int
 	Location       Location
 	Rect           ui.Rect

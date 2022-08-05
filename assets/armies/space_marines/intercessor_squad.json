@@ -27,7 +27,10 @@
                     "B": 145,
                     "A": 255
                 }
-            }
+            },
+            "Weapons": [
+                "AutoBoltRifle"
+            ]
         },
         {
             "Name": "Intercessor Sergeant",
@@ -54,10 +57,10 @@
                     "B": 145,
                     "A": 255
                 }
-            }
+            },
+            "Weapons": [
+                "AutoBoltRifle"
+            ]
         }
-    ],
-    "DefaultWeapons": [
-        "AutoBoltRifle"
     ]
 }

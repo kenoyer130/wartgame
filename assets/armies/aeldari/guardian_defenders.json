@@ -27,7 +27,10 @@
                     "B": 52,
                     "A": 255
                 }
-            }
+            },
+            "Weapons": [
+                "ShurikenCatapult"
+            ]
         },
         {
             "Name": "Heavy Weapon Platform",
@@ -54,10 +57,10 @@
                     "B": 52,
                     "A": 255
                 }
-            }
+            },
+            "Weapons": [
+                "ShurikenCannon"
+            ]
         }
-    ],
-    "DefaultWeapons": [
-        "ShurikenCatapult"
     ]
 }

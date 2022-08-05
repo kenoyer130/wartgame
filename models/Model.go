@@ -16,6 +16,7 @@ const (
 
 type Model struct {
 	Name           string
+	Count          int
 	ModelNumber    ModelNumber
 	Movement       int
 	WeaponSkill    string
@@ -26,7 +27,7 @@ type Model struct {
 	Attacks        int
 	Leadership     int
 	Save           string
-	Weapons        []Weapon
+	Weapons        []string
 	Location       Location
 	ModelType      ModelType
 	Token          Token
