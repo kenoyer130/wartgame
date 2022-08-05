@@ -39,6 +39,7 @@ func StartGame(g *engine.Game) error {
 	die := rand.Intn(consts.MaxPlayers)
 
 	g.CurrentPlayer = &g.Players[die]
+	g.CurrentPlayerIndex = die
 
 	g.Round = 1
 	engine.MoveToNextPhaseOrder(models.ShootingPhase_UnitSelection, g)

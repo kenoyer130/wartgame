@@ -28,8 +28,16 @@ func updateState(g *Game, s models.GameState) {
 func checkInputs(g *Game) {
 	checkEsc()
 	checkGridInputs(g)
-	checkModelNav(g)
 	checkUnitSelection(g)
+	checkKeyboardRegistery()
+}
+
+func checkKeyboardRegistery() {
+	for key, _ := range KeyBoardRegistry {
+		if inpututil.IsKeyJustPressed(key) {
+			KeyBoardRegistry[key]()
+		}
+	}
 }
 
 func checkUnitSelection(g *Game) {
@@ -45,84 +53,6 @@ func checkUnitSelection(g *Game) {
 			}
 		}
 	}
-}
-
-func checkModelNav(g *Game) {
-
-	if inpututil.IsKeyJustReleased(ebiten.KeyB) {
-		UnitSelector(1, g)
-	}
-
-	if inpututil.IsKeyJustReleased(ebiten.KeyV) {
-		UnitSelector(-1, g)
-	}
-
-	if inpututil.IsKeyJustReleased(ebiten.KeyN) {
-		ModelSelector(1, g)
-	}
-
-	if inpututil.IsKeyJustReleased(ebiten.KeyM) {
-		ModelSelector(-1, g)
-	}
-}
-
-func UnitSelector(direction int, g *Game) {
-	UnitSelected := ensureSelectedUnit(g)
-	if UnitSelected {
-		return
-	}
-
-	currentUnit := 0
-
-	// loop through Unit array and find our selected Unit
-	for i := 0; i < len(g.CurrentPlayer.Army.Units); i++ {
-		if &g.CurrentPlayer.Army.Units[i] == g.SelectedUnit {
-			currentUnit = i
-		}
-	}
-
-	currentUnit = currentUnit + direction
-
-	if currentUnit < 0 {
-		currentUnit = len(g.CurrentPlayer.Army.Units) - 1
-	}
-
-	if currentUnit > len(g.CurrentPlayer.Army.Units)-1 {
-		currentUnit = 0
-	}
-
-	g.SelectedUnit = &g.CurrentPlayer.Army.Units[currentUnit]
-	g.SelectedModel = &g.CurrentPlayer.Army.Units[currentUnit].Models[0]
-}
-
-func ensureSelectedUnit(g *Game) bool {
-	if g.SelectedUnit == nil {
-		g.SelectedUnit = &g.CurrentPlayer.Army.Units[0]
-		g.SelectedModel = &g.CurrentPlayer.Army.Units[0].Models[0]
-		return true
-	}
-	return false
-}
-
-func ModelSelector(direction int, g *Game) {
-	UnitSelected := ensureSelectedUnit(g)
-	if UnitSelected {
-		return
-	}
-
-	currentModel := 0
-
-	currentModel = currentModel + direction
-
-	if currentModel < 0 {
-		currentModel = len(g.SelectedUnit.Models) - 1
-	}
-
-	if currentModel > len(g.SelectedUnit.Models)-1 {
-		currentModel = 0
-	}
-
-	g.SelectedModel = &g.SelectedUnit.Models[currentModel]
 }
 
 func checkEsc() {

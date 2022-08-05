@@ -14,8 +14,16 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	drawGameInfoPanel(g, screen)
 	drawModelPanel(g, screen)
 	drawMessagePanel(g, screen)
+	drawStatusPanel(g, screen)
 
 	screen.DrawImage(background, nil)
+}
+
+func drawStatusPanel(g *Game, screen *ebiten.Image) {
+	statusPanel := getStatusPanel(g.StatusMesssage)
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(25, 950)
+	screen.DrawImage(statusPanel, op)
 }
 
 func drawMessagePanel(g *Game, screen *ebiten.Image) {

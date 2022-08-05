@@ -8,6 +8,6 @@ func MoveToNextPhaseOrder(phase models.GamePhase, g *Game) {
 
 		WriteMessage("Starting Shooting Phase")
 		g.CurrentPhase = models.ShootingPhase_UnitSelection
-		MoveToShootingPhaseUnitSelection(g)
+		StartPhaseShooting(g)
 	}
 }
