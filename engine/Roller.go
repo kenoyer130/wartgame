@@ -10,11 +10,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/kenoyer130/wartgame/models"
 	"github.com/kenoyer130/wartgame/ui"
 )
 
 // rolls the indicated dice count and returns how many are equal to or greater then the target. Also returns each die result.
-func RollDice(msg string, dice int, target int, onRolled func(int, []int), g *Game) {
+func RollDice(msg string, dice int, target int, onRolled func(int, []int)) {
 
 	WriteMessage(msg)
 	WriteMessage(fmt.Sprintf("Rolling %d to hit target %d", dice, target))
@@ -26,11 +27,11 @@ func RollDice(msg string, dice int, target int, onRolled func(int, []int), g *Ga
 
 	for i := 0; i < dice; i++ {
 
-		die := rand.Intn(6)
+		die := rand.Intn(6) + 1
+		results = append(results, die)
 
 		if die >= target {
 			success++
-			results = append(results, die)
 		}
 	}
 
@@ -38,10 +39,18 @@ func RollDice(msg string, dice int, target int, onRolled func(int, []int), g *Ga
 
 	go func() {
 		<-diceTimer.C
-		WriteMessage(fmt.Sprintf("%d successes out of %d", success, dice))
-		g.Dice = results
 
-		g.StatusMesssage = "Press [Space] to continue"
+		rolled := "Dice Rolled:"
+
+		for i := 0; i < len(results); i++ {
+			rolled += fmt.Sprintf(" %d", results[i])
+		}
+
+		WriteMessage(rolled)
+		WriteMessage(fmt.Sprintf("%d successes out of %d", success, dice))
+		models.Game().Dice = results
+
+		models.Game().StatusMesssage = "Press [Space] to continue"
 		KeyBoardRegistry[ebiten.KeySpace] = func() {
 			onRolled(success, results)
 		}
@@ -61,23 +70,23 @@ func getDiceRollerPanel(dice []int) *ebiten.Image {
 		H: 299,
 	}, panel)
 
-	r := 0
-	c := 0
+	// r := 0
+	// c := 0
 
 	for _, die := range dice {
 
 		loadDieImage(die)
 
-		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(float64(c*50), 10+float64(30+(r*25)))
+		// op := &ebiten.DrawImageOptions{}
+		// op.GeoM.Translate(float64(c*50), 10+float64(30+(r*25)))
 
-		c++
+		// c++
 
-		if c > 10 {
-			r++
-		}
+		// if c > 10 {
+		// 	r++
+		// }
 
-		panel.DrawImage(DieImage[die], op)
+		// panel.DrawImage(DieImage[die], op)
 	}
 
 	return panel
@@ -93,9 +102,9 @@ func loadDieImage(die int) {
 	if DieImage[die] == nil {
 		img, _, err := ebitenutil.NewImageFromFile("./assets/graphics/dice.png")
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal(err)			
 		}
 
-		DieImage[die] = ebiten.NewImageFromImage(img.SubImage(image.Rect(4+(die*32), 5, 36, 37)))
+		DieImage[die] = ebiten.NewImageFromImage(img.SubImage(image.Rect(4+(0*32), 5, 36, 37)))
 	}
 }

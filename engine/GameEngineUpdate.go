@@ -9,15 +9,17 @@ import (
 	"github.com/kenoyer130/wartgame/ui"
 )
 
-func (g *Game) Update() error {
+func UpdateGameEngine() error {
 
-	updateState(g, g.CurrentGameState)
+	updateState()
 	return nil
 }
 
-func updateState(g *Game, s models.GameState) {
+func updateState() {
 
-	checkInputs(g)
+	s := models.Game().CurrentGameState
+
+	checkInputs()
 
 	switch s {
 	case models.GameStart:
@@ -25,30 +27,30 @@ func updateState(g *Game, s models.GameState) {
 	}
 }
 
-func checkInputs(g *Game) {
+func checkInputs() {
 	checkEsc()
-	checkGridInputs(g)
-	checkUnitSelection(g)
+	checkGridInputs()
+	checkUnitSelection()
 	checkKeyboardRegistery()
 }
 
 func checkKeyboardRegistery() {
-	for key, _ := range KeyBoardRegistry {
+	for key := range KeyBoardRegistry {
 		if inpututil.IsKeyJustPressed(key) {
 			KeyBoardRegistry[key]()
 		}
 	}
 }
 
-func checkUnitSelection(g *Game) {
+func checkUnitSelection() {
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 		
-		for _, player := range g.Players {
+		for _, player := range models.Game().Players {
 			for _, unit := range player.Army.Units {
 				cx, cy := ebiten.CursorPosition()
 				if unit.Rect.InPixelBounds(cx, cy) {
-					g.SelectedUnit = &unit
-					g.SelectedModel = &unit.Models[0]
+					models.Game().SelectedUnit = unit
+					models.Game().SelectedModel = &unit.Models[0]
 				}
 			}
 		}
@@ -61,21 +63,21 @@ func checkEsc() {
 	}
 }
 
-func checkGridInputs(g *Game) {
+func checkGridInputs() {
 
-	checkGridToggle(g)
+	checkGridToggle()
 
-	checkGridDrag(g)
+	checkGridDrag()
 }
 
-func checkGridDrag(g *Game) {
+func checkGridDrag() {
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 		//log.Printf("cursor in viewport: %d cx %d cy %d topViewPortX %d topViewPortY %d bottomViewPortX %d bottomViewPortY",
 		//	cursorX, cursorY, topViewPortX, topViewPortY, bottomViewPortX, bottomViewPortY)
-		if cursorInViewport(g) && !g.UIState.GridDragging.InDrag {
+		if cursorInViewport() && !models.Game().UIState.GridDragging.InDrag {
 			cursorX, cursorY := ebiten.CursorPosition()
 
-			g.UIState.GridDragging = DraggingGrid{
+			models.Game().UIState.GridDragging = models.DraggingGrid{
 				InDrag:       true,
 				CursorStartX: cursorX,
 				CursorStartY: cursorY}
@@ -83,30 +85,30 @@ func checkGridDrag(g *Game) {
 	}
 
 	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
-		g.UIState.GridDragging = DraggingGrid{}
+		models.Game().UIState.GridDragging = models.DraggingGrid{}
 	}
 }
 
-func cursorInViewport(g *Game) bool {
+func cursorInViewport() bool {
 	cursorX, cursorY := ebiten.CursorPosition()
 
 	topViewPortX := 0
 	topViewPortY := 0
 
-	bottomViewPortX := (g.BattleGround.ViewPort.X) + (g.BattleGround.ViewPort.Width)*ui.TileSize
-	bottomViewPortY := (g.BattleGround.ViewPort.Y) + (g.BattleGround.ViewPort.Height)*ui.TileSize
+	bottomViewPortX := (models.Game().BattleGround.ViewPort.X) + (models.Game().BattleGround.ViewPort.Width)*ui.TileSize
+	bottomViewPortY := (models.Game().BattleGround.ViewPort.Y) + (models.Game().BattleGround.ViewPort.Height)*ui.TileSize
 
 	cursorInViewport := (cursorX > topViewPortX && cursorY > topViewPortY) && (cursorX < bottomViewPortX && cursorY < bottomViewPortY)
 
 	return cursorInViewport
 }
 
-func checkGridToggle(g *Game) {
+func checkGridToggle() {
 	if inpututil.IsKeyJustReleased(ebiten.KeyG) {
-		if g.UIState.ShowGrid {
-			g.UIState.ShowGrid = false
+		if models.Game().UIState.ShowGrid {
+			models.Game().UIState.ShowGrid = false
 		} else {
-			g.UIState.ShowGrid = true
+			models.Game().UIState.ShowGrid = true
 		}
 	}
 }

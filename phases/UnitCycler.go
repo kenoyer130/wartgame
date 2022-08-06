@@ -7,25 +7,22 @@ import (
 )
 
 type UnitCycler struct {
-	player         *models.Player
-	g              *engine.Game
+	player         *models.Player	
 	validUnit      func(unit *models.Unit) bool
-	onUnitSelected func(unit *models.Unit, g *engine.Game)
+	onUnitSelected func(unit *models.Unit)
 }
 
-func NewUnitCycler(player *models.Player,
-	g *engine.Game,
+func NewUnitCycler(player *models.Player,	
 	validUnit func(unit *models.Unit) bool,
-	onUnitSelected func(unit *models.Unit, g *engine.Game)) *UnitCycler {
+	onUnitSelected func(unit *models.Unit)) *UnitCycler {
 	return &UnitCycler{
-		player:         player,
-		g:              g,
+		player:         player,		
 		validUnit:      validUnit,
 		onUnitSelected: onUnitSelected,
 	}
 }
 
-func indexOfUnit(element *models.Unit, data []models.Unit) int {
+func indexOfUnit(element *models.Unit, data []*models.Unit) int {
 	for k, v := range data {
 		if element.Name == v.Name {
 			return k
@@ -40,16 +37,16 @@ func (re UnitCycler) CycleUnits() {
 
 	// if no valid unit return nil
 	if unit == nil {
-		re.onUnitSelected(nil, re.g)
+		re.onUnitSelected(nil)
 		return
 	}
 
-	re.g.SelectedUnit = unit
+	models.Game().SelectedUnit = unit
 
 	// register Q and E to cycle units
 	engine.KeyBoardRegistry[ebiten.KeyQ] = func() {
 
-		index := indexOfUnit(re.g.SelectedUnit, re.player.Army.Units)
+		index := indexOfUnit(models.Game().SelectedUnit, re.player.Army.Units)
 		index--
 
 		// if no valid unit return nil
@@ -57,7 +54,7 @@ func (re UnitCycler) CycleUnits() {
 	}
 
 	engine.KeyBoardRegistry[ebiten.KeyE] = func() {
-		index := indexOfUnit(re.g.SelectedUnit, re.player.Army.Units)
+		index := indexOfUnit(models.Game().SelectedUnit, re.player.Army.Units)
 		index++
 
 		// if no valid unit return nil
@@ -65,7 +62,7 @@ func (re UnitCycler) CycleUnits() {
 	}
 
 	engine.KeyBoardRegistry[ebiten.KeySpace] = func() {
-		re.onUnitSelected(re.g.SelectedUnit, re.g)
+		re.onUnitSelected(models.Game().SelectedUnit)
 	}
 }
 
@@ -73,11 +70,11 @@ func cycleUnits(re UnitCycler, index int) bool {
 	unit := re.selectNextUnit(index, index)
 
 	if unit == nil {
-		re.onUnitSelected(nil, re.g)
+		re.onUnitSelected(nil)
 		return true
 	}
 
-	re.g.SelectedUnit = unit
+	models.Game().SelectedUnit = unit
 	return false
 }
 
@@ -86,12 +83,12 @@ func (re UnitCycler) selectNextUnit(index int, start int) *models.Unit {
 	// fix index for cycling
 	index = re.wrapIndex(index)
 
-	if !re.validUnit(&re.player.Army.Units[index]) {
+	if !re.validUnit(re.player.Army.Units[index]) {
 		index++
 		return re.selectNextUnit(index, start)
 	}
 
-	return &re.player.Army.Units[index]
+	return re.player.Army.Units[index]
 }
 
 func (re UnitCycler) wrapIndex(index int) int {

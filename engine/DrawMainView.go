@@ -2,20 +2,21 @@ package engine
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kenoyer130/wartgame/models"
 	"github.com/kenoyer130/wartgame/ui"
 )
 
-func DrawMainView(g *Game, background *ebiten.Image) {
-	mainView := ebiten.NewImage(g.BattleGround.ViewPort.Width*ui.TileSize, g.BattleGround.ViewPort.Height*ui.TileSize)
+func DrawMainView(background *ebiten.Image) {
+	mainView := ebiten.NewImage(models.Game().BattleGround.ViewPort.Width*ui.TileSize, models.Game().BattleGround.ViewPort.Height*ui.TileSize)
 	mainView.Fill(ui.GetBattleGroundBackgroundColor())
 
-	if g.UIState.ShowGrid {
-		DrawGrid(mainView, g)
+	if models.Game().UIState.ShowGrid {
+		DrawGrid(mainView)
 	}
 
-	drawSelectedModelInfo(g, mainView)
+	drawSelectedModelInfo(mainView)
 
-	DrawEntities(g, mainView)
+	DrawEntities(mainView)
 
 	background.DrawImage(mainView, nil)
 }

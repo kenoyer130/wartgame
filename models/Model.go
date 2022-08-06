@@ -17,6 +17,7 @@ const (
 )
 
 type Model struct {
+	ID             string
 	Name           string
 	Count          int
 	ModelNumber    ModelNumber
@@ -25,6 +26,7 @@ type Model struct {
 	BallisticSkill string
 	Strength       int
 	Toughness      int
+	CurrentWounds  int
 	Wounds         int
 	Attacks        int
 	Leadership     int
@@ -32,7 +34,6 @@ type Model struct {
 	Weapons        []string
 	FiredWeapons   []string
 	SelectedWeapon string
-	SpecificWeapon Weapon
 	Location       Location
 	ModelType      ModelType
 	Token          Token

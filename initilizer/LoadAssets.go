@@ -9,28 +9,28 @@ import (
 	"github.com/kenoyer130/wartgame/models"
 )
 
-func loadAssets(g *engine.Game) error {
+func loadAssets() error {
 
 	// init global asset state
-	g.Assets = *models.NewAssets()
+	models.Game().Assets = *models.NewAssets()
 
 	// todo: hardcoded battle ground size
-	g.BattleGround = *models.NewBattleGround(72, 48)
+	models.Game().BattleGround = *models.NewBattleGround(72, 48)
 
-	err := loadAssetFiles(g)
+	err := loadAssetFiles()
 
 	return err
 
 }
 
-func loadAssetFiles(g *engine.Game) error {
+func loadAssetFiles() error {
 	err := filepath.Walk("./assets",
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
 
-			loadByPath(g, path)
+			loadByPath(path)
 
 			return nil
 		})
@@ -38,15 +38,15 @@ func loadAssetFiles(g *engine.Game) error {
 	return err
 }
 
-func loadByPath(g *engine.Game, path string) {
+func loadByPath(path string) {
 
 	if isAsset(path, "armies") {
 		Unit := loadUnit(path)
-		g.Assets.Units[Unit.Name] = Unit
+		models.Game().Assets.Units[Unit.Name] = Unit
 	}
 
 	if isAsset(path, "weapons") {
-		loadWeapons(g, path)
+		loadWeapons(path)
 	}
 }
 
@@ -60,7 +60,7 @@ func loadUnit(path string) models.Unit {
 	return Unit
 }
 
-func loadWeapons(g *engine.Game, path string) {
+func loadWeapons(path string) {
 	var weaponAssets []models.Weapon
 
 	engine.UnmarshalJson(&weaponAssets, path)
@@ -68,6 +68,6 @@ func loadWeapons(g *engine.Game, path string) {
 	// convert to map for faster lookup
 	for i := 0; i < len(weaponAssets); i++ {
 		weaponName := weaponAssets[i].Name
-		g.Assets.Weapons[weaponName] = weaponAssets[i]
+		models.Game().Assets.Weapons[weaponName] = weaponAssets[i]
 	}
 }

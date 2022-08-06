@@ -5,12 +5,24 @@ import (
 	"github.com/kenoyer130/wartgame/models"
 )
 
-func MoveToNextPhaseOrder(phase models.GamePhase, g *engine.Game) {
-	switch phase {
-	case models.ShootingPhase_UnitSelection:
+func MoveToPhase(phase models.GamePhase) {
 
-		engine.WriteMessage("Starting Shooting Phase")
-		g.CurrentPhase = models.ShootingPhase_UnitSelection
-		StartPhaseShooting(g)
+	printMsg := phase != models.Game().CurrentPhase
+
+	switch phase {
+	case models.ShootingPhase:
+
+		printPhase(printMsg, "Starting Shooting Phase")
+		models.Game().CurrentPhase = models.ShootingPhase
+		StartPhaseShooting()
+
+	case models.ChargePhase:
+		printPhase(printMsg, "Starting Charge Phase")
+	}
+}
+
+func printPhase(print bool, msg string) {
+	if print {
+		engine.WriteMessage(msg)
 	}
 }

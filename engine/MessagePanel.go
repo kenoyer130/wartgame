@@ -10,7 +10,7 @@ func WriteMessage(msg string) {
 	messages = append(messages, msg)
 }
 
-func getMessagePanel(g *Game) *ebiten.Image {
+func getMessagePanel() *ebiten.Image {
 
 	panel := NewPanel(400, 400)
 

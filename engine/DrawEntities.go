@@ -2,11 +2,12 @@ package engine
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kenoyer130/wartgame/models"
 	"github.com/kenoyer130/wartgame/ui"
 )
 
-func DrawEntities(g *Game, background *ebiten.Image) {
-	entites := g.BattleGround.Grid
+func DrawEntities(background *ebiten.Image) {
+	entites := models.Game().BattleGround.Grid
 
 	for _, entity := range entites {
 		token := entity.GetToken()
@@ -16,7 +17,7 @@ func DrawEntities(g *Game, background *ebiten.Image) {
 
 		// no need to render if outside viewport
 
-		if entityX < g.BattleGround.ViewPort.X && entitY > g.BattleGround.ViewPort.Y {
+		if entityX < models.Game().BattleGround.ViewPort.X && entitY > models.Game().BattleGround.ViewPort.Y {
 			continue
 		}
 

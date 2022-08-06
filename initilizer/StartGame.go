@@ -10,50 +10,50 @@ import (
 	"github.com/kenoyer130/wartgame/phases"
 )
 
-func StartGame(g *engine.Game) error {
+func StartGame() error {
 
 	engine.WriteMessage("Wartgame!")
 
-	loadAssets(g)
+	loadAssets()
 
 	// todo: hardcoded players for now
-	g.Players[0].Name = "playerOne"
-	g.Players[0].Army.ID = "test_army"
+	models.Game().Players[0].Name = "playerOne"
+	models.Game().Players[0].Army.ID = "test_army"
 
-	g.Players[1].AI = true
-	g.Players[1].Name = "SimpleSimon"
-	g.Players[1].Army.ID = "ai_army"
+	models.Game().Players[1].AI = true
+	models.Game().Players[1].Name = "SimpleSimon"
+	models.Game().Players[1].Army.ID = "ai_army"
 
 	// load player armies
-	for i := 0; i < len(g.Players); i++ {
-		if err := LoadPlayerArmy(&g.Players[i], g.Assets); err != nil {
+	for i := 0; i < len(models.Game().Players); i++ {
+		if err := LoadPlayerArmy(&models.Game().Players[i], models.Game().Assets); err != nil {
 			return err
 		}
 	}
 
 	// for now just place units across from each other
-	setPlayerUnitStartingLocation(0, 24, 12, g)
-	setPlayerUnitStartingLocation(1, 4, 12, g)
+	setPlayerUnitStartingLocation(0, 24, 12)
+	setPlayerUnitStartingLocation(1, 4, 12)
 
 	// roll and set first player
 	rand.Seed(time.Now().UnixNano())
 	die := rand.Intn(consts.MaxPlayers)
 
-	g.CurrentPlayer = &g.Players[die]
-	g.CurrentPlayerIndex = die
+	models.Game().CurrentPlayer = &models.Game().Players[die]
+	models.Game().CurrentPlayerIndex = die
 
-	g.Round = 1
-	phases.MoveToNextPhaseOrder(models.ShootingPhase_UnitSelection, g)
+	models.Game().Round = 1
+	phases.MoveToPhase(models.ShootingPhase)
 	return nil
 }
 
-func setPlayerUnitStartingLocation(player int, x int, y int, g *engine.Game) {
-	for i := 0; i < len(g.Players[player].Army.Units); i++ {
+func setPlayerUnitStartingLocation(player int, x int, y int) {
+	for i := 0; i < len(models.Game().Players[player].Army.Units); i++ {
 
-		unit := &g.Players[player].Army.Units[i]
+		unit := models.Game().Players[player].Army.Units[i]
 
 		unit.Location = models.Location{X: x, Y: y}
 
-		engine.SetUnitFormation(engine.StandardUnitFormation, unit, &g.BattleGround)
+		engine.SetUnitFormation(engine.StandardUnitFormation, unit, &models.Game().BattleGround)
 	}
 }

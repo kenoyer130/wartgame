@@ -1,6 +1,7 @@
 package phases
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 
@@ -8,54 +9,92 @@ import (
 	"github.com/kenoyer130/wartgame/models"
 )
 
-func StartPhaseShootingAttack(g *engine.Game) {
+func StartPhaseShootingAttack() {
 
 	// figure out how many weapons are making the attack
-	weaponCount := getFiringWeaponCount(g)
+	weaponCount := getFiringWeaponCount()
 
-	weapon := g.Assets.Weapons[g.SelectedWeapon]
+	weapon := models.Game().Assets.Weapons[models.Game().SelectedWeaponName]
 
-	model := getModel(g, weapon)
+	for i := 0; i < weaponCount; i++ {
+		thisWeapon := weapon
+		models.Game().SelectedWeapons = append(models.Game().SelectedWeapons, thisWeapon)
+	}
+
+	model := getModel(weapon)
 
 	if model.Name == "" {
 		log.Fatal("no model found for " + weapon.Name)
 	}
 
 	engine.RollDice("Rolling for Attack", weaponCount, model.GetBallisticSkill(), func(success int, dice []int) {
-		onAttackRolled(success, &model, g)
-	}, g)
+		onAttackRolled(success, &model)
+	})
 }
 
-func onAttackRolled(success int, model *models.Model, g *engine.Game) {
-	target := getWoundTarget(model.Strength, g.SelectedTargetUnit.Models[0].Toughness)
+func onAttackRolled(success int, model *models.Model) {
+	target := getWoundTarget(model.Strength, models.Game().SelectedTargetUnit.Models[0].Toughness)
 
 	engine.WriteMessage("Wound target is " + strconv.Itoa(target))
 
 	engine.RollDice("Rolling for Wounds", success, target, func(success int, dice []int) {
-		onWoundRolled(success, model, g)
-	}, g)
+		onWoundRolled(success, model)
+	})
 }
 
-func onWoundRolled(success int, model *models.Model, g *engine.Game) {
-	index :=0
+func onWoundRolled(hits int, model *models.Model) {
 	target := 0
+	allocateAttacks(target, hits, model)
+}
 
-	save := (g.SelectedTargetUnit.Models[target].GetIntSkill(g.SelectedTargetUnit.Models[target].Save) - model.SpecificWeapon.ArmorPiercing)
+func allocateAttacks(target int, hits int, model *models.Model) {
 
-			engine.RollDice("Rolling for Save", 1, save, func(success int, dice []int) {
-				if(success == 0) {
-					engine.WriteMessage("Unit Saved!")
-					
-				} else {
+	ap := models.Game().SelectedWeapons[models.Game().SelectedWeaponIndex].ArmorPiercing
 
-				}
-			}, g)
-		}
-	
+	save := (models.Game().SelectedTargetUnit.Models[target].GetIntSkill(models.Game().SelectedTargetUnit.Models[target].Save) - ap)
+
+	engine.RollDice("Rolling for Save", 1, save, func(success int, dice []int) {
+		allocateAttack(hits, success, target, model)
+	})
+}
+
+func allocateAttack(hits int, success int, target int, model *models.Model) {
+	hits--
+
+	if success == 1 {
+		engine.WriteMessage("Model made Save!")
+		nextWound(hits, model)
+	} else {
+		inflictWound(target, model, hits)
+	}
+}
+
+func inflictWound(target int, model *models.Model, hits int) {
+
+	dmg := models.Game().SelectedWeapons[models.Game().SelectedWeaponIndex].Damage
+
+	models.Game().SelectedTargetUnit.InflictWounds(target, dmg)
+
+	engine.WriteMessage(fmt.Sprintf("Model Saved Failed! %d wounds infliced!", dmg))
+
+	if len(models.Game().SelectedTargetUnit.Models) <= 0 {
+		engine.WriteMessage(fmt.Sprintf("Unit %s wiped out!", models.Game().SelectedTargetUnit.Name))
+	} else {
+		nextWound(hits, model)
+	}
+}
+
+func nextWound(hits int, model *models.Model) {
+	if hits > 0 {
+		onWoundRolled(hits, model)
+	} else {
+		// restart shooting phase
+		MoveToPhase(models.ShootingPhase)
+	}
 }
 
 func getWoundTarget(str int, toughness int) int {
-	if str*2 > toughness {
+	if str > toughness*2 {
 		return 2
 	}
 
@@ -71,17 +110,17 @@ func getWoundTarget(str int, toughness int) int {
 		return 5
 	}
 
-	if (str / 2) < toughness {
+	if (str) < toughness/2 {
 		return 6
 	}
 
 	return 4
 }
 
-func getModel(g *engine.Game, weapon models.Weapon) models.Model {
+func getModel(weapon models.Weapon) models.Model {
 	model := models.Model{}
 
-	for _, m := range g.SelectedPhaseUnit.Models {
+	for _, m := range models.Game().SelectedPhaseUnit.Models {
 		for _, modelWeapon := range m.Weapons {
 			if modelWeapon == weapon.Name {
 				model = m
@@ -92,12 +131,12 @@ func getModel(g *engine.Game, weapon models.Weapon) models.Model {
 	return model
 }
 
-func getFiringWeaponCount(g *engine.Game) int {
+func getFiringWeaponCount() int {
 	weaponCount := 0
 
-	for _, model := range g.SelectedPhaseUnit.Models {
+	for _, model := range models.Game().SelectedPhaseUnit.Models {
 		for _, weapon := range model.Weapons {
-			if weapon == g.SelectedWeapon {
+			if weapon == models.Game().SelectedWeaponName {
 				weaponCount++
 			}
 		}

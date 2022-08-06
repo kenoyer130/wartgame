@@ -17,7 +17,7 @@ import (
 	"github.com/kenoyer130/wartgame/ui"
 )
 
-func getUnitPanel(unit *models.Unit, g *Game) *ebiten.Image {
+func getUnitPanel(unit *models.Unit) *ebiten.Image {
 
 	panel := NewPanel(500, 800)
 
@@ -27,14 +27,14 @@ func getUnitPanel(unit *models.Unit, g *Game) *ebiten.Image {
 		panel.addMessage("No Model Selected", 3)
 	} else {
 		drawModels(panel, unit)
-		drawWeaponsPanel(panel, unit, g)
+		drawWeaponsPanel(panel, unit)
 	}
 
 	return panel.Img
 }
 
-func drawWeaponsPanel(panel *Panel, unit *models.Unit, g *Game) {
-	weaponPanel := NewUnitWeaponsPanel(unit).GetUnitWeaponsPanel(g)
+func drawWeaponsPanel(panel *Panel, unit *models.Unit) {
+	weaponPanel := NewUnitWeaponsPanel(unit).GetUnitWeaponsPanel()
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(0, 290)
 

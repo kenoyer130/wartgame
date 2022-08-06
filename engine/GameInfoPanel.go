@@ -5,16 +5,17 @@ import (
 	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kenoyer130/wartgame/models"
 )
 
-func getGameInfoPanel(g *Game) *ebiten.Image {
+func getGameInfoPanel() *ebiten.Image {
 
 	panel := NewPanel(400, 800)
 
 	panel.addTitle("Game Info")
-	panel.addRow("Round: ", strconv.Itoa(g.Round), 2)
-	panel.addRow("Current Player: ", g.CurrentPlayer.Name, 3)
-	panel.addRow("Current Phase: ", fmt.Sprintf("%s", g.CurrentPhase), 4)
+	panel.addRow("Round: ", strconv.Itoa(models.Game().Round), 2)
+	panel.addRow("Current Player: ", models.Game().CurrentPlayer.Name, 3)
+	panel.addRow("Current Phase: ", fmt.Sprintf("%s", models.Game().CurrentPhase), 4)
 
 	return panel.Img
 }

@@ -31,7 +31,7 @@ func NewUnitWeaponsPanel(unit *models.Unit) *UnitWeaponsPanel {
 	return &p
 }
 
-func (re UnitWeaponsPanel) GetUnitWeaponsPanel(g *Game) *ebiten.Image {
+func (re UnitWeaponsPanel) GetUnitWeaponsPanel() *ebiten.Image {
 
 	re.WeaponPanel = NewPanelVertical(500, 400)
 
@@ -39,7 +39,7 @@ func (re UnitWeaponsPanel) GetUnitWeaponsPanel(g *Game) *ebiten.Image {
 
 	re.drawWeaponLabels(re.WeaponPanel)
 
-	re.drawWeapons(g, re.WeaponPanel)
+	re.drawWeapons(re.WeaponPanel)
 
 	return re.WeaponPanel.Img
 }
@@ -65,7 +65,7 @@ func (re UnitWeaponsPanel) drawWeaponLabels(panel *PanelVertical) {
 	}
 }
 
-func (re UnitWeaponsPanel) drawWeapons(g *Game, weaponPanel *PanelVertical) {
+func (re UnitWeaponsPanel) drawWeapons(weaponPanel *PanelVertical) {
 
 	r := 3
 
@@ -88,13 +88,13 @@ func (re UnitWeaponsPanel) drawWeapons(g *Game, weaponPanel *PanelVertical) {
 
 				var values []string
 
-				thisWeapon := g.Assets.Weapons[weapon]
+				thisWeapon := models.Game().Assets.Weapons[weapon]
 
 				weaponType := fmt.Sprintf("%s %d%d", thisWeapon.WeaponType.Type, thisWeapon.WeaponType.Dice, thisWeapon.WeaponType.Number)
 
 				selected := ""
 
-				if(thisWeapon.Name == g.SelectedWeapon) {
+				if(thisWeapon.Name == models.Game().SelectedWeaponName) {
 					selected = "X"
 				}
 
