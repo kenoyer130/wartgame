@@ -41,6 +41,7 @@ func StartGame() error {
 
 	models.Game().CurrentPlayer = &models.Game().Players[die]
 	models.Game().CurrentPlayerIndex = die
+	models.Game().StartPlayerIndex = die
 
 	models.Game().Round = 1
 	phases.MoveToPhase(models.ShootingPhase)

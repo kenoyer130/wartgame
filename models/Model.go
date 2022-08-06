@@ -39,6 +39,10 @@ type Model struct {
 	Token          Token
 }
 
+func (re Model)GetID() string {
+	return re.ID
+}
+
 type ModelNumber struct {
 	Min int
 	Max int
@@ -89,6 +93,11 @@ func (re Model) GetToken() *ebiten.Image {
 	token.Fill(color)
 
 	text.Draw(token, re.Token.ID, ui.GetFontNormalFace(), 2, 24, ui.GetTextColor())
+
+	if(re.Wounds != re.CurrentWounds) {
+		wounds := re.Wounds - re.CurrentWounds
+		text.Draw(token, strconv.Itoa(wounds), ui.GetFontTiny(), 2, 24, ui.GetWoundColor())
+	}
 
 	return token
 }

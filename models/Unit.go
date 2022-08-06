@@ -1,27 +1,31 @@
 package models
 
 import (
+	"math"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kenoyer130/wartgame/ui"
 )
 
 type Unit struct {
-	Name         string
-	Army         string
-	Models       []Model
-	KilledModels []Model
-	Power        int
-	Location     Location
-	Rect         ui.Rect
-	UnitState    []UnitState
+	Name               string
+	Army               string
+	Models             []Model
+	DestroyedModels    []Model
+	Power              int
+	Location           Location
+	Rect               ui.Rect
+	UnitState          []UnitState
+	Destroyed          bool
+	OriginalModelCount int
 }
 
-type UnitState bool
+type UnitState string
 
 const (
-	UnitAdvanced UnitState = false
-	UnitFellBack UnitState = false
-	UnitShot     UnitState = false
+	UnitAdvanced UnitState = "UnitAdvanced"
+	UnitFellBack UnitState = "UnitFellBack"
+	UnitShot     UnitState = "UnitShot"
 )
 
 func (re *Unit) AddState(state UnitState) {
@@ -32,13 +36,22 @@ func (re *Unit) ClearStates() {
 	re.UnitState = []UnitState{}
 }
 
+func (re Unit) GetMoraleCheck() int {
+
+	leadership := 0
+
+	for _, model := range re.Models {
+		leadership = int(math.Max(float64(leadership), float64(model.Leadership)))
+	}
+
+	return leadership
+}
+
 func (re Unit) CanShoot() bool {
 	for _, unitState := range re.UnitState {
 
 		if unitState == UnitShot || unitState == UnitAdvanced || unitState == UnitFellBack {
-			if unitState {
-				return false
-			}
+			return false
 		}
 	}
 
@@ -70,13 +83,30 @@ func (re *Unit) InflictWounds(target int, str int) {
 	model.CurrentWounds = hp
 
 	if model.CurrentWounds <= 0 {
-		killedModel := re.Models[target]
-
-		// add model to killed list
-		re.KilledModels = append(re.KilledModels, killedModel)
-
-		// remove from active duty
-		re.Models = append(re.Models[:target], re.Models[target+1:]...)
-
+		re.removeModel(target)
 	}
+}
+
+func (re *Unit) MoraleFailure() {
+
+	if len(re.Models) == 0 {
+		return
+	}
+
+	model := 0
+
+	re.removeModel(model)
+}
+
+func (re *Unit) removeModel(index int) {
+	destroyedModel := re.Models[index]
+
+	// add model to killed list
+	re.DestroyedModels = append(re.DestroyedModels, destroyedModel)
+
+	// remove from active duty
+	re.Models = append(re.Models[:index], re.Models[index+1:]...)
+
+	// remove from map
+	Game().BattleGround.RemoveEntity(destroyedModel.ID)
 }

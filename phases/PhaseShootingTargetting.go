@@ -7,7 +7,8 @@ import (
 
 func StartPhaseShootingTargetting(unit *models.Unit) {
 
-	models.Game().StatusMesssage = "Targetting Phase! Select a unit to target! Press [Q] and [E] to cycle targets! Press [Space] to select target!"
+	models.Game().StatusMessage.Messsage = "Targetting Phase! Select a unit to target! "
+	models.Game().StatusMessage.Keys = "Press [Q] and [E] to cycle targets! Press [Space] to select!"
 
 	opponent := 0
 	if models.Game().CurrentPlayerIndex == 0 {

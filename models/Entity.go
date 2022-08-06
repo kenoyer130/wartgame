@@ -14,4 +14,5 @@ type Entity interface {
 	GetLocation() Location
 	GetEntityType() EntityType
 	GetToken() *ebiten.Image
+	GetID() string
 }

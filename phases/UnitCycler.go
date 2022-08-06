@@ -33,7 +33,7 @@ func indexOfUnit(element *models.Unit, data []*models.Unit) int {
 
 func (re UnitCycler) CycleUnits() {
 	// cycle units and select first valid unit
-	unit := re.selectNextUnit(0, 0)
+	unit := re.selectNextUnit(0, -1)
 
 	// if no valid unit return nil
 	if unit == nil {
@@ -82,6 +82,14 @@ func (re UnitCycler) selectNextUnit(index int, start int) *models.Unit {
 
 	// fix index for cycling
 	index = re.wrapIndex(index)
+
+	if(index == start) {
+		return nil
+	}
+
+	if(start == -1) {
+		start = 0
+	}
 
 	if !re.validUnit(re.player.Army.Units[index]) {
 		index++

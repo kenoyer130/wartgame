@@ -30,7 +30,7 @@ func drawDiceRollerPanel(screen *ebiten.Image) {
 }
 
 func drawStatusPanel(screen *ebiten.Image) {
-	statusPanel := getStatusPanel(models.Game().StatusMesssage)
+	statusPanel := getStatusPanel()
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(25, 950)
 	screen.DrawImage(statusPanel, op)

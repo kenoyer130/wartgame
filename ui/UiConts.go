@@ -16,3 +16,7 @@ func GetGridOutlineColor() color.Color {
 func GetBattleGroundBackgroundColor() color.Color {
 	return color.RGBA{166, 142, 154, 1}
 }
+
+func GetWoundColor() color.Color {
+	return color.RGBA{222, 0, 0, 255}
+}

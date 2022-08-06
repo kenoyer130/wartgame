@@ -45,6 +45,7 @@ func initFonts() {
 	fontFaces["faceNormal"] = createFaceNormal()
 	fontFaces["faceBold"] = createFaceBold()
 	fontFaces["faceItalic"] = createFaceItalic()
+	fontFaces["faceTiny"] = createFaceTiny()
 
 	initilized = true
 }
@@ -70,6 +71,14 @@ func createFaceBold() font.Face {
 	return createFontFace(f)
 }
 
+func GetFontTiny() font.Face {
+	if !initilized {
+		initFonts()
+	}
+
+	return fontFaces["faceTiny"]
+}
+
 func createFaceItalic() font.Face {
 
 	f, err := opentype.Parse(goitalic.TTF)
@@ -84,6 +93,25 @@ func createFaceItalic() font.Face {
 func createFontFace(f *sfnt.Font) font.Face {
 	face, _ := opentype.NewFace(f, &opentype.FaceOptions{
 		Size:    16,
+		DPI:     72,
+		Hinting: font.HintingNone,
+	})
+	return face
+}
+
+func createFaceTiny() font.Face {
+	f, err := opentype.Parse(goregular.TTF)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return createTinyFace(f)
+}
+
+func createTinyFace(f *sfnt.Font) font.Face {
+	face, _ := opentype.NewFace(f, &opentype.FaceOptions{
+		Size:    8,
 		DPI:     72,
 		Hinting: font.HintingNone,
 	})

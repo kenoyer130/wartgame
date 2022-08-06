@@ -8,7 +8,9 @@ import (
 
 func StartPhaseShooting() {
 
-	models.Game().StatusMesssage = "Select next unit to shoot! Press [Q] and [E] to cycle units! Press [Space] to select unit to shoot!"
+	models.Game().StatusMessage.Phase = "Shooting Phase"
+	models.Game().StatusMessage.Messsage = "Select next unit to shoot!"
+	models.Game().StatusMessage.Keys = "Press [Q] and [E] to cycle units! Press [Space] to select!"
 
 	unitCycler := NewUnitCycler(models.Game().CurrentPlayer, UnitIsValidShooter, ShooterSelected) 
 
@@ -21,8 +23,8 @@ func UnitIsValidShooter(unit *models.Unit) bool {
 
 func ShooterSelected(unit *models.Unit) {
 	if(unit == nil) {
-		engine.WriteMessage("No valid units for shootinmodels.Game().")
-		MoveToPhase(models.ChargePhase)
+		engine.WriteMessage("No valid units for shooting phase.")
+		MoveToPhase(models.MoralePhase)
 		return
 	}
 

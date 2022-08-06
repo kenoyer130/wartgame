@@ -4,7 +4,7 @@ import (
 	"github.com/kenoyer130/wartgame/consts"
 )
 
-var gameState GameState 
+var gameState GameState
 
 func InitGameState() {
 	if !gameState.Initialized {
@@ -26,6 +26,7 @@ type GameState struct {
 	Players             [consts.MaxPlayers]Player
 	CurrentPlayer       *Player
 	CurrentPlayerIndex  int
+	StartPlayerIndex    int
 	SelectedUnit        *Unit
 	SelectedPhaseUnit   *Unit
 	SelectedTargetUnit  *Unit
@@ -35,7 +36,7 @@ type GameState struct {
 	SelectedWeapons     []Weapon
 	Assets              Assets
 	UIState             UIState
-	StatusMesssage      string
+	StatusMessage       StatusMessage
 	Dice                []int
 }
 

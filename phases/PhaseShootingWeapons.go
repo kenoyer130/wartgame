@@ -10,7 +10,8 @@ func StartPhaseShootingWeapons() {
 
 	models.Game().SelectedUnit = models.Game().SelectedPhaseUnit
 
-	models.Game().StatusMesssage = "Weapon Selection Phase! Press [Space] to attack with current weapon or [X] to skip!"
+	models.Game().StatusMessage.Messsage = "Weapon Selection Phase!"
+	models.Game().StatusMessage.Keys = "Press [Space] to attack with current weapon or [X] to skip!"
 
 	for _, model := range models.Game().SelectedPhaseUnit.Models {
 		weapon := model.GetUnfiredWeapon()

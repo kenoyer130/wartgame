@@ -14,10 +14,18 @@ type BattleGround struct {
 }
 
 type ViewPort struct {
-	X int
-	Y int
+	X      int
+	Y      int
 	Height int
-	Width int
+	Width  int
+}
+
+func (re *BattleGround) RemoveEntity(id string) {
+	for key, entity := range re.Grid {
+		if entity.GetID() == id {
+			delete(re.Grid, key)
+		}
+	}
 }
 
 func (re ViewPort) GetPixelRectangle() Rectangle {
@@ -32,7 +40,7 @@ func NewBattleGround(x int, y int) *BattleGround {
 
 	b.Grid = make(map[string]Entity)
 
-	b.ViewPort = ViewPort{ X: 0, Y: 0, Height: 30, Width: 45}
+	b.ViewPort = ViewPort{X: 0, Y: 0, Height: 30, Width: 45}
 
 	return &b
 }
@@ -50,7 +58,7 @@ func PlaceBattleGroundEntity(entity Entity, battleGround *BattleGround) {
 
 // check if a location is empty
 func IsBattleGroundLocationFree(location Location, battleGround *BattleGround) bool {
- 	locationKey := getLocationKey(location)
+	locationKey := getLocationKey(location)
 	_, ok := battleGround.Grid[locationKey]
 
 	if ok {

@@ -14,23 +14,34 @@ import (
 	"github.com/kenoyer130/wartgame/ui"
 )
 
+type DiceRollType struct {
+	Dice int
+	Target int
+	AddToDice int
+}
+
 // rolls the indicated dice count and returns how many are equal to or greater then the target. Also returns each die result.
-func RollDice(msg string, dice int, target int, onRolled func(int, []int)) {
+func RollDice(msg string, diceRollType DiceRollType, onRolled func(int, []int)) {
 
 	WriteMessage(msg)
-	WriteMessage(fmt.Sprintf("Rolling %d to hit target %d", dice, target))
+	WriteMessage(fmt.Sprintf("Rolling %d to hit target %d", diceRollType.Dice, diceRollType.Target))
 
 	success := 0
 	results := []int{}
 
 	PlaySound("Roll")
 
-	for i := 0; i < dice; i++ {
+	for i := 0; i < diceRollType.Dice; i++ {
 
 		die := rand.Intn(6) + 1
+
+		if(diceRollType.AddToDice > 0) {
+			die = die + diceRollType.AddToDice
+		}
+
 		results = append(results, die)
 
-		if die >= target {
+		if die >= diceRollType.Target {
 			success++
 		}
 	}
@@ -47,13 +58,17 @@ func RollDice(msg string, dice int, target int, onRolled func(int, []int)) {
 		}
 
 		WriteMessage(rolled)
-		WriteMessage(fmt.Sprintf("%d successes out of %d", success, dice))
+		WriteMessage(fmt.Sprintf("%d successes out of %d", success, diceRollType.Dice))
 		models.Game().Dice = results
 
-		models.Game().StatusMesssage = "Press [Space] to continue"
-		KeyBoardRegistry[ebiten.KeySpace] = func() {
+		models.Game().StatusMessage.Keys = "Press [Space] to continue"
+
+		dicePauseTimer := time.NewTimer(500 * time.Millisecond)
+		
+		go func() {
+			<-dicePauseTimer.C
 			onRolled(success, results)
-		}
+		}()
 	}()
 }
 

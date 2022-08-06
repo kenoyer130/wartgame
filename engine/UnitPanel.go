@@ -46,6 +46,10 @@ func drawModels(panel *Panel, unit *models.Unit) {
 
 	panel.addValue(unit.Name, 1, 0)
 
+	if(len(unit.Models) == 0) {
+		return
+	}
+
 	modelNames := make(map[string]bool)
 
 	c := 0

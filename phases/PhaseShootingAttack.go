@@ -27,9 +27,13 @@ func StartPhaseShootingAttack() {
 		log.Fatal("no model found for " + weapon.Name)
 	}
 
-	engine.RollDice("Rolling for Attack", weaponCount, model.GetBallisticSkill(), func(success int, dice []int) {
-		onAttackRolled(success, &model)
-	})
+	engine.RollDice("Rolling for Attack",
+		engine.DiceRollType{
+			Dice:   weaponCount,
+			Target: model.GetBallisticSkill(),
+		}, func(success int, dice []int) {
+			onAttackRolled(success, &model)
+		})
 }
 
 func onAttackRolled(success int, model *models.Model) {
@@ -37,7 +41,10 @@ func onAttackRolled(success int, model *models.Model) {
 
 	engine.WriteMessage("Wound target is " + strconv.Itoa(target))
 
-	engine.RollDice("Rolling for Wounds", success, target, func(success int, dice []int) {
+	engine.RollDice("Rolling for Wounds", engine.DiceRollType{
+		Dice:   success,
+		Target: target,
+	}, func(success int, dice []int) {
 		onWoundRolled(success, model)
 	})
 }
@@ -53,7 +60,10 @@ func allocateAttacks(target int, hits int, model *models.Model) {
 
 	save := (models.Game().SelectedTargetUnit.Models[target].GetIntSkill(models.Game().SelectedTargetUnit.Models[target].Save) - ap)
 
-	engine.RollDice("Rolling for Save", 1, save, func(success int, dice []int) {
+	engine.RollDice("Rolling for Save", engine.DiceRollType{
+		Dice:   1,
+		Target: save,
+	}, func(success int, dice []int) {
 		allocateAttack(hits, success, target, model)
 	})
 }
@@ -79,6 +89,8 @@ func inflictWound(target int, model *models.Model, hits int) {
 
 	if len(models.Game().SelectedTargetUnit.Models) <= 0 {
 		engine.WriteMessage(fmt.Sprintf("Unit %s wiped out!", models.Game().SelectedTargetUnit.Name))
+		models.Game().SelectedTargetUnit.Destroyed = true
+
 	} else {
 		nextWound(hits, model)
 	}
@@ -88,6 +100,9 @@ func nextWound(hits int, model *models.Model) {
 	if hits > 0 {
 		onWoundRolled(hits, model)
 	} else {
+
+		engine.WriteMessage(fmt.Sprintf("%s took %d casulties!", models.Game().SelectedTargetUnit.Name, len(models.Game().SelectedTargetUnit.DestroyedModels)))
+
 		// restart shooting phase
 		MoveToPhase(models.ShootingPhase)
 	}

@@ -57,6 +57,7 @@ func LoadPlayerArmy(p *models.Player, assets models.Assets) error {
 		}
 
 		army.Units[u].Models = loadedModels
+		army.Units[u].OriginalModelCount = len(army.Units[u].Models)
 	}
 
 	p.Army = army
