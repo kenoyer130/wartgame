@@ -7,6 +7,7 @@ import (
 	"github.com/kenoyer130/wartgame/consts"
 	"github.com/kenoyer130/wartgame/engine"
 	"github.com/kenoyer130/wartgame/models"
+	"github.com/kenoyer130/wartgame/phases"
 )
 
 func StartGame(g *engine.Game) error {
@@ -42,7 +43,7 @@ func StartGame(g *engine.Game) error {
 	g.CurrentPlayerIndex = die
 
 	g.Round = 1
-	engine.MoveToNextPhaseOrder(models.ShootingPhase_UnitSelection, g)
+	phases.MoveToNextPhaseOrder(models.ShootingPhase_UnitSelection, g)
 	return nil
 }
 

@@ -14,14 +14,15 @@ type UnitWeaponsPanel struct {
 }
 
 var ColWidths = map[int]int{
-	0: 150,
-	1: 30,
+	0: 20,
+	1: 150,
 	2: 30,
-	3: 60,
-	4: 30,
+	3: 30,
+	4: 60,
 	5: 30,
 	6: 30,
 	7: 30,
+	8: 30,
 }
 
 func NewUnitWeaponsPanel(unit *models.Unit) *UnitWeaponsPanel {
@@ -46,6 +47,7 @@ func (re UnitWeaponsPanel) GetUnitWeaponsPanel(g *Game) *ebiten.Image {
 func (re UnitWeaponsPanel) drawWeaponLabels(panel *PanelVertical) {
 	var labels []string
 
+	labels = append(labels, " ")
 	labels = append(labels, "Name")
 	labels = append(labels, "#")
 	labels = append(labels, "R")
@@ -90,6 +92,13 @@ func (re UnitWeaponsPanel) drawWeapons(g *Game, weaponPanel *PanelVertical) {
 
 				weaponType := fmt.Sprintf("%s %d%d", thisWeapon.WeaponType.Type, thisWeapon.WeaponType.Dice, thisWeapon.WeaponType.Number)
 
+				selected := ""
+
+				if(thisWeapon.Name == g.SelectedWeapon) {
+					selected = "X"
+				}
+
+				values = append(values,selected)
 				values = append(values, thisWeapon.Name)
 				values = append(values, strconv.Itoa(weaponCount[thisWeapon.Name]))
 				values = append(values, strconv.Itoa(thisWeapon.Range))

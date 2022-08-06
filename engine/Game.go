@@ -17,9 +17,11 @@ type Game struct {
 	SelectedPhaseUnit  *models.Unit
 	SelectedTargetUnit *models.Unit
 	SelectedModel      *models.Model
+	SelectedWeapon     string
 	Assets             models.Assets
 	UIState            UIState
 	StatusMesssage     string
+	Dice               []int
 }
 
 type UIState struct {

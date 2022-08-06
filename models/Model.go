@@ -2,6 +2,8 @@ package models
 
 import (
 	"image/color"
+	"strconv"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
@@ -28,6 +30,9 @@ type Model struct {
 	Leadership     int
 	Save           string
 	Weapons        []string
+	FiredWeapons   []string
+	SelectedWeapon string
+	SpecificWeapon Weapon
 	Location       Location
 	ModelType      ModelType
 	Token          Token
@@ -36,6 +41,36 @@ type Model struct {
 type ModelNumber struct {
 	Min int
 	Max int
+}
+
+func (re Model) GetBallisticSkill() int {
+	n, _ := strconv.Atoi(strings.Replace(re.BallisticSkill, "+", "", -1))
+	return n
+}
+
+func (re Model) GetIntSkill(value string) int {
+	n, _ := strconv.Atoi(strings.Replace(value, "+", "", -1))
+	return n
+}
+
+func (re Model) GetUnfiredWeapon() string {
+	for _, weapon := range re.Weapons {
+
+		hasFired := false
+
+		for _, fired := range re.FiredWeapons {
+			if weapon == fired {
+				hasFired = true
+				break
+			}
+		}
+
+		if !hasFired {
+			return weapon
+		}
+	}
+
+	return ""
 }
 
 func (re Model) GetLocation() Location {

@@ -1,10 +1,11 @@
-package engine
+package phases
 
 import (
+	"github.com/kenoyer130/wartgame/engine"
 	"github.com/kenoyer130/wartgame/models"
 )
 
-func StartPhaseShootingTargetting(unit *models.Unit, g *Game) {
+func StartPhaseShootingTargetting(unit *models.Unit, g *engine.Game) {
 
 	g.StatusMesssage = "Targetting Phase! Select a unit to target! Press [Q] and [E] to cycle targets! Press [Space] to select target!"
 
@@ -15,7 +16,7 @@ func StartPhaseShootingTargetting(unit *models.Unit, g *Game) {
 
 	unitCycler := NewUnitCycler(&g.Players[opponent], g, func(target *models.Unit) bool {
 		return canTarget(unit, target)
-	}, func(target *models.Unit, g *Game) {
+	}, func(target *models.Unit, g *engine.Game) {
 		targetSelected(unit, target, g)
 	})
 
@@ -26,12 +27,16 @@ func canTarget(unit *models.Unit, target *models.Unit) bool {
 	return true
 }
 
-func targetSelected(unit *models.Unit, target *models.Unit, g *Game) {
+func targetSelected(unit *models.Unit, target *models.Unit, g *engine.Game) {
 	if unit == nil { 
 		//TODO: move to next phase
 		return
 	}
 
-	g.SelectedPhaseUnit = unit
-	WriteMessage("Selected Target: " + unit.Name)
+	g.SelectedTargetUnit = target
+	engine.WriteMessage("Selected Target: " + target.Name)
+
+	engine.ClearKeyBoardRegistry()
+
+	StartPhaseShootingWeapons(g)
 }

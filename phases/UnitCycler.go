@@ -1,21 +1,22 @@
-package engine
+package phases
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kenoyer130/wartgame/engine"
 	"github.com/kenoyer130/wartgame/models"
 )
 
 type UnitCycler struct {
 	player         *models.Player
-	g              *Game
+	g              *engine.Game
 	validUnit      func(unit *models.Unit) bool
-	onUnitSelected func(unit *models.Unit, g *Game)
+	onUnitSelected func(unit *models.Unit, g *engine.Game)
 }
 
 func NewUnitCycler(player *models.Player,
-	g *Game,
+	g *engine.Game,
 	validUnit func(unit *models.Unit) bool,
-	onUnitSelected func(unit *models.Unit, g *Game)) *UnitCycler {
+	onUnitSelected func(unit *models.Unit, g *engine.Game)) *UnitCycler {
 	return &UnitCycler{
 		player:         player,
 		g:              g,
@@ -46,7 +47,7 @@ func (re UnitCycler) CycleUnits() {
 	re.g.SelectedUnit = unit
 
 	// register Q and E to cycle units
-	KeyBoardRegistry[ebiten.KeyQ] = func() {
+	engine.KeyBoardRegistry[ebiten.KeyQ] = func() {
 
 		index := indexOfUnit(re.g.SelectedUnit, re.player.Army.Units)
 		index--
@@ -55,7 +56,7 @@ func (re UnitCycler) CycleUnits() {
 		cycleUnits(re, index)		
 	}
 
-	KeyBoardRegistry[ebiten.KeyE] = func() {
+	engine.KeyBoardRegistry[ebiten.KeyE] = func() {
 		index := indexOfUnit(re.g.SelectedUnit, re.player.Army.Units)
 		index++
 
@@ -63,7 +64,7 @@ func (re UnitCycler) CycleUnits() {
 		cycleUnits(re, index)		
 	}
 
-	KeyBoardRegistry[ebiten.KeySpace] = func() {
+	engine.KeyBoardRegistry[ebiten.KeySpace] = func() {
 		re.onUnitSelected(re.g.SelectedUnit, re.g)
 	}
 }

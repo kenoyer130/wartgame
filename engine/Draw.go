@@ -15,8 +15,17 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	drawModelPanel(g, screen)
 	drawMessagePanel(g, screen)
 	drawStatusPanel(g, screen)
+	drawDiceRollerPanel(g, screen)
 
 	screen.DrawImage(background, nil)
+}
+
+func drawDiceRollerPanel(g *Game, screen *ebiten.Image) {
+	diceRollerPanel := getDiceRollerPanel(g.Dice)
+
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(getLeftXStartingPixel(g) + ui.Margin, 700)
+	screen.DrawImage(diceRollerPanel, op)
 }
 
 func drawStatusPanel(g *Game, screen *ebiten.Image) {
