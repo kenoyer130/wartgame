@@ -100,7 +100,7 @@ func createFontFace(f *sfnt.Font) font.Face {
 }
 
 func createFaceTiny() font.Face {
-	f, err := opentype.Parse(goregular.TTF)
+	f, err := opentype.Parse(gobold.TTF)
 
 	if err != nil {
 		log.Fatal(err)
@@ -111,7 +111,7 @@ func createFaceTiny() font.Face {
 
 func createTinyFace(f *sfnt.Font) font.Face {
 	face, _ := opentype.NewFace(f, &opentype.FaceOptions{
-		Size:    8,
+		Size:    12,
 		DPI:     72,
 		Hinting: font.HintingNone,
 	})

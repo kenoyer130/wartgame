@@ -11,13 +11,13 @@ func MoveToPhase(phase models.GamePhase) {
 
 	if newPhase {
 		cleanupPreviousPhase()
+		models.Game().CurrentPhase = phase
 	}
 
 	switch phase {
 	case models.ShootingPhase:
 
-		printPhase(newPhase, "Starting Shooting Phase")
-		models.Game().CurrentPhase = models.ShootingPhase
+		printPhase(newPhase, "Starting Shooting Phase")		
 		StartPhaseShooting()
 
 	case models.ChargePhase:
@@ -25,8 +25,7 @@ func MoveToPhase(phase models.GamePhase) {
 	
 	case models.MoralePhase:
 
-		printPhase(newPhase, "Starting Morale Phase")
-		models.Game().CurrentPhase = models.MoralePhase
+		printPhase(newPhase, "Starting Morale Phase")		
 		StartPhaseMorale()
 
 	case models.EndPhase:

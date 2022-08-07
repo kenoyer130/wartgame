@@ -38,11 +38,19 @@ func startNextTurn() {
 
 	allGone := true
 
-	for i, player := range models.Game().Players {
-		if !player.Gone {
-			allGone = false
-			models.Game().CurrentPlayer = &player
-			models.Game().CurrentPlayerIndex = i
+	for i := 0; i < len(models.Game().Players); i++ {
+
+		player := &models.Game().Players[i]
+
+		if player.Name == models.Game().CurrentPlayer.Name {
+			player.Gone = true
+		} else {
+
+			if !player.Gone {
+				allGone = false
+				models.Game().CurrentPlayer = player
+				models.Game().CurrentPlayerIndex = i
+			}
 		}
 	}
 
@@ -50,12 +58,29 @@ func startNextTurn() {
 		startNewRound()
 	}
 
+	EndPhaseCleanup()
+
 	MoveToPhase(models.ShootingPhase)
 }
 
 func startNewRound() {
-	models.Game().Round++
+
+	for i := 0; i < len(models.Game().Players); i++ {
+		models.Game().Players[i].RoundCleanup()
+	}
+
 	models.Game().CurrentPlayerIndex = models.Game().StartPlayerIndex
 	models.Game().CurrentPlayer = &models.Game().Players[models.Game().StartPlayerIndex]
-	PhaseMoraleCleanup()
+
+	models.Game().Round++
+
+}
+
+func EndPhaseCleanup() {
+	for i := 0; i < len(models.Game().Players); i++ {
+		models.Game().Players[i].PhaseCleanup()
+		for j := 0; j < len(models.Game().Players[j].Army.Units); j++ {
+			models.Game().Players[i].Army.Units[j].Cleanup()
+		}
+	}
 }

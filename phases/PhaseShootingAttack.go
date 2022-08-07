@@ -27,6 +27,8 @@ func StartPhaseShootingAttack() {
 		log.Fatal("no model found for " + weapon.Name)
 	}
 
+	models.Game().StatusMessage.Messsage = fmt.Sprintf("%s is shooting %s with %d %s ", models.Game().SelectedPhaseUnit.Name, models.Game().SelectedTargetUnit.Name, weaponCount, weapon.Name)
+
 	engine.RollDice("Rolling for Attack",
 		engine.DiceRollType{
 			Dice:   weaponCount,
@@ -58,11 +60,11 @@ func allocateAttacks(target int, hits int, model *models.Model) {
 
 	ap := models.Game().SelectedWeapons[models.Game().SelectedWeaponIndex].ArmorPiercing
 
-	save := (models.Game().SelectedTargetUnit.Models[target].GetIntSkill(models.Game().SelectedTargetUnit.Models[target].Save) - ap)
+	save := (models.Game().SelectedTargetUnit.Models[target].GetIntSkill(models.Game().SelectedTargetUnit.Models[target].Save)) - ap
 
 	engine.RollDice("Rolling for Save", engine.DiceRollType{
 		Dice:   1,
-		Target: save,
+		Target: save,	
 	}, func(success int, dice []int) {
 		allocateAttack(hits, success, target, model)
 	})
@@ -103,8 +105,7 @@ func nextWound(hits int, model *models.Model) {
 
 		engine.WriteMessage(fmt.Sprintf("%s took %d casulties!", models.Game().SelectedTargetUnit.Name, len(models.Game().SelectedTargetUnit.DestroyedModels)))
 
-		// restart shooting phase
-		MoveToPhase(models.ShootingPhase)
+		StartPhaseShootingWeapons()
 	}
 }
 

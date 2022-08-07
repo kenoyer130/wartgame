@@ -5,7 +5,6 @@ import (
 	"github.com/kenoyer130/wartgame/models"
 )
 
-
 func StartPhaseShooting() {
 
 	models.Game().StatusMessage.Phase = "Shooting Phase"
@@ -30,8 +29,6 @@ func ShooterSelected(unit *models.Unit) {
 
 	models.Game().SelectedPhaseUnit = unit
 	engine.WriteMessage("Selected Unit to shoot: " + unit.Name)
-
-	unit.AddState(models.UnitShot)
 
 	StartPhaseShootingTargetting(unit)
 }

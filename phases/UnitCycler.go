@@ -1,22 +1,25 @@
 package phases
 
 import (
+	"log"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kenoyer130/wartgame/engine"
 	"github.com/kenoyer130/wartgame/models"
 )
 
 type UnitCycler struct {
-	player         *models.Player	
+	player         *models.Player
 	validUnit      func(unit *models.Unit) bool
 	onUnitSelected func(unit *models.Unit)
+	currentUnit    *models.Unit
 }
 
-func NewUnitCycler(player *models.Player,	
+func NewUnitCycler(player *models.Player,
 	validUnit func(unit *models.Unit) bool,
 	onUnitSelected func(unit *models.Unit)) *UnitCycler {
 	return &UnitCycler{
-		player:         player,		
+		player:         player,
 		validUnit:      validUnit,
 		onUnitSelected: onUnitSelected,
 	}
@@ -31,17 +34,29 @@ func indexOfUnit(element *models.Unit, data []*models.Unit) int {
 	return -1 //not found.
 }
 
-func (re UnitCycler) CycleUnits() {
+func (re *UnitCycler) CycleUnits() {
+	log.Print(&models.Game().Players[0])
+	log.Print(&models.Game().Players[1])
+	log.Print(re.player)
+
 	// cycle units and select first valid unit
-	unit := re.selectNextUnit(0, -1)
+	re.selectNextUnit(0, -1)
+
+	log.Print(re.currentUnit)
+	log.Print(&models.Game().Players[0].Army.Units[0])
+	log.Print(&models.Game().Players[1].Army.Units[0])
 
 	// if no valid unit return nil
-	if unit == nil {
+	if re.currentUnit == nil {
 		re.onUnitSelected(nil)
 		return
 	}
 
-	models.Game().SelectedUnit = unit
+	models.Game().SelectedUnit = re.currentUnit
+
+	log.Print(&models.Game().SelectedUnit)
+	log.Print(&models.Game().Players[0].Army.Units[0])
+	log.Print(&models.Game().Players[1].Army.Units[0])
 
 	// register Q and E to cycle units
 	engine.KeyBoardRegistry[ebiten.KeyQ] = func() {
@@ -50,7 +65,7 @@ func (re UnitCycler) CycleUnits() {
 		index--
 
 		// if no valid unit return nil
-		cycleUnits(re, index)		
+		re.cycleUnits(index)
 	}
 
 	engine.KeyBoardRegistry[ebiten.KeyE] = func() {
@@ -58,48 +73,58 @@ func (re UnitCycler) CycleUnits() {
 		index++
 
 		// if no valid unit return nil
-		cycleUnits(re, index)		
+		re.cycleUnits(index)
 	}
 
 	engine.KeyBoardRegistry[ebiten.KeySpace] = func() {
-		re.onUnitSelected(models.Game().SelectedUnit)
+		re.onUnitSelected(re.currentUnit)
 	}
 }
 
-func cycleUnits(re UnitCycler, index int) bool {
-	unit := re.selectNextUnit(index, index)
+func (re *UnitCycler) cycleUnits(index int) bool {
+	re.selectNextUnit(index, index)
 
-	if unit == nil {
+	if re.currentUnit == nil {
 		re.onUnitSelected(nil)
 		return true
 	}
 
-	models.Game().SelectedUnit = unit
+	models.Game().SelectedUnit = re.currentUnit
+
+	log.Print(&models.Game().SelectedUnit)
+	log.Print(&models.Game().Players[0].Army.Units[0])
+	log.Print(&models.Game().Players[1].Army.Units[0])
+
 	return false
 }
 
-func (re UnitCycler) selectNextUnit(index int, start int) *models.Unit {
+func (re *UnitCycler) selectNextUnit(index int, start int) {
 
 	// fix index for cycling
 	index = re.wrapIndex(index)
 
-	if(index == start) {
-		return nil
+	if index == start {
+		return
 	}
 
-	if(start == -1) {
+	if start == -1 {
 		start = 0
 	}
 
 	if !re.validUnit(re.player.Army.Units[index]) {
 		index++
-		return re.selectNextUnit(index, start)
+		re.selectNextUnit(index, start)
+		return
 	}
 
-	return re.player.Army.Units[index]
+	log.Print(&re.player.Army.Units[index])
+	log.Print(&models.Game().Players[0].Army.Units[0])
+	log.Print(&models.Game().Players[1].Army.Units[0])
+
+	re.currentUnit =  re.player.Army.Units[index]
 }
 
-func (re UnitCycler) wrapIndex(index int) int {
+func (re *UnitCycler) wrapIndex(index int) int {
 	if index < 0 {
 		index = len(re.player.Army.Units) - 1
 	}
