@@ -1,6 +1,8 @@
 package engine
 
 import (
+	"log"
+
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -8,6 +10,7 @@ var messages []string
 
 func WriteMessage(msg string) {
 	messages = append(messages, msg)
+	log.Println(msg)
 }
 
 func getMessagePanel() *ebiten.Image {

@@ -37,7 +37,7 @@ type GameState struct {
 	Assets              Assets
 	UIState             UIState
 	StatusMessage       StatusMessage
-	Dice                []int
+	Dice                []int	
 }
 
 type UIState struct {

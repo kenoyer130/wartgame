@@ -39,7 +39,7 @@ type Model struct {
 	Token          Token
 }
 
-func (re Model)GetID() string {
+func (re Model) GetID() string {
 	return re.ID
 }
 
@@ -78,8 +78,25 @@ func (re Model) GetUnfiredWeapon() string {
 	return ""
 }
 
+func (re *Model) SetFiredWeapon(weapon string) {
+
+	for i := 0; i < len(re.Weapons); i++ {
+		if re.Weapons[i] == weapon {
+			re.FiredWeapons = append(re.FiredWeapons, weapon)
+		}
+	}
+}
+
+func (re *Model) ClearFiredWeapon() {
+	re.FiredWeapons = []string{}
+}
+
 func (re Model) GetLocation() Location {
 	return re.Location
+}
+
+func (re *Model) SetLocation(location Location) {
+	re.Location = location
 }
 
 func (re Model) GetEntityType() EntityType {
@@ -94,9 +111,9 @@ func (re Model) GetToken() *ebiten.Image {
 
 	text.Draw(token, re.Token.ID, ui.GetFontNormalFace(), 2, 24, ui.GetTextColor())
 
-	if(re.Wounds != re.CurrentWounds) {
+	if re.Wounds != re.CurrentWounds {
 		wounds := re.Wounds - re.CurrentWounds
-		text.Draw(token, strconv.Itoa(wounds), ui.GetFontTiny(), 2, 24, ui.GetWoundColor())
+		text.Draw(token, strconv.Itoa(wounds), ui.GetFontTiny(), 2, 10, ui.GetWoundColor())
 	}
 
 	return token

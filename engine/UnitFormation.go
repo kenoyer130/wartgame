@@ -60,8 +60,11 @@ func setStandardFormation(Unit *models.Unit, battleGround *models.BattleGround) 
 			// TODO: need to handle infinite loop if unable to place
 
 			if models.IsBattleGroundLocationFree(testLocation, battleGround) {
-				Model.Location = testLocation
-				models.PlaceBattleGroundEntity(Model, battleGround)
+
+				placeModel:= Model
+
+				placeModel.Location = testLocation
+				models.PlaceBattleGroundEntity(&placeModel, battleGround)
 				placed = true
 
 				width = int(math.Max(float64(width), float64(row)))

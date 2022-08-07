@@ -12,6 +12,7 @@ const (
 
 type Entity interface {
 	GetLocation() Location
+	SetLocation(location Location)
 	GetEntityType() EntityType
 	GetToken() *ebiten.Image
 	GetID() string

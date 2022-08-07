@@ -2,6 +2,8 @@ package models
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/kenoyer130/wartgame/ui"
 )
@@ -56,6 +58,18 @@ func PlaceBattleGroundEntity(entity Entity, battleGround *BattleGround) {
 	battleGround.Grid[locationKey] = entity
 }
 
+// put an entity on the battleground thus taking up space
+func UpdateBattleGroundEntity(entity Entity, battleGround *BattleGround) {
+
+	for key, value := range battleGround.Grid {
+		if(value.GetID() == entity.GetID()) {
+			entity.SetLocation(getLocationFromKey(key))
+			battleGround.Grid[key] = entity
+			break
+		}
+	}
+}
+
 // check if a location is empty
 func IsBattleGroundLocationFree(location Location, battleGround *BattleGround) bool {
 	locationKey := getLocationKey(location)
@@ -71,4 +85,16 @@ func IsBattleGroundLocationFree(location Location, battleGround *BattleGround) b
 // create a string key from the location x,y
 func getLocationKey(location Location) string {
 	return fmt.Sprintf("%d_%d", location.X, location.Y)
+}
+
+func getLocationFromKey(key string) Location {
+	values := strings.Split(key, "_")
+
+	x,_ :=strconv.Atoi(values[0])
+	y,_ :=strconv.Atoi(values[1])
+
+	return Location {
+		X: x,
+		Y: y,
+	}
 }

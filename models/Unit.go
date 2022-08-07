@@ -20,6 +20,15 @@ type Unit struct {
 	OriginalModelCount int
 }
 
+func (re *Unit) Cleanup() {
+	re.UnitState = []UnitState{}
+	re.DestroyedModels = []Model{}
+
+	for i := 0; i < len(re.Models); i++ {
+		re.Models[i].ClearFiredWeapon()
+	}
+}
+
 type UnitState string
 
 const (
@@ -84,6 +93,8 @@ func (re *Unit) InflictWounds(target int, str int) {
 
 	if model.CurrentWounds <= 0 {
 		re.removeModel(target)
+	} else {
+		UpdateBattleGroundEntity(model, &Game().BattleGround)
 	}
 }
 
