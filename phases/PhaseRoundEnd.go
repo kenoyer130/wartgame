@@ -7,12 +7,19 @@ import (
 	"github.com/kenoyer130/wartgame/models"
 )
 
-func StartRoundEnd() {
+type EndPhase struct {
+}
+
+func (re EndPhase) GetName() (models.GamePhase, models.PhaseStep) {
+	return models.EndPhase, models.Nil
+}
+
+func (re EndPhase) Start() {
 
 	lost := false
 
 	for _, player := range models.Game().Players {
-		lost := checkPlayerHasUnits(player)
+		lost := re.checkPlayerHasUnits(player)
 
 		if lost {
 			break
@@ -20,11 +27,11 @@ func StartRoundEnd() {
 	}
 
 	if !lost {
-		startNextTurn()
+		re.startNextTurn()
 	}
 }
 
-func checkPlayerHasUnits(player models.Player) bool {
+func (re EndPhase) checkPlayerHasUnits(player models.Player) bool {
 	if len(player.Army.Units) < 1 {
 		engine.WriteMessage(fmt.Sprintf("%s player has lost the game due to no units left!", player.Name))
 		return true
@@ -33,7 +40,7 @@ func checkPlayerHasUnits(player models.Player) bool {
 	return false
 }
 
-func startNextTurn() {
+func (re EndPhase) startNextTurn() {
 	models.Game().CurrentPlayer.Gone = true
 
 	allGone := true
@@ -55,15 +62,17 @@ func startNextTurn() {
 	}
 
 	if allGone {
-		startNewRound()
+		re.Start()
 	}
 
-	EndPhaseCleanup()
+	re.EndPhaseCleanup()
 
-	MoveToPhase(models.ShootingPhase)
+	re.startNewRound()
+
+	models.Game().PhaseStepper.Move(models.ShootingPhase, models.Nil)
 }
 
-func startNewRound() {
+func (re EndPhase) startNewRound() {
 
 	for i := 0; i < len(models.Game().Players); i++ {
 		models.Game().Players[i].RoundCleanup()
@@ -76,7 +85,7 @@ func startNewRound() {
 
 }
 
-func EndPhaseCleanup() {
+func (re EndPhase) EndPhaseCleanup() {
 	for i := 0; i < len(models.Game().Players); i++ {
 		models.Game().Players[i].PhaseCleanup()
 		for j := 0; j < len(models.Game().Players[j].Army.Units); j++ {

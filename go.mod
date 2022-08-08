@@ -5,8 +5,15 @@ go 1.18
 require (
 	github.com/google/uuid v1.3.0
 	github.com/hajimehoshi/ebiten/v2 v2.3.7
+	github.com/stretchr/testify v1.8.0
 	golang.org/x/image v0.0.0-20220321031419-a8550c1d254a
 
+)
+
+require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 require (

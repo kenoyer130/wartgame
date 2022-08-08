@@ -5,7 +5,16 @@ import (
 	"github.com/kenoyer130/wartgame/models"
 )
 
-func StartPhaseShootingTargetting(unit *models.Unit) {
+type ShootingTargetingPhase struct {
+}
+
+func (re ShootingTargetingPhase) GetName() (models.GamePhase, models.PhaseStep) {
+	return models.ShootingPhase, models.Nil
+}
+
+func (re ShootingTargetingPhase) Start() {
+
+	unit := models.Game().SelectedPhaseUnit
 
 	models.Game().StatusMessage.Messsage = "Targetting Phase! Select a unit to target! "
 	models.Game().StatusMessage.Keys = "Press [Q] and [E] to cycle targets! Press [Space] to select!"
@@ -16,20 +25,20 @@ func StartPhaseShootingTargetting(unit *models.Unit) {
 	}
 
 	unitCycler := NewUnitCycler(&models.Game().Players[opponent], func(target *models.Unit) bool {
-		return canTarget(unit, target)
+		return re.canTarget(unit, target)
 	}, func(target *models.Unit) {
-		targetSelected(unit, target)
+		re.targetSelected(unit, target)
 	})
 
 	unitCycler.CycleUnits()
 }
 
-func canTarget(unit *models.Unit, target *models.Unit) bool {
+func (re ShootingTargetingPhase) canTarget(unit *models.Unit, target *models.Unit) bool {
 	return true
 }
 
-func targetSelected(unit *models.Unit, target *models.Unit) {
-	if unit == nil { 
+func (re ShootingTargetingPhase) targetSelected(unit *models.Unit, target *models.Unit) {
+	if unit == nil {
 		//TODO: move to next phase
 		return
 	}
@@ -39,5 +48,5 @@ func targetSelected(unit *models.Unit, target *models.Unit) {
 
 	engine.ClearKeyBoardRegistry()
 
-	StartPhaseShootingWeapons()
+	models.Game().PhaseStepper.Move(models.ShootingPhase, models.ShootingPhaseWeapons)
 }

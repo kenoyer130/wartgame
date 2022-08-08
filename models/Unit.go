@@ -96,7 +96,7 @@ func (re *Unit) InflictWounds(target int, str int) {
 	} else {
 		UpdateBattleGroundEntity(model, &Game().BattleGround)
 	}
-}
+ }
 
 func (re *Unit) MoraleFailure() {
 

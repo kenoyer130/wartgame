@@ -14,3 +14,20 @@ const (
 	MoralePhase      GamePhase = "Morale Phase"
 	EndPhase         GamePhase = "End Phase"
 )
+
+type PhaseStep string
+
+const (
+	// not all phases have steps
+	Nil PhaseStep = "Nil"
+
+	//shooting
+	ShootingPhaseAttack    PhaseStep = "ShootingPhaseAttack"
+	ShootingPhaseTargeting PhaseStep = "ShootingPhaseTargeting"
+	ShootingPhaseWeapons   PhaseStep = "ShootingPhaseWeapons"
+)
+
+type PhaseExecute interface {
+	Start()
+	GetName() (GamePhase, PhaseStep)
+}

@@ -22,7 +22,8 @@ type GameState struct {
 	CurrentGameState    GameStates
 	Round               int
 	BattleGround        BattleGround
-	CurrentPhase        GamePhase
+	PhaseStepper        PhaseStepper
+	DiceRoller          DiceRoller	
 	Players             [consts.MaxPlayers]Player
 	CurrentPlayer       *Player
 	CurrentPlayerIndex  int
@@ -37,7 +38,7 @@ type GameState struct {
 	Assets              Assets
 	UIState             UIState
 	StatusMessage       StatusMessage
-	Dice                []int	
+	Dice                []int
 }
 
 type UIState struct {

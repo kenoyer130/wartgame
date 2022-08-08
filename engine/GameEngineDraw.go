@@ -22,7 +22,7 @@ func GameEngineDraw(screen *ebiten.Image) {
 }
 
 func drawDiceRollerPanel(screen *ebiten.Image) {
-	diceRollerPanel := getDiceRollerPanel(models.Game().Dice)
+	diceRollerPanel := models.Game().DiceRoller.GetUIPanel(models.Game().DiceRoller.GetDice())
 
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(getLeftXStartingPixel() + ui.Margin, 700)

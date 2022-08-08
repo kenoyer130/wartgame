@@ -16,6 +16,8 @@ func StartGame() error {
 
 	loadAssets()
 
+	initGameState()
+
 	// todo: hardcoded players for now
 	models.Game().Players[0].Name = "playerOne"
 	models.Game().Players[0].Army.ID = "test_army"
@@ -44,8 +46,13 @@ func StartGame() error {
 	models.Game().StartPlayerIndex = die
 
 	models.Game().Round = 1
-	phases.MoveToPhase(models.ShootingPhase)
+	models.Game().PhaseStepper.Move(models.ShootingPhase, models.Nil)
 	return nil
+}
+
+func initGameState() {
+	models.Game().PhaseStepper = phases.PhaseStepper{}
+	models.Game().DiceRoller = engine.DiceRoller{}
 }
 
 func setPlayerUnitStartingLocation(player int, x int, y int) {

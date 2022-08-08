@@ -14,14 +14,17 @@ import (
 	"github.com/kenoyer130/wartgame/ui"
 )
 
-type DiceRollType struct {
-	Dice int
-	Target int
-	AddToDice int
+type DiceRoller struct {
+	DieImage map[int]*ebiten.Image
+	Dice     []int
+}
+
+func (re DiceRoller) GetDice() []int {
+	return re.Dice
 }
 
 // rolls the indicated dice count and returns how many are equal to or greater then the target. Also returns each die result.
-func RollDice(msg string, diceRollType DiceRollType, onRolled func(int, []int)) {
+func (re DiceRoller) Roll(msg string, diceRollType models.DiceRollType, onRolled func(int, []int)) {
 
 	WriteMessage(msg)
 	WriteMessage(fmt.Sprintf("Rolling %d to hit target %d", diceRollType.Dice, diceRollType.Target))
@@ -35,7 +38,7 @@ func RollDice(msg string, diceRollType DiceRollType, onRolled func(int, []int)) 
 
 		die := rand.Intn(6) + 1
 
-		if(diceRollType.AddToDice > 0) {
+		if diceRollType.AddToDice > 0 {
 			die = die + diceRollType.AddToDice
 		}
 
@@ -64,7 +67,7 @@ func RollDice(msg string, diceRollType DiceRollType, onRolled func(int, []int)) 
 		models.Game().StatusMessage.Keys = "Press [Space] to continue"
 
 		dicePauseTimer := time.NewTimer(500 * time.Millisecond)
-		
+
 		go func() {
 			<-dicePauseTimer.C
 			onRolled(success, results)
@@ -72,7 +75,11 @@ func RollDice(msg string, diceRollType DiceRollType, onRolled func(int, []int)) 
 	}()
 }
 
-func getDiceRollerPanel(dice []int) *ebiten.Image {
+type DiceRollerUI struct {
+	dice []int
+}
+
+func (re DiceRoller) GetUIPanel(dice []int) *ebiten.Image {
 
 	panel := ebiten.NewImage(400, 300)
 
@@ -88,9 +95,9 @@ func getDiceRollerPanel(dice []int) *ebiten.Image {
 	// r := 0
 	// c := 0
 
-	for _, die := range dice {
+	for _, die := range re.Dice {
 
-		loadDieImage(die)
+		re.loadDieImage(die)
 
 		// op := &ebiten.DrawImageOptions{}
 		// op.GeoM.Translate(float64(c*50), 10+float64(30+(r*25)))
@@ -107,19 +114,17 @@ func getDiceRollerPanel(dice []int) *ebiten.Image {
 	return panel
 }
 
-var DieImage map[int]*ebiten.Image
-
-func loadDieImage(die int) {
-	if DieImage == nil {
-		DieImage = make(map[int]*ebiten.Image)
+func (re DiceRoller) loadDieImage(die int) {
+	if re.DieImage == nil {
+		re.DieImage = make(map[int]*ebiten.Image)
 	}
 
-	if DieImage[die] == nil {
+	if re.DieImage[die] == nil {
 		img, _, err := ebitenutil.NewImageFromFile("./assets/graphics/dice.png")
 		if err != nil {
-			log.Fatal(err)			
+			log.Fatal(err)
 		}
 
-		DieImage[die] = ebiten.NewImageFromImage(img.SubImage(image.Rect(4+(0*32), 5, 36, 37)))
+		re.DieImage[die] = ebiten.NewImageFromImage(img.SubImage(image.Rect(4+(0*32), 5, 36, 37)))
 	}
 }

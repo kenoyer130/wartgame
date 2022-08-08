@@ -6,7 +6,14 @@ import (
 	"github.com/kenoyer130/wartgame/models"
 )
 
-func StartPhaseShootingWeapons() {
+type ShootingWeaponPhase struct {
+}
+
+func (re ShootingWeaponPhase) GetName()  (models.GamePhase, models.PhaseStep) {
+	return models.ShootingPhase, models.ShootingPhaseTargeting
+}
+
+func (re ShootingWeaponPhase) Start() {
 
 	models.Game().SelectedUnit = models.Game().SelectedPhaseUnit
 
@@ -20,22 +27,22 @@ func StartPhaseShootingWeapons() {
 
 		if weapon != "" {
 			models.Game().SelectedWeaponName = weapon
-				for i := 0; i < len(models.Game().SelectedPhaseUnit.Models); i++ {
-					models.Game().SelectedPhaseUnit.Models[i].SetFiredWeapon(weapon)
-				}			
-			
+			for i := 0; i < len(models.Game().SelectedPhaseUnit.Models); i++ {
+				models.Game().SelectedPhaseUnit.Models[i].SetFiredWeapon(weapon)
+			}
+
 			break
-		}		
+		}
 	}
 
-	if(models.Game().SelectedWeaponName == "") {		
+	if models.Game().SelectedWeaponName == "" {
 		models.Game().SelectedPhaseUnit.AddState(models.UnitShot)
-		StartPhaseShooting()
+		models.Game().PhaseStepper.Move(models.ShootingPhase, models.Nil)
 		return
 	}
 
-	//TODO skip weapons out of range	
-	engine.KeyBoardRegistry[ebiten.KeySpace] = func() {		
-		StartPhaseShootingAttack()
+	//TODO skip weapons out of range
+	engine.KeyBoardRegistry[ebiten.KeySpace] = func() {
+		models.Game().PhaseStepper.Move(models.ShootingPhase, models.ShootingPhaseAttack)
 	}
 }
