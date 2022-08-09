@@ -1,3 +1,2 @@
 * TODO   
- ** weird floaty space marine units when dmged
- ** cannon seems to be firing multiple times
+ ** if zero units moral phase loops 

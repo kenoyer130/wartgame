@@ -96,7 +96,7 @@ func (re *Unit) InflictWounds(target int, str int) {
 	} else {
 		UpdateBattleGroundEntity(model, &Game().BattleGround)
 	}
- }
+}
 
 func (re *Unit) MoraleFailure() {
 
@@ -112,12 +112,12 @@ func (re *Unit) MoraleFailure() {
 func (re *Unit) removeModel(index int) {
 	destroyedModel := re.Models[index]
 
+	// remove from map
+	Game().BattleGround.RemoveEntity(destroyedModel.ID)
+
 	// add model to killed list
 	re.DestroyedModels = append(re.DestroyedModels, destroyedModel)
 
 	// remove from active duty
 	re.Models = append(re.Models[:index], re.Models[index+1:]...)
-
-	// remove from map
-	Game().BattleGround.RemoveEntity(destroyedModel.ID)
 }
