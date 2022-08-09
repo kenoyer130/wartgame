@@ -51,7 +51,7 @@ func StartGame() error {
 }
 
 func initGameState() {
-	models.Game().PhaseStepper = phases.PhaseStepper{}
+	models.Game().PhaseStepper = &phases.PhaseStepper{}
 	models.Game().DiceRoller = engine.DiceRoller{}
 }
 

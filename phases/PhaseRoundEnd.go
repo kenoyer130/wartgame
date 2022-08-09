@@ -61,13 +61,11 @@ func (re EndPhase) startNextTurn() {
 		}
 	}
 
-	if allGone {
-		re.Start()
-	}
-
 	re.EndPhaseCleanup()
 
-	re.startNewRound()
+	if allGone {
+		re.startNewRound()
+	}
 
 	models.Game().PhaseStepper.Move(models.ShootingPhase)
 }
@@ -82,7 +80,6 @@ func (re EndPhase) startNewRound() {
 	models.Game().CurrentPlayer = &models.Game().Players[models.Game().StartPlayerIndex]
 
 	models.Game().Round++
-
 }
 
 func (re EndPhase) EndPhaseCleanup() {

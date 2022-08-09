@@ -16,11 +16,11 @@ func (re PhaseStepper) GetPhaseName() string {
 	return fmt.Sprintf("%s", re.CurrentPhase)
 }
 
-func (re PhaseStepper) Move(phase models.GamePhase) {
+func (re *PhaseStepper) Move(phase models.GamePhase) {
 
 	newPhase := false
 	
-	if re.CurrentPhase == "" {
+	if re.CurrentPhase == "" || re.CurrentPhase != phase{
 		newPhase = true
 		re.CurrentPhase = phase
 	} else {
@@ -40,7 +40,7 @@ func (re PhaseStepper) printPhase(msg string) {
 	engine.WriteMessage(msg)
 }
 
-func (re PhaseStepper) cleanupPreviousPhase() {
+func (re *PhaseStepper) cleanupPreviousPhase() {
 	models.Game().SelectedPhaseUnit = nil
 	models.Game().SelectedTargetUnit = nil
 	models.Game().SelectedUnit = nil

@@ -38,7 +38,8 @@ func (re *ShootingPhase) init() {
 	// this sets up our combat cycle
 	re.ShootingTargetingPhase.ShootingWeaponPhase = re.ShootingWeaponPhase
 	re.ShootingWeaponPhase.ShootingAttackPhase = re.ShootingAttackPhase
-	re.ShootingAttackPhase.ShootingPhase = re
+	re.ShootingAttackPhase.ShootingWeaponPhase = re.ShootingWeaponPhase
+	re.ShootingWeaponPhase.ShootingPhase = re
 }
 
 func (re ShootingPhase) UnitIsValidShooter(unit *models.Unit) bool {

@@ -88,7 +88,7 @@ func (re *Unit) InflictWounds(target int, str int) {
 
 	model := &re.Models[target]
 
-	hp := re.Models[target].Wounds - str
+	hp := re.Models[target].CurrentWounds - str
 	model.CurrentWounds = hp
 
 	if model.CurrentWounds <= 0 {

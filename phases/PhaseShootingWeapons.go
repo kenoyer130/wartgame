@@ -8,9 +8,10 @@ import (
 
 type ShootingWeaponPhase struct {
 	ShootingAttackPhase *ShootingAttackPhase
+	ShootingPhase       *ShootingPhase
 }
 
-func (re ShootingWeaponPhase) GetName()  (models.GamePhase, models.PhaseStep) {
+func (re ShootingWeaponPhase) GetName() (models.GamePhase, models.PhaseStep) {
 	return models.ShootingPhase, models.ShootingPhaseTargeting
 }
 
@@ -38,7 +39,7 @@ func (re ShootingWeaponPhase) Start() {
 
 	if models.Game().SelectedWeaponName == "" {
 		models.Game().SelectedPhaseUnit.AddState(models.UnitShot)
-		re.ShootingAttackPhase.Start()
+		re.ShootingPhase.Start()
 		return
 	}
 
