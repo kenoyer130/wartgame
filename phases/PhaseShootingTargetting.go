@@ -6,6 +6,7 @@ import (
 )
 
 type ShootingTargetingPhase struct {
+	ShootingWeaponPhase *ShootingWeaponPhase
 }
 
 func (re ShootingTargetingPhase) GetName() (models.GamePhase, models.PhaseStep) {
@@ -47,6 +48,5 @@ func (re ShootingTargetingPhase) targetSelected(unit *models.Unit, target *model
 	engine.WriteMessage("Selected Target: " + target.Name)
 
 	engine.ClearKeyBoardRegistry()
-
-	models.Game().PhaseStepper.Move(models.ShootingPhase, models.ShootingPhaseWeapons)
+	re.ShootingWeaponPhase.Start()
 }

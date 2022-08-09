@@ -69,7 +69,7 @@ func (re EndPhase) startNextTurn() {
 
 	re.startNewRound()
 
-	models.Game().PhaseStepper.Move(models.ShootingPhase, models.Nil)
+	models.Game().PhaseStepper.Move(models.ShootingPhase)
 }
 
 func (re EndPhase) startNewRound() {

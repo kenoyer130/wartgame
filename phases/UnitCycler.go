@@ -34,17 +34,10 @@ func indexOfUnit(element *models.Unit, data []*models.Unit) int {
 	return -1 //not found.
 }
 
-func (re *UnitCycler) CycleUnits() {
-	log.Print(&models.Game().Players[0])
-	log.Print(&models.Game().Players[1])
-	log.Print(re.player)
+func (re *UnitCycler) CycleUnits() {	
 
 	// cycle units and select first valid unit
 	re.selectNextUnit(0, -1)
-
-	log.Print(re.currentUnit)
-	log.Print(&models.Game().Players[0].Army.Units[0])
-	log.Print(&models.Game().Players[1].Army.Units[0])
 
 	// if no valid unit return nil
 	if re.currentUnit == nil {
@@ -53,10 +46,6 @@ func (re *UnitCycler) CycleUnits() {
 	}
 
 	models.Game().SelectedUnit = re.currentUnit
-
-	log.Print(&models.Game().SelectedUnit)
-	log.Print(&models.Game().Players[0].Army.Units[0])
-	log.Print(&models.Game().Players[1].Army.Units[0])
 
 	// register Q and E to cycle units
 	engine.KeyBoardRegistry[ebiten.KeyQ] = func() {

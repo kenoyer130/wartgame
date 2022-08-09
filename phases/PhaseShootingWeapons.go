@@ -7,6 +7,7 @@ import (
 )
 
 type ShootingWeaponPhase struct {
+	ShootingAttackPhase *ShootingAttackPhase
 }
 
 func (re ShootingWeaponPhase) GetName()  (models.GamePhase, models.PhaseStep) {
@@ -37,12 +38,12 @@ func (re ShootingWeaponPhase) Start() {
 
 	if models.Game().SelectedWeaponName == "" {
 		models.Game().SelectedPhaseUnit.AddState(models.UnitShot)
-		models.Game().PhaseStepper.Move(models.ShootingPhase, models.Nil)
+		re.ShootingAttackPhase.Start()
 		return
 	}
 
 	//TODO skip weapons out of range
 	engine.KeyBoardRegistry[ebiten.KeySpace] = func() {
-		models.Game().PhaseStepper.Move(models.ShootingPhase, models.ShootingPhaseAttack)
+		re.ShootingAttackPhase.Start()
 	}
 }

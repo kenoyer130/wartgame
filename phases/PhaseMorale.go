@@ -23,7 +23,7 @@ func (re MoralePhase) Start() {
 
 	re.checkMoraleForPlayer(0, func() {
 		re.checkMoraleForPlayer(1, func() {
-			models.Game().PhaseStepper.Move(models.EndPhase, models.Nil)
+			models.Game().PhaseStepper.Move(models.EndPhase)
 		})
 	})
 }

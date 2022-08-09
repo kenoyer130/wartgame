@@ -1,6 +1,6 @@
 package models
 
 type PhaseStepper interface {
-	Move(phase GamePhase, phaseStep PhaseStep)
+	Move(phase GamePhase)
 	GetPhaseName() string
 }

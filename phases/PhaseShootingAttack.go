@@ -10,7 +10,7 @@ import (
 )
 
 type ShootingAttackPhase struct {
-	
+	ShootingPhase *ShootingPhase	
 }
 
 func (re ShootingAttackPhase) GetName() (models.GamePhase, models.PhaseStep) {
@@ -100,7 +100,7 @@ func (re ShootingAttackPhase) inflictWound(target int, model *models.Model, hits
 	if len(models.Game().SelectedTargetUnit.Models) <= 0 {
  		engine.WriteMessage(fmt.Sprintf("Unit %s wiped out!", models.Game().SelectedTargetUnit.Name))
 		models.Game().SelectedTargetUnit.Destroyed = true
-		re.Start()
+		re.ShootingPhase.Start()
 
 	} else {
 		re.nextWound(hits, model)
@@ -113,7 +113,7 @@ func (re ShootingAttackPhase) nextWound(hits int, model *models.Model) {
 	} else {
 
 		engine.WriteMessage(fmt.Sprintf("%s took %d casulties!", models.Game().SelectedTargetUnit.Name, len(models.Game().SelectedTargetUnit.DestroyedModels)))
-		re.Start()
+		re.ShootingPhase.Start()
 	}
 }
 
@@ -158,7 +158,7 @@ func (re ShootingAttackPhase) getModel(weapon models.Weapon) models.Model {
 func (re ShootingAttackPhase) getFiringWeaponCount() int {
 	weaponCount := 0
 
-	for _, model := range models.Game().SelectedPhaseUnit.Models {
+ 	for _, model := range models.Game().SelectedPhaseUnit.Models {
 		for _, weapon := range model.Weapons {
 			if weapon == models.Game().SelectedWeaponName {
 				weaponCount++

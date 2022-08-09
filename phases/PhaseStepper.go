@@ -8,35 +8,29 @@ import (
 )
 
 type PhaseStepper struct {
-	CurrentPhase         models.GamePhase
-	CurrentStep          models.PhaseStep
+	CurrentPhase         models.GamePhase	
 	CurrentPhaseExecuter models.PhaseExecute
 }
 
 func (re PhaseStepper) GetPhaseName() string {
-	return fmt.Sprintf("%s %s", re.CurrentPhase, re.CurrentStep)
+	return fmt.Sprintf("%s", re.CurrentPhase)
 }
 
-func (re PhaseStepper) Move(phase models.GamePhase, step models.PhaseStep) {
+func (re PhaseStepper) Move(phase models.GamePhase) {
 
 	newPhase := false
-	newStep := false
-
+	
 	if re.CurrentPhase == "" {
 		newPhase = true
+		re.CurrentPhase = phase
 	} else {
 		newPhase = (re.CurrentPhase != phase)
 	}
 
-	if re.CurrentStep == "" {
-		newStep = true
-	} else {
-		newStep = (re.CurrentStep != step)
-	}
-
-	if newPhase && newStep {
+	if newPhase {
+		re.CurrentPhaseExecuter = re.phaseLookup(phase)
 		re.cleanupPreviousPhase()	
-		re.printPhase(fmt.Sprintf("Starting phase %s %s", phase, step))
+		re.printPhase(fmt.Sprintf("Starting phase %s", phase))
 	}
 
 	re.CurrentPhaseExecuter.Start()
@@ -53,15 +47,9 @@ func (re PhaseStepper) cleanupPreviousPhase() {
 	models.Game().StatusMessage.Clear()
 }
 
-func (re PhaseStepper) phaseLookup(phase models.GamePhase, step models.PhaseStep) models.PhaseExecute {
-	if phase == models.ShootingPhase && step == models.Nil {
-		return ShootingPhase{}
-	} else if phase == models.ShootingPhase && step == models.ShootingPhaseAttack {
-		return ShootingAttackPhase{}
-	} else if phase == models.ShootingPhase && step == models.ShootingPhaseTargeting {
-		return ShootingTargetingPhase{}
-	} else if phase == models.ShootingPhase && step == models.ShootingPhaseWeapons {
-		return ShootingWeaponPhase{}
+func (re PhaseStepper) phaseLookup(phase models.GamePhase) models.PhaseExecute {
+	if phase == models.ShootingPhase {
+		return ShootingPhase{}	
 	} else if phase == models.MoralePhase {
 		return MoralePhase{}
 	} else if phase == models.EndPhase {

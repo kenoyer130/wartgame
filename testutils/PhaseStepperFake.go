@@ -7,13 +7,12 @@ import (
 )
 
 type PhaseStepperFake struct {
-	CurrentPhase models.GamePhase
-	CurrentStep models.PhaseStep
+	CurrentPhase models.GamePhase	
 }
 
 func (re PhaseStepperFake) GetPhaseName() string {
 	return fmt.Sprint(re.CurrentPhase)
 }
 
-func (re PhaseStepperFake) Move(phase models.GamePhase, step models.PhaseStep) {
+func (re PhaseStepperFake) Move(phase models.GamePhase) {
 }
