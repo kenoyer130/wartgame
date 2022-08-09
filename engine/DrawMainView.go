@@ -6,7 +6,7 @@ import (
 	"github.com/kenoyer130/wartgame/ui"
 )
 
-func DrawMainView(background *ebiten.Image) {
+func GetMainView() *ebiten.Image{
 	mainView := ebiten.NewImage(models.Game().BattleGround.ViewPort.Width*ui.TileSize, models.Game().BattleGround.ViewPort.Height*ui.TileSize)
 	mainView.Fill(ui.GetBattleGroundBackgroundColor())
 
@@ -18,5 +18,5 @@ func DrawMainView(background *ebiten.Image) {
 
 	DrawEntities(mainView)
 
-	background.DrawImage(mainView, nil)
+	return mainView
 }

@@ -42,7 +42,7 @@ func NewBattleGround(x int, y int) *BattleGround {
 
 	b.Grid = make(map[string]Entity)
 
-	b.ViewPort = ViewPort{X: 0, Y: 0, Height: 30, Width: 45}
+	b.ViewPort = ViewPort{X: 0, Y: 0, Height: 28, Width: 45}
 
 	return &b
 }

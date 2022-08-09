@@ -1,2 +1,3 @@
 * TODO   
- ** wounds are not being applied
+ ** weird floaty space marine units when dmged
+ ** cannon seems to be firing multiple times
