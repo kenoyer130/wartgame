@@ -80,10 +80,6 @@ func (re *UnitCycler) cycleUnits(index int) bool {
 
 	models.Game().SelectedUnit = re.currentUnit
 
-	log.Print(&models.Game().SelectedUnit)
-	log.Print(&models.Game().Players[0].Army.Units[0])
-	log.Print(&models.Game().Players[1].Army.Units[0])
-
 	return false
 }
 

@@ -10,7 +10,7 @@ import (
 )
 
 type ShootingAttackPhase struct {
-	ShootingWeaponPhase *ShootingWeaponPhase	
+	ShootingWeaponPhase *ShootingWeaponPhase
 }
 
 func (re ShootingAttackPhase) GetName() (models.GamePhase, models.PhaseStep) {
@@ -23,6 +23,8 @@ func (re ShootingAttackPhase) Start() {
 	weaponCount := re.getFiringWeaponCount()
 
 	weapon := models.Game().Assets.Weapons[models.Game().SelectedWeaponName]
+
+	models.Game().SelectedWeapons = []models.Weapon{}
 
 	for i := 0; i < weaponCount; i++ {
 		thisWeapon := weapon
@@ -94,11 +96,11 @@ func (re ShootingAttackPhase) inflictWound(target int, model *models.Model, hits
 	dmg := models.Game().SelectedWeapons[models.Game().SelectedWeaponIndex].Damage
 
 	engine.WriteMessage(fmt.Sprintf("Model Saved Failed! %d wounds infliced!", dmg))
-	
+
 	models.Game().SelectedTargetUnit.InflictWounds(target, dmg)
 
 	if len(models.Game().SelectedTargetUnit.Models) <= 0 {
- 		engine.WriteMessage(fmt.Sprintf("Unit %s wiped out!", models.Game().SelectedTargetUnit.Name))
+		engine.WriteMessage(fmt.Sprintf("Unit %s wiped out!", models.Game().SelectedTargetUnit.Name))
 		models.Game().SelectedTargetUnit.Destroyed = true
 		re.ShootingWeaponPhase.Start()
 
@@ -108,7 +110,7 @@ func (re ShootingAttackPhase) inflictWound(target int, model *models.Model, hits
 }
 
 func (re ShootingAttackPhase) nextWound(hits int, model *models.Model) {
-	if hits > 0 { 
+	if hits > 0 {
 		re.onWoundRolled(hits, model)
 	} else {
 
@@ -158,7 +160,7 @@ func (re ShootingAttackPhase) getModel(weapon models.Weapon) models.Model {
 func (re ShootingAttackPhase) getFiringWeaponCount() int {
 	weaponCount := 0
 
- 	for _, model := range models.Game().SelectedPhaseUnit.Models {
+	for _, model := range models.Game().SelectedPhaseUnit.Models {
 		for _, weapon := range model.Weapons {
 			if weapon == models.Game().SelectedWeaponName {
 				weaponCount++
