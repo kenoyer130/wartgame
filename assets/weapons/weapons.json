@@ -11,6 +11,20 @@
         "Damage": 1
     },
     {
+        "Name": "FragGrenades",
+        "Range": 6,
+        "WeaponType": {
+            "Type": "Gre",
+            "Dice": 6
+        },
+        "Strength": 3,
+        "ArmorPiercing": 0,
+        "Damage": 1,
+        "Abilities":[
+            "Blast"
+        ]
+    },
+    {
         "Name": "ShurikenCatapult",
         "Range": 18,
         "WeaponType": {

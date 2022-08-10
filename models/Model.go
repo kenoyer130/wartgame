@@ -59,6 +59,42 @@ func (re Model) GetIntSkill(value string) int {
 }
 
 func (re Model) GetUnfiredWeapon() string {
+
+	isUnthrownGernade, grenadeWeapon := re.checkGrenade()
+	if isUnthrownGernade {
+		return grenadeWeapon
+	}
+
+	shouldReturn, returnValue := re.getUnfired()
+	if shouldReturn {
+		return returnValue
+	}
+
+	return ""
+}
+
+func (re Model) checkGrenade() (bool, string) {
+	for _, weapon := range re.Weapons {
+		w := Game().Assets.Weapons[weapon]
+
+		thrown := false
+
+		if w.WeaponType.Type == "Gre" {
+			for _, fired := range re.FiredWeapons {
+				if weapon == fired {
+					thrown = true
+				}
+			}
+		}
+
+		if !thrown {
+			return true, weapon
+		}
+	}
+	return false, ""
+}
+
+func (re Model) getUnfired() (bool, string) {
 	for _, weapon := range re.Weapons {
 
 		hasFired := false
@@ -71,20 +107,37 @@ func (re Model) GetUnfiredWeapon() string {
 		}
 
 		if !hasFired {
-			return weapon
+			return true, weapon
 		}
 	}
-
-	return ""
+	return false, ""
 }
 
 func (re *Model) SetFiredWeapon(weapon string) {
 
+	// for gernades the unit cannot fire other weapons
+	shouldReturn := setGernadeFired(weapon, re)
+	if shouldReturn {
+		return
+	}
+
+	// set all the weapons tagged the same as fired
 	for i := 0; i < len(re.Weapons); i++ {
 		if re.Weapons[i] == weapon {
 			re.FiredWeapons = append(re.FiredWeapons, weapon)
 		}
 	}
+}
+
+func setGernadeFired(weapon string, re *Model) bool {
+	if Game().Assets.Weapons[weapon].WeaponType.Type == "Gre" {
+		for i := 0; i < len(re.Weapons); i++ {
+			re.FiredWeapons = append(re.FiredWeapons, weapon)
+		}
+
+		return true
+	}
+	return false
 }
 
 func (re *Model) ClearFiredWeapon() {

@@ -29,7 +29,8 @@
                 }
             },
             "Weapons": [
-                "AutoBoltRifle"
+                "AutoBoltRifle",
+                "FragGrenades"
             ]
         },
         {
@@ -59,7 +60,8 @@
                 }
             },
             "Weapons": [
-                "AutoBoltRifle"
+                "AutoBoltRifle",
+                "FragGrenades"
             ]
         }
     ]

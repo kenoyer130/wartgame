@@ -84,18 +84,50 @@ func (re Unit) DrawUnitSelected(screen *ebiten.Image) {
 	ui.DrawSelectorBox(rect, screen)
 }
 
-func (re *Unit) InflictWounds(target int, str int) {
+func (re *Unit) InflictWounds(targetModel Model, str int) bool {
 
-	model := &re.Models[target]
+	var model = re.GetModelByID(targetModel.ID)
 
-	hp := re.Models[target].CurrentWounds - str
+	hp := model.CurrentWounds - str
 	model.CurrentWounds = hp
 
 	if model.CurrentWounds <= 0 {
-		re.removeModel(target)
+		re.removeModel(model)
+		return true
 	} else {
 		UpdateBattleGroundEntity(model, &Game().BattleGround)
+		return false
 	}
+}
+
+func (re *Unit) GetModelByID(id string) *Model {
+	for _, model := range re.Models {
+		if model.ID == id {
+			return &model
+		}
+	}
+
+	return nil
+}
+
+func (re *Unit) GetModelIndexByID(id string) int {
+	for i, model := range re.Models {
+		if model.ID == id {
+			return i
+		}
+	}
+
+	return -1
+}
+
+func (re *Unit) GetDestroyedModelByID(id string) *Model {
+	for _, model := range re.DestroyedModels {
+		if model.ID == id {
+			return &model
+		}
+	}
+
+	return nil
 }
 
 func (re *Unit) MoraleFailure() {
@@ -104,19 +136,18 @@ func (re *Unit) MoraleFailure() {
 		return
 	}
 
-	model := 0
-
-	re.removeModel(model)
+	re.removeModel(&re.Models[0])
 }
 
-func (re *Unit) removeModel(index int) {
-	destroyedModel := re.Models[index]
+func (re *Unit) removeModel(destroyedModel *Model) {
+
+	index := re.GetModelIndexByID(destroyedModel.ID)
 
 	// remove from map
 	Game().BattleGround.RemoveEntity(destroyedModel.ID)
 
 	// add model to killed list
-	re.DestroyedModels = append(re.DestroyedModels, destroyedModel)
+	re.DestroyedModels = append(re.DestroyedModels, *destroyedModel)
 
 	// remove from active duty
 	re.Models = append(re.Models[:index], re.Models[index+1:]...)

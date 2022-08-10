@@ -7,14 +7,11 @@ type Weapon struct {
 	Strength      int
 	ArmorPiercing int
 	Damage        int
+	Abilities     []string
 }
 
 type WeaponType struct {
 	Type   string
 	Dice   int
 	Number int
-}
-
-type WeaponAbility struct {
-	Name string
 }
