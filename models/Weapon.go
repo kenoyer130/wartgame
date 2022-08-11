@@ -8,6 +8,7 @@ type Weapon struct {
 	ArmorPiercing int
 	Damage        int
 	Abilities     []string
+	Fired         bool
 }
 
 type WeaponType struct {

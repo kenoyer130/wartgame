@@ -28,7 +28,7 @@
                     "A": 255
                 }
             },
-            "Weapons": [
+            "DefaultWeapons": [
                 "ShurikenCatapult"
             ]
         },
@@ -58,7 +58,7 @@
                     "A": 255
                 }
             },
-            "Weapons": [
+            "DefaultWeapons": [
                 "ShurikenCannon"
             ]
         }

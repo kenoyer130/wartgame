@@ -15,6 +15,11 @@ func DrawEntities(background *ebiten.Image) {
 		entityX := entity.GetLocation().X
 		entitY := entity.GetLocation().Y
 
+		if(models.Game().PhaseStepper.GetPhase() == models.MovementPhase && models.Game().DraggingUnit != nil) {
+			entityX = entityX - 10
+			entitY = entitY - 10
+		}
+
 		// no need to render if outside viewport
 
 		if entityX < models.Game().BattleGround.ViewPort.X && entitY > models.Game().BattleGround.ViewPort.Y {

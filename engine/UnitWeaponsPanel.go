@@ -75,20 +75,20 @@ func (re UnitWeaponsPanel) drawWeapons(weaponPanel *PanelVertical) {
 	for _, model := range re.Unit.Models {
 
 		for _, weapon := range model.Weapons {
-			total := weaponCount[weapon]
+			total := weaponCount[weapon.Name]
 			total++
-			weaponCount[weapon] = total
+			weaponCount[weapon.Name] = total
 		}
 	}
 
 	for _, model := range re.Unit.Models {
 
 		for _, weapon := range model.Weapons {
-			if !assetWeapons[weapon] {
+			if !assetWeapons[weapon.Name] {
 
 				var values []string
 
-				thisWeapon := models.Game().Assets.Weapons[weapon]
+				thisWeapon := models.Game().Assets.Weapons[weapon.Name]
 
 				weaponType := fmt.Sprintf("%s %d%d", thisWeapon.WeaponType.Type, thisWeapon.WeaponType.Dice, thisWeapon.WeaponType.Number)
 
@@ -116,7 +116,7 @@ func (re UnitWeaponsPanel) drawWeapons(weaponPanel *PanelVertical) {
 
 				r++
 
-				assetWeapons[weapon] = true
+				assetWeapons[weapon.Name] = true
 			}
 		}
 	}

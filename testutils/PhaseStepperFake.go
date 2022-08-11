@@ -10,6 +10,10 @@ type PhaseStepperFake struct {
 	CurrentPhase models.GamePhase	
 }
 
+func (re PhaseStepperFake) GetPhase() models.GamePhase {
+	return models.AircraftPhase
+}
+
 func (re PhaseStepperFake) GetPhaseName() string {
 	return fmt.Sprint(re.CurrentPhase)
 }

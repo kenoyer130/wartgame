@@ -61,11 +61,13 @@ func setStandardFormation(Unit *models.Unit, battleGround *models.BattleGround) 
 
 			if models.IsBattleGroundLocationFree(testLocation, battleGround) {
 
-				placeModel:= Model
+				placeModel:= *Model
 
 				placeModel.Location = testLocation
 				models.PlaceBattleGroundEntity(&placeModel, battleGround)
 				placed = true
+
+				models.Game().GameStateUpdater.UpdateModel(models.Game().CurrentPlayerIndex, &placeModel)
 
 				width = int(math.Max(float64(width), float64(row)))
 				height = int(math.Max(float64(height), float64(col)))
@@ -96,7 +98,7 @@ func setStandardFormation(Unit *models.Unit, battleGround *models.BattleGround) 
 func getUnitLeader(Unit *models.Unit) (*models.Model, bool) {
 	for _, Model := range Unit.Models {
 		if Model.ModelType == models.LeaderModelType {
-			return &Model, true
+			return Model, true
 		}
 	}
 

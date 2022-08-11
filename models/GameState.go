@@ -23,12 +23,13 @@ type GameState struct {
 	Round               int
 	BattleGround        BattleGround
 	PhaseStepper        PhaseStepper
-	DiceRoller          DiceRoller	
+	DiceRoller          DiceRoller
 	Players             [consts.MaxPlayers]Player
 	CurrentPlayer       *Player
 	CurrentPlayerIndex  int
 	StartPlayerIndex    int
 	SelectedUnit        *Unit
+	DraggingUnit        *Unit
 	SelectedPhaseUnit   *Unit
 	SelectedTargetUnit  *Unit
 	SelectedModel       *Model
@@ -39,6 +40,7 @@ type GameState struct {
 	UIState             UIState
 	StatusMessage       StatusMessage
 	Dice                []int
+	GameStateUpdater    GameStateUpdater
 }
 
 type UIState struct {

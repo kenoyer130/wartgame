@@ -33,7 +33,7 @@ func LoadPlayerArmy(p *models.Player, assets models.Assets) error {
 			continue
 		}
 
-		loadedModels := []models.Model{}
+		loadedModels := []*models.Model{}
 
 		// break out Models into individual
 		for _, Model := range Unit.Models {
@@ -48,6 +48,10 @@ func LoadPlayerArmy(p *models.Player, assets models.Assets) error {
 					model.CurrentWounds = model.Wounds
 					model.ID = uuid.New().String()
 
+					for _, weaponKey := range Model.DefaultWeapons {
+						model.Weapons = append(Model.Weapons , assets.Weapons[weaponKey])
+					}
+
 					// find matching asset model
 					if assetModel.Name == Model.Name {
 						loadedModels = append(loadedModels, model)
@@ -61,6 +65,9 @@ func LoadPlayerArmy(p *models.Player, assets models.Assets) error {
 	}
 
 	p.Army = army
+
+	models.Game().GameStateUpdater = models.GameStateUpdater{}
+	models.Game().GameStateUpdater.Init()
 
 	return nil
 }

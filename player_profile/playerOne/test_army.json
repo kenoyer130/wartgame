@@ -9,14 +9,14 @@
                 {
                     "Name": "Intercessor",
                     "Count": 4,
-                    "Weapons": [
+                    "DefaultWeapons": [
                         "AutoBoltRifle"
                     ]
                 },
                 {
                     "Name": "Intercessor Sergeant",
                     "Count": 1,
-                    "Weapons": [
+                    "DefaultWeapons": [
                         "AutoBoltRifle"
                     ]
                 }

@@ -27,8 +27,8 @@ func (re ShootingWeaponPhase) Start() {
 	for _, model := range models.Game().SelectedPhaseUnit.Models {
 		weapon := model.GetUnfiredWeapon()
 
-		if weapon != "" {
-			models.Game().SelectedWeaponName = weapon
+		if weapon != nil {
+			models.Game().SelectedWeaponName = weapon.Name
 			for i := 0; i < len(models.Game().SelectedPhaseUnit.Models); i++ {
 				models.Game().SelectedPhaseUnit.Models[i].SetFiredWeapon(weapon)
 			}

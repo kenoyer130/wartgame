@@ -228,8 +228,8 @@ func (re ShootingAttackPhase) getModel(weapon models.Weapon) models.Model {
 
 	for _, m := range models.Game().SelectedPhaseUnit.Models {
 		for _, modelWeapon := range m.Weapons {
-			if modelWeapon == weapon.Name {
-				model = m
+			if modelWeapon.Name == weapon.Name {
+				model = *m
 			}
 		}
 	}
@@ -242,7 +242,7 @@ func (re ShootingAttackPhase) getFiringWeaponCount() int {
 
 	for _, model := range models.Game().SelectedPhaseUnit.Models {
 		for _, weapon := range model.Weapons {
-			if weapon == models.Game().SelectedWeaponName {
+			if weapon.Name == models.Game().SelectedWeaponName {
 				weaponCount++
 			}
 		}

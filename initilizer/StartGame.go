@@ -46,7 +46,7 @@ func StartGame() error {
 	models.Game().StartPlayerIndex = die
 
 	models.Game().Round = 1
-	models.Game().PhaseStepper.Move(models.ShootingPhase)
+	models.Game().PhaseStepper.Move(models.MovementPhase)
 	return nil
 }
 

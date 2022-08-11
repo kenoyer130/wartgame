@@ -31,9 +31,9 @@ type Model struct {
 	Attacks        int
 	Leadership     int
 	Save           string
-	Weapons        []string
-	FiredWeapons   []string
-	SelectedWeapon string
+	DefaultWeapons []string
+	Weapons        []Weapon
+	SelectedWeapon Weapon
 	Location       Location
 	ModelType      ModelType
 	Token          Token
@@ -58,7 +58,7 @@ func (re Model) GetIntSkill(value string) int {
 	return n
 }
 
-func (re Model) GetUnfiredWeapon() string {
+func (re Model) GetUnfiredWeapon() *Weapon {
 
 	isUnthrownGernade, grenadeWeapon := re.checkGrenade()
 	if isUnthrownGernade {
@@ -70,78 +70,52 @@ func (re Model) GetUnfiredWeapon() string {
 		return returnValue
 	}
 
-	return ""
+	return nil
 }
 
-func (re Model) checkGrenade() (bool, string) {
-	for _, weapon := range re.Weapons {
-		w := Game().Assets.Weapons[weapon]
-
-		thrown := false
-
-		if w.WeaponType.Type == "Gre" {
-			for _, fired := range re.FiredWeapons {
-				if weapon == fired {
-					thrown = true
-				}
-			}
-		}
-
-		if !thrown {
-			return true, weapon
-		}
-	}
-	return false, ""
-}
-
-func (re Model) getUnfired() (bool, string) {
+func (re Model) checkGrenade() (bool, *Weapon) {
 	for _, weapon := range re.Weapons {
 
-		hasFired := false
-
-		for _, fired := range re.FiredWeapons {
-			if weapon == fired {
-				hasFired = true
-				break
-			}
-		}
-
-		if !hasFired {
-			return true, weapon
+		if weapon.WeaponType.Type == "Gre" && !weapon.Fired {
+			return true, &weapon
 		}
 	}
-	return false, ""
+
+	return false, nil
 }
 
-func (re *Model) SetFiredWeapon(weapon string) {
+func (re Model) getUnfired() (bool, *Weapon) {
+	for _, weapon := range re.Weapons {
+
+		if !weapon.Fired {
+			return true, &weapon
+		}
+	}
+	return false, nil
+}
+
+func (re *Model) SetFiredWeapon(weapon *Weapon) {
 
 	// for gernades the unit cannot fire other weapons
 	shouldReturn := setGernadeFired(weapon, re)
 	if shouldReturn {
 		return
 	}
-
-	// set all the weapons tagged the same as fired
-	for i := 0; i < len(re.Weapons); i++ {
-		if re.Weapons[i] == weapon {
-			re.FiredWeapons = append(re.FiredWeapons, weapon)
-		}
-	}
+	weapon.Fired = true
 }
 
-func setGernadeFired(weapon string, re *Model) bool {
-	if Game().Assets.Weapons[weapon].WeaponType.Type == "Gre" {
-		for i := 0; i < len(re.Weapons); i++ {
-			re.FiredWeapons = append(re.FiredWeapons, weapon)
-		}
-
+func setGernadeFired(weapon *Weapon, re *Model) bool {
+	if weapon.WeaponType.Type == "Gre" {
+		weapon.Fired = true
 		return true
 	}
 	return false
 }
 
 func (re *Model) ClearFiredWeapon() {
-	re.FiredWeapons = []string{}
+	for i := 0; i < len(re.Weapons); i++ {
+		re.Weapons[i].Fired = false
+	}
 }
 
 func (re Model) GetLocation() Location {

@@ -50,10 +50,14 @@ func checkUnitSelection() {
 				cx, cy := ebiten.CursorPosition()
 				if unit.Rect.InPixelBounds(cx, cy) {
 					models.Game().SelectedUnit = unit
-					models.Game().SelectedModel = &unit.Models[0]
+					models.Game().SelectedModel = unit.Models[0]
 				}
 			}
-		}
+		}		
+	}
+
+	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
+		models.Game().DraggingUnit = nil
 	}
 }
 

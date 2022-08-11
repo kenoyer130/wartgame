@@ -28,7 +28,7 @@
                     "A": 255
                 }
             },
-            "Weapons": [
+            "DefaultWeapons": [
                 "AutoBoltRifle",
                 "FragGrenades"
             ]
@@ -59,7 +59,7 @@
                     "A": 255
                 }
             },
-            "Weapons": [
+            "DefaultWeapons": [
                 "AutoBoltRifle",
                 "FragGrenades"
             ]

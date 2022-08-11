@@ -55,13 +55,13 @@ func drawModels(panel *Panel, unit *models.Unit) {
 	c := 0
 	for _, model := range unit.Models {
 		if !modelNames[model.Name] {
-			drawModelInfo(unit.Name, model, panel, c)
+			drawModelInfo(unit.Name, *model, panel, c)
 			modelNames[model.Name] = true
 			c++
 		}
 	}
 
-	drawModelImage(unit.Models[0], unit, panel)
+	drawModelImage(*unit.Models[0], unit, panel)
 }
 
 func drawLabels(panel *Panel) {
