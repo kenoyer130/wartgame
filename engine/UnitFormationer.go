@@ -13,26 +13,18 @@ const (
 	StandardUnitFormation UnitFormation = 0
 )
 
-func SetUnitFormation(UnitFormation UnitFormation, Unit *models.Unit, battleGround *models.BattleGround) *models.Unit {
+func SetUnitFormation(UnitFormation UnitFormation, Unit *models.Unit) *models.Unit {
 	switch UnitFormation {
 	case StandardUnitFormation:
-		setStandardFormation(Unit, battleGround)
+		setStandardFormation(Unit, &models.Game().BattleGround)
 	}
 
 	return Unit
 }
 
 func setStandardFormation(Unit *models.Unit, battleGround *models.BattleGround) {
-	// standard formation is any leaders in front in a square format of 3 x ? until all models are placed
-	// there is one grid space between each model in this formation
-	leader, exists := getUnitLeader(Unit)
 
-	if exists && models.IsBattleGroundLocationFree(leader.Location, battleGround) {
-		leader.Location = models.Location{X: Unit.Location.X, Y: Unit.Location.Y + 2}
-		models.PlaceBattleGroundEntity(leader, battleGround)
-	}
-
-	// loop through all remaining Models in a 3 x ? pattern until all Models placed
+	// loop through all Models in a 3 x ? pattern until all Models placed
 
 	rank := Unit.Location.X
 
@@ -46,11 +38,10 @@ func setStandardFormation(Unit *models.Unit, battleGround *models.BattleGround) 
 	width := 0
 
 	for _, Model := range Unit.Models {
+		models.RemoveBattleGroundEntity(Model, battleGround)
+	}
 
-		// already placed
-		if Model.ModelType == models.LeaderModelType {
-			continue
-		}
+	for _, Model := range Unit.Models {
 
 		placed := false
 
@@ -61,21 +52,23 @@ func setStandardFormation(Unit *models.Unit, battleGround *models.BattleGround) 
 
 			if models.IsBattleGroundLocationFree(testLocation, battleGround) {
 
-				placeModel:= *Model
+				models.RemoveBattleGroundEntity(Model, battleGround)
+				placeModel := *Model
 
 				placeModel.Location = testLocation
+
 				models.PlaceBattleGroundEntity(&placeModel, battleGround)
 				placed = true
 
-				models.Game().GameStateUpdater.UpdateModel(models.Game().CurrentPlayerIndex, &placeModel)
+				models.Game().GameStateUpdater.UpdateModel(placeModel.PlayerIndex, &placeModel)
 
 				width = int(math.Max(float64(width), float64(row)))
 				height = int(math.Max(float64(height), float64(col)))
 
 			} else {
 
-				ModelY = ModelY + 2	
-				
+				ModelY = ModelY + 2
+
 				col = col + 2
 
 				if ModelY > Unit.Location.Y+4 {
@@ -93,14 +86,4 @@ func setStandardFormation(Unit *models.Unit, battleGround *models.BattleGround) 
 	}
 
 	Unit.Rect = ui.Rect{X: Unit.Location.X, Y: Unit.Location.Y, W: width, H: height}
-}
-
-func getUnitLeader(Unit *models.Unit) (*models.Model, bool) {
-	for _, Model := range Unit.Models {
-		if Model.ModelType == models.LeaderModelType {
-			return Model, true
-		}
-	}
-
-	return &models.Model{}, false
 }

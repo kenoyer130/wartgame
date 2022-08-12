@@ -37,6 +37,7 @@ type Model struct {
 	Location       Location
 	ModelType      ModelType
 	Token          Token
+	PlayerIndex    int
 }
 
 func (re Model) GetID() string {

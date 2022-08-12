@@ -20,6 +20,7 @@ type Unit struct {
 	Destroyed          bool
 	OriginalModelCount int
 	CurrentMoves       int
+	PlayerIndex        int
 }
 
 func (re *Unit) Cleanup() {

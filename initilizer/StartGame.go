@@ -62,6 +62,6 @@ func setPlayerUnitStartingLocation(player int, x int, y int) {
 
 		unit.Location = models.Location{X: x, Y: y}
 
-		engine.SetUnitFormation(engine.StandardUnitFormation, unit, &models.Game().BattleGround)
+		engine.SetUnitFormation(engine.StandardUnitFormation, unit)
 	}
 }

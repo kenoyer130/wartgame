@@ -59,10 +59,16 @@ func PlaceBattleGroundEntity(entity Entity, battleGround *BattleGround) {
 }
 
 // put an entity on the battleground thus taking up space
+func RemoveBattleGroundEntity(entity Entity, battleGround *BattleGround) {
+	locationKey := getLocationKey(entity.GetLocation())
+	delete(battleGround.Grid, locationKey)
+}
+
+// put an entity on the battleground thus taking up space
 func UpdateBattleGroundEntity(entity Entity, battleGround *BattleGround) {
 
 	for key, value := range battleGround.Grid {
-		if(value.GetID() == entity.GetID()) {
+		if value.GetID() == entity.GetID() {
 			entity.SetLocation(getLocationFromKey(key))
 			battleGround.Grid[key] = entity
 			break
@@ -90,10 +96,10 @@ func getLocationKey(location Location) string {
 func getLocationFromKey(key string) Location {
 	values := strings.Split(key, "_")
 
-	x,_ :=strconv.Atoi(values[0])
-	y,_ :=strconv.Atoi(values[1])
+	x, _ := strconv.Atoi(values[0])
+	y, _ := strconv.Atoi(values[1])
 
-	return Location {
+	return Location{
 		X: x,
 		Y: y,
 	}

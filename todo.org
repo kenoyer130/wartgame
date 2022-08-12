@@ -1,2 +1,3 @@
 * TODO   
  ** if zero units moral phase loops 
+ ** weapon phase looping

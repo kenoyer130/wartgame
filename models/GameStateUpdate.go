@@ -12,10 +12,15 @@ func (re GameStateUpdater) Init() {
 			if Game().Players[i].Army.Units[j].ID == "" {
 				Game().Players[i].Army.Units[j].ID = uuid.New().String()
 			}
+
+			Game().Players[i].Army.Units[j].PlayerIndex = i
+
 			for x := 0; x < len(Game().Players[i].Army.Units[j].Models); x++ {
 				if Game().Players[i].Army.Units[j].Models[x].ID == "" {
 					Game().Players[i].Army.Units[j].Models[x].ID = uuid.New().String()
 				}
+
+				Game().Players[i].Army.Units[j].Models[x].PlayerIndex = i
 			}
 		}
 	}

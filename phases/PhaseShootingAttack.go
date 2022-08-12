@@ -81,15 +81,15 @@ func (re ShootingAttackPhase) setModelsByToughness() *models.Stack {
 
 		if toughCheck == -1 {
 			toughCheck = toughness
-			group.Push(&checkModel)
+			group.Push(checkModel)
 
 		} else if toughness != toughCheck {
 			targetUnits.Push(group)
 			group = models.Stack{}
-			group.Push(&checkModel)
+			group.Push(checkModel)
 
 		} else {
-			group.Push(&checkModel)
+			group.Push(checkModel)
 		}
 
 		if i == count-1 {

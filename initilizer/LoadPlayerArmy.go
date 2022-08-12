@@ -43,7 +43,7 @@ func LoadPlayerArmy(p *models.Player, assets models.Assets) error {
 
 				for _, assetModel := range assets.Units[Unit.Name].Models {
 
-					model := assetModel
+					model := *assetModel
 
 					model.CurrentWounds = model.Wounds
 					model.ID = uuid.New().String()
@@ -54,7 +54,7 @@ func LoadPlayerArmy(p *models.Player, assets models.Assets) error {
 
 					// find matching asset model
 					if assetModel.Name == Model.Name {
-						loadedModels = append(loadedModels, model)
+						loadedModels = append(loadedModels, &model)
 					}
 				}
 			}
