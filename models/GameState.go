@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/kenoyer130/wartgame/consts"
+	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
 )
 
 var gameState GameState
@@ -22,7 +23,7 @@ type GameState struct {
 	CurrentGameState    GameStates
 	Round               int
 	BattleGround        BattleGround
-	PhaseStepper        PhaseStepper
+	PhaseStepper        interfaces.PhaseStepper
 	DiceRoller          DiceRoller
 	Players             [consts.MaxPlayers]Player
 	CurrentPlayer       *Player
@@ -41,6 +42,7 @@ type GameState struct {
 	StatusMessage       StatusMessage
 	Dice                []int
 	GameStateUpdater    GameStateUpdater
+	Drawer				interfaces.Draw
 }
 
 type UIState struct {

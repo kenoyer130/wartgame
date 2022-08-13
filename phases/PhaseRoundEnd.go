@@ -4,14 +4,15 @@ import (
 	"fmt"
 
 	"github.com/kenoyer130/wartgame/engine"
+	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
 	"github.com/kenoyer130/wartgame/models"
 )
 
 type EndPhase struct {
 }
 
-func (re EndPhase) GetName() (models.GamePhase, models.PhaseStep) {
-	return models.EndPhase, models.Nil
+func (re EndPhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
+	return interfaces.EndPhase, interfaces.Nil
 }
 
 func (re EndPhase) Start() {
@@ -67,7 +68,7 @@ func (re EndPhase) startNextTurn() {
 		re.startNewRound()
 	}
 
-	models.Game().PhaseStepper.Move(models.ShootingPhase)
+	models.Game().PhaseStepper.Move(interfaces.ShootingPhase)
 }
 
 func (re EndPhase) startNewRound() {

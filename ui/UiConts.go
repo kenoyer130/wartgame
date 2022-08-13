@@ -20,3 +20,7 @@ func GetBattleGroundBackgroundColor() color.Color {
 func GetWoundColor() color.Color {
 	return color.RGBA{222, 0, 0, 255}
 }
+
+func GetTokenColor() color.Color {
+	return color.RGBA{35, 31, 33, 255}
+}

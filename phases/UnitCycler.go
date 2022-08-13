@@ -13,15 +13,18 @@ type UnitCycler struct {
 	validUnit      func(unit *models.Unit) bool
 	onUnitSelected func(unit *models.Unit)
 	currentUnit    *models.Unit
+	suppressSpace  bool
 }
 
 func NewUnitCycler(player *models.Player,
 	validUnit func(unit *models.Unit) bool,
-	onUnitSelected func(unit *models.Unit)) *UnitCycler {
+	onUnitSelected func(unit *models.Unit),
+	suppressSpace bool) *UnitCycler {
 	return &UnitCycler{
 		player:         player,
 		validUnit:      validUnit,
 		onUnitSelected: onUnitSelected,
+		suppressSpace:  suppressSpace,
 	}
 }
 
@@ -34,7 +37,7 @@ func indexOfUnit(element *models.Unit, data []*models.Unit) int {
 	return -1 //not found.
 }
 
-func (re *UnitCycler) CycleUnits() {	
+func (re *UnitCycler) CycleUnits() {
 
 	// cycle units and select first valid unit
 	re.selectNextUnit(0, -1)
@@ -65,9 +68,15 @@ func (re *UnitCycler) CycleUnits() {
 		re.cycleUnits(index)
 	}
 
-	engine.KeyBoardRegistry[ebiten.KeySpace] = func() {
+	if re.suppressSpace {
 		re.onUnitSelected(re.currentUnit)
+	} else {
+
+		engine.KeyBoardRegistry[ebiten.KeySpace] = func() {
+			re.onUnitSelected(re.currentUnit)
+		}
 	}
+
 }
 
 func (re *UnitCycler) cycleUnits(index int) bool {
@@ -106,7 +115,7 @@ func (re *UnitCycler) selectNextUnit(index int, start int) {
 	log.Print(&models.Game().Players[0].Army.Units[0])
 	log.Print(&models.Game().Players[1].Army.Units[0])
 
-	re.currentUnit =  re.player.Army.Units[index]
+	re.currentUnit = re.player.Army.Units[index]
 }
 
 func (re *UnitCycler) wrapIndex(index int) int {

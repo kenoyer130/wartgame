@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/kenoyer130/wartgame/engine"
+	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
 	"github.com/kenoyer130/wartgame/models"
 )
 
@@ -11,8 +12,8 @@ type MoralePhase struct {
 	
 }
 
-func (re MoralePhase) GetName()  (models.GamePhase, models.PhaseStep) {
-	return models.MoralePhase, models.Nil
+func (re MoralePhase) GetName()  (interfaces.GamePhase, interfaces.PhaseStep) {
+	return interfaces.MoralePhase, interfaces.Nil
 }
 
 func (re MoralePhase) Start() {
@@ -23,7 +24,7 @@ func (re MoralePhase) Start() {
 
 	re.checkMoraleForPlayer(0, func() {
 		re.checkMoraleForPlayer(1, func() {
-			models.Game().PhaseStepper.Move(models.EndPhase)
+			models.Game().PhaseStepper.Move(interfaces.EndPhase)
 		})
 	})
 }
@@ -41,7 +42,7 @@ func (re MoralePhase) checkMoraleForPlayer(player int, onCompleted func()) {
 		}
 
 		re.MoraleCheckSelected(unit, onCompleted)
-	})
+	}, false)
 
 	unitCycler.CycleUnits()
 }

@@ -3,6 +3,7 @@ package phases
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kenoyer130/wartgame/engine"
+	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
 	"github.com/kenoyer130/wartgame/models"
 )
 
@@ -11,8 +12,8 @@ type ShootingWeaponPhase struct {
 	ShootingPhase       *ShootingPhase
 }
 
-func (re ShootingWeaponPhase) GetName() (models.GamePhase, models.PhaseStep) {
-	return models.ShootingPhase, models.ShootingPhaseTargeting
+func (re ShootingWeaponPhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
+	return interfaces.ShootingPhase, interfaces.ShootingPhaseTargeting
 }
 
 func (re ShootingWeaponPhase) Start() {

@@ -2,6 +2,7 @@ package phases
 
 import (
 	"github.com/kenoyer130/wartgame/engine"
+	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
 	"github.com/kenoyer130/wartgame/models"
 )
 
@@ -9,8 +10,8 @@ type ShootingTargetingPhase struct {
 	ShootingWeaponPhase *ShootingWeaponPhase
 }
 
-func (re ShootingTargetingPhase) GetName() (models.GamePhase, models.PhaseStep) {
-	return models.ShootingPhase, models.Nil
+func (re ShootingTargetingPhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
+	return interfaces.ShootingPhase, interfaces.Nil
 }
 
 func (re ShootingTargetingPhase) Start() {
@@ -29,7 +30,7 @@ func (re ShootingTargetingPhase) Start() {
 		return re.canTarget(unit, target)
 	}, func(target *models.Unit) {
 		re.targetSelected(unit, target)
-	})
+	}, false)
 
 	unitCycler.CycleUnits()
 }

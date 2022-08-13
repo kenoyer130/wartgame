@@ -6,6 +6,7 @@ import (
 
 	"github.com/kenoyer130/wartgame/consts"
 	"github.com/kenoyer130/wartgame/engine"
+	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
 	"github.com/kenoyer130/wartgame/models"
 	"github.com/kenoyer130/wartgame/phases"
 )
@@ -46,13 +47,14 @@ func StartGame() error {
 	models.Game().StartPlayerIndex = die
 
 	models.Game().Round = 1
-	models.Game().PhaseStepper.Move(models.MovementPhase)
+	models.Game().PhaseStepper.Move(interfaces.MovementPhase)
 	return nil
 }
 
 func initGameState() {
 	models.Game().PhaseStepper = &phases.PhaseStepper{}
 	models.Game().DiceRoller = engine.DiceRoller{}
+	models.Game().Drawer = interfaces.Drawer{}
 }
 
 func setPlayerUnitStartingLocation(player int, x int, y int) {
@@ -62,6 +64,6 @@ func setPlayerUnitStartingLocation(player int, x int, y int) {
 
 		unit.Location = models.Location{X: x, Y: y}
 
-		engine.SetUnitFormation(engine.StandardUnitFormation, unit)
+		unit.Place()
 	}
 }

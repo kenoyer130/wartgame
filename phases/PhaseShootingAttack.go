@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/kenoyer130/wartgame/engine"
+	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
 	"github.com/kenoyer130/wartgame/models"
 	"github.com/kenoyer130/wartgame/weaponabilities"
 )
@@ -17,8 +18,8 @@ type ShootingAttackPhase struct {
 	TargetUnits         models.Stack
 }
 
-func (re ShootingAttackPhase) GetName() (models.GamePhase, models.PhaseStep) {
-	return models.ShootingPhase, models.Nil
+func (re ShootingAttackPhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
+	return interfaces.ShootingPhase, interfaces.Nil
 }
 
 func (re ShootingAttackPhase) Start() {

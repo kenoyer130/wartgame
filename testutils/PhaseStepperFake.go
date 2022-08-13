@@ -3,20 +3,20 @@ package testutils
 import (
 	"fmt"
 
-	"github.com/kenoyer130/wartgame/models"
+	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
 )
 
 type PhaseStepperFake struct {
-	CurrentPhase models.GamePhase	
+	CurrentPhase interfaces.GamePhase		
 }
 
-func (re PhaseStepperFake) GetPhase() models.GamePhase {
-	return models.AircraftPhase
+func (re PhaseStepperFake) GetPhase() interfaces.GamePhase {
+	return re.CurrentPhase
 }
 
 func (re PhaseStepperFake) GetPhaseName() string {
 	return fmt.Sprint(re.CurrentPhase)
 }
 
-func (re PhaseStepperFake) Move(phase models.GamePhase) {
+func (re PhaseStepperFake) Move(phase interfaces.GamePhase) {
 }

@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/google/uuid v1.3.0
+	github.com/hajimehoshi/ebiten v1.12.12
 	github.com/hajimehoshi/ebiten/v2 v2.3.7
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/image v0.0.0-20220321031419-a8550c1d254a

@@ -4,19 +4,20 @@ import (
 	"fmt"
 
 	"github.com/kenoyer130/wartgame/engine"
+	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
 	"github.com/kenoyer130/wartgame/models"
 )
 
 type PhaseStepper struct {
-	CurrentPhase         models.GamePhase
-	CurrentPhaseExecuter models.PhaseExecute
+	CurrentPhase         interfaces.GamePhase
+	CurrentPhaseExecuter interfaces.PhaseExecute
 }
 
 func (re PhaseStepper) printPhase(msg string) {
 	engine.WriteMessage(msg)
 }
 
-func (re PhaseStepper) GetPhase() models.GamePhase {
+func (re PhaseStepper) GetPhase() interfaces.GamePhase {
 	return re.CurrentPhase
 }
 
@@ -24,7 +25,7 @@ func (re PhaseStepper) GetPhaseName() string {
 	return fmt.Sprintf("%s", re.CurrentPhase)
 }
 
-func (re *PhaseStepper) Move(phase models.GamePhase) {
+func (re *PhaseStepper) Move(phase interfaces.GamePhase) {
 
 	newPhase := false
 
@@ -52,14 +53,14 @@ func (re *PhaseStepper) cleanupPreviousPhase() {
 	models.Game().StatusMessage.Clear()
 }
 
-func (re PhaseStepper) phaseLookup(phase models.GamePhase) models.PhaseExecute {
-	if phase == models.MovementPhase {
+func (re PhaseStepper) phaseLookup(phase interfaces.GamePhase) interfaces.PhaseExecute {
+	if phase == interfaces.MovementPhase {
 		return MovePhase{}
-	} else if phase == models.ShootingPhase {
+	} else if phase == interfaces.ShootingPhase {
 		return ShootingPhase{}
-	} else if phase == models.MoralePhase {
+	} else if phase == interfaces.MoralePhase {
 		return MoralePhase{}
-	} else if phase == models.EndPhase {
+	} else if phase == interfaces.EndPhase {
 		return EndPhase{}
 	}
 

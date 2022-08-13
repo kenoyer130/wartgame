@@ -21,6 +21,65 @@ type Unit struct {
 	OriginalModelCount int
 	CurrentMoves       int
 	PlayerIndex        int
+	Width              int
+	Height             int
+	MovementRect       ui.Rect
+	RangeRect          ui.Rect
+}
+
+func (re *Unit) Place() {
+	size := re.findLargest(len(re.Models))
+
+	index := 0
+
+	row := 0
+	col := 0
+
+	for index < len(re.Models) {
+
+		model := re.Models[index]
+		RemoveBattleGroundEntity(model, &Game().BattleGround)
+
+		model.Location = Location{re.Location.X + row, re.Location.Y + col}
+
+		PlaceBattleGroundEntity(model, &Game().BattleGround)
+
+		Game().GameStateUpdater.UpdateModel(model.PlayerIndex, model)
+
+		re.Width = int(math.Max(float64(re.Width), float64(col)))
+		re.Height = int(math.Max(float64(re.Height), float64(row)))
+
+		col++
+
+		if col > size {
+			col = 0
+			row++
+		}
+
+		index++
+
+	}
+
+	// adjust height
+	re.Height++
+
+	re.setMovementRect()
+}
+
+func (re *Unit) setMovementRect() {
+	m := re.Models[0].Movement
+
+	x := re.Location.X - m
+	w := (m * 2) + re.Width
+
+	y := re.Location.Y - m
+	h := (m * 2) + re.Height
+
+	re.MovementRect = ui.Rect{X: x, Y: y, W: w, H: h}
+}
+
+func (re Unit) findLargest(x int) int {
+	return int(math.Sqrt(float64(x)))
 }
 
 func (re *Unit) Cleanup() {
