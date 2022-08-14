@@ -3,13 +3,11 @@ package engine
 import (
 	"testing"
 
-	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
+	"github.com/kenoyer130/wartgame/interfaces"
 	"github.com/kenoyer130/wartgame/models"
 	"github.com/kenoyer130/wartgame/testutils"
 	"github.com/stretchr/testify/assert"
 )
-
-
 
 func TestMain(m *testing.M) {
 
@@ -19,10 +17,10 @@ func TestMain(m *testing.M) {
 	s := phaseStepper.(testutils.PhaseStepperFake)
 	s.CurrentPhase = interfaces.MovementPhase
 	models.Game().PhaseStepper = s
-	
+
 	models.Game().BattleGround = *models.NewBattleGround(50, 50)
 
-	unit := models.Unit{ Name: "Test"}
+	unit := models.Unit{Name: "Test"}
 	unit.Location = models.Location{
 		X: 10,
 		Y: 10,
@@ -54,4 +52,3 @@ func TestUnitRange(t *testing.T) {
 	assert.Equal(t, 3, unit.Width)
 	assert.Equal(t, 3, unit.Height)
 }
-

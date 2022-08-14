@@ -5,7 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kenoyer130/wartgame/engine"
-	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
+	"github.com/kenoyer130/wartgame/interfaces"
 	"github.com/kenoyer130/wartgame/models"
 )
 
@@ -45,8 +45,8 @@ func (re MovePhase) MoverSelected(unit *models.Unit) {
 
 	models.Game().SelectedPhaseUnit = unit
 	engine.WriteMessage("Selected Unit to move: " + unit.Name)
-	
-	unit.CurrentMoves = unit.Models[0].Movement	
+
+	unit.CurrentMoves = unit.Models[0].Movement
 
 	re.registerMovementKeys(unit)
 }

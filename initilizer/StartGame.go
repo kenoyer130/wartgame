@@ -6,7 +6,7 @@ import (
 
 	"github.com/kenoyer130/wartgame/consts"
 	"github.com/kenoyer130/wartgame/engine"
-	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
+	"github.com/kenoyer130/wartgame/interfaces"
 	"github.com/kenoyer130/wartgame/models"
 	"github.com/kenoyer130/wartgame/phases"
 )

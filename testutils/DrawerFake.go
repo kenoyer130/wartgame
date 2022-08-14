@@ -9,5 +9,5 @@ type DrawerFake struct {
 }
 
 func (re DrawerFake) DrawImage(img *ebiten.Image, options *ebiten.DrawImageOptions) {
-	re.tiles[options.GeoM.Element(0,0)]
+
 }

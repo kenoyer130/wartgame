@@ -3,11 +3,11 @@ package testutils
 import (
 	"fmt"
 
-	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
+	"github.com/kenoyer130/wartgame/interfaces"
 )
 
 type PhaseStepperFake struct {
-	CurrentPhase interfaces.GamePhase		
+	CurrentPhase interfaces.GamePhase
 }
 
 func (re PhaseStepperFake) GetPhase() interfaces.GamePhase {

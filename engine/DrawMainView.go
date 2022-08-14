@@ -6,7 +6,7 @@ import (
 	"github.com/kenoyer130/wartgame/ui"
 )
 
-func GetMainView() *ebiten.Image{
+func GetMainView() *ebiten.Image {
 	mainView := ebiten.NewImage(models.Game().BattleGround.ViewPort.Width*ui.TileSize, models.Game().BattleGround.ViewPort.Height*ui.TileSize)
 	mainView.Fill(ui.GetBattleGroundBackgroundColor())
 

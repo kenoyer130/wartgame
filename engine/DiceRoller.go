@@ -76,7 +76,6 @@ func (re DiceRoller) Roll(msg string, diceRollType models.DiceRollType, onRolled
 }
 
 type DiceRollerUI struct {
-	dice []int
 }
 
 func (re DiceRoller) GetUIPanel(dice []int) *ebiten.Image {

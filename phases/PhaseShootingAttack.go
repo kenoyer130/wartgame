@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/kenoyer130/wartgame/engine"
-	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
+	"github.com/kenoyer130/wartgame/interfaces"
 	"github.com/kenoyer130/wartgame/models"
 	"github.com/kenoyer130/wartgame/weaponabilities"
 )
@@ -191,8 +191,8 @@ func (re ShootingAttackPhase) inflictWound(target *models.Model, model *models.M
 	engine.WriteMessage(fmt.Sprintf("Model Saved Failed! %d wounds infliced!", dmg))
 
 	dead := false
-	
-	for( hits > 0 && !dead) {
+
+	for hits > 0 && !dead {
 		hits--
 		dead = models.Game().SelectedTargetUnit.InflictWounds(*target, dmg)
 	}

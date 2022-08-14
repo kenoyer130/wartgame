@@ -17,7 +17,7 @@ func TestMain(m *testing.M) {
 
 	models.Game().SelectedPhaseUnit = &shootingUnit
 
-	weapons := []models.Weapon{models.Weapon{Name: "testW1"}}
+	weapons := []models.Weapon{{Name: "testW1"}}
 
 	for i := 0; i < 1; i++ {
 		shooter := models.Model{

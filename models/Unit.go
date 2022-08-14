@@ -218,7 +218,7 @@ func (re *Unit) removeModel(destroyedModel *Model) {
 	index := re.GetModelIndexByID(destroyedModel.ID)
 
 	// remove from map
-	Game().BattleGround.RemoveEntity(destroyedModel.ID)
+	Game().BattleGround.RemoveEntity(destroyedModel.Location)
 
 	// add model to killed list
 	re.DestroyedModels = append(re.DestroyedModels, destroyedModel)

@@ -4,15 +4,14 @@ import (
 	"fmt"
 
 	"github.com/kenoyer130/wartgame/engine"
-	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
+	"github.com/kenoyer130/wartgame/interfaces"
 	"github.com/kenoyer130/wartgame/models"
 )
 
 type MoralePhase struct {
-	
 }
 
-func (re MoralePhase) GetName()  (interfaces.GamePhase, interfaces.PhaseStep) {
+func (re MoralePhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
 	return interfaces.MoralePhase, interfaces.Nil
 }
 

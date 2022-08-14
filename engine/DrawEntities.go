@@ -2,36 +2,47 @@ package engine
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
+	"github.com/kenoyer130/wartgame/interfaces"
 	"github.com/kenoyer130/wartgame/models"
 	"github.com/kenoyer130/wartgame/ui"
 )
 
 func DrawEntities(background interfaces.Draw) {
-	entites := models.Game().BattleGround.Grid
 
-	for _, entity := range entites {
-		token := entity.GetToken()
+	for c := 0; c < len(models.Game().BattleGround.Grid); c++ {
 
-		entityX := entity.GetLocation().X
-		entitY := entity.GetLocation().Y
+		for r := 0; r < len(models.Game().BattleGround.Grid[r]); r++ {
 
-		if models.Game().PhaseStepper.GetPhase() == interfaces.MovementPhase && models.Game().DraggingUnit != nil {
-			entityX = entityX - 10
-			entitY = entitY - 10
+			if models.Game().BattleGround.Grid[c][r] == nil {
+				continue
+			}
+
+			entity := models.Game().BattleGround.Grid[c][r]
+
+			token := entity.GetToken()
+
+			entityX := entity.GetLocation().X
+			entitY := entity.GetLocation().Y
+
+			if models.Game().PhaseStepper.GetPhase() == interfaces.MovementPhase && models.Game().DraggingUnit != nil {
+				entityX = entityX - 10
+				entitY = entitY - 10
+			}
+
+			// no need to render if outside viewport
+
+			if entityX < models.Game().BattleGround.ViewPort.X && entitY > models.Game().BattleGround.ViewPort.Y {
+				continue
+			}
+
+			x := float64((entity.GetLocation().X * ui.TileSize) + 1)
+			y := float64((entity.GetLocation().Y * ui.TileSize) + 1)
+
+			op := &ebiten.DrawImageOptions{}
+			op.GeoM.Translate(x, y)
+			background.DrawImage(token, op)
 		}
-
-		// no need to render if outside viewport
-
-		if entityX < models.Game().BattleGround.ViewPort.X && entitY > models.Game().BattleGround.ViewPort.Y {
-			continue
-		}
-
-		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(float64((entity.GetLocation().X*ui.TileSize)+1), float64((entity.GetLocation().Y*ui.TileSize)+1))
-		background.DrawImage(token, op)
 	}
-
 	// draw move range
 	// dont draw movement on acutal unit
 	drawMoveRange(background)
@@ -49,11 +60,11 @@ func drawMoveRange(background interfaces.Draw) {
 
 	for r := 0; r < len(drawMatrix); r++ {
 		for c := 0; c < len(drawMatrix[c]); c++ {
-			
+
 			if drawMatrix[r][c] == 0 {
 				continue
 			}
-			
+
 			tile := ebiten.NewImage(31, 31)
 			color := ui.GetTokenColor()
 			tile.Fill(color)
@@ -70,21 +81,19 @@ func drawMoveRange(background interfaces.Draw) {
 
 func getMoveRange(unit *models.Unit, rect ui.Rect) [][]int {
 
-	matrix := [unit.Rect.W][unit.Rect.H]int{}
+	matrix := make([][]int, unit.Rect.W, unit.Rect.H)
 
-	for r := 0; r < rect.H; r++ {
-		for c := 0; c < rect.W; c++ {
+	movement := unit.Models[0].Movement
 
-			if unit.Rect.InBounds(rect.X+r, rect.Y+c) {
-				continue
+	for c := unit.Location.X - movement; c < unit.Location.X+unit.Width+movement; c++ {
+		for r := unit.Location.Y - movement; r < unit.Location.Y+unit.Height+movement; r++ {
+			filled := models.Game().BattleGround.Grid[c][r] != nil
+
+			if !filled {
+				matrix[c][r] = 1
 			}
-
-			tile := ebiten.NewImage(31, 31)
-			color := ui.GetTokenColor()
-			tile.Fill(color)
-
-			x := unit.Location.X + c
-			y := unit.Location.Y + r
 		}
 	}
+
+	return matrix
 }

@@ -2,7 +2,7 @@ package models
 
 import (
 	"github.com/kenoyer130/wartgame/consts"
-	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
+	"github.com/kenoyer130/wartgame/interfaces"
 )
 
 var gameState GameState
@@ -42,7 +42,7 @@ type GameState struct {
 	StatusMessage       StatusMessage
 	Dice                []int
 	GameStateUpdater    GameStateUpdater
-	Drawer				interfaces.Draw
+	Drawer              interfaces.Draw
 }
 
 type UIState struct {

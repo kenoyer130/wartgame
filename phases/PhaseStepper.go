@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/kenoyer130/wartgame/engine"
-	interfaces "github.com/kenoyer130/wartgame/engine/Interfaces"
+	"github.com/kenoyer130/wartgame/interfaces"
 	"github.com/kenoyer130/wartgame/models"
 )
 
@@ -44,7 +44,6 @@ func (re *PhaseStepper) Move(phase interfaces.GamePhase) {
 
 	re.CurrentPhaseExecuter.Start()
 }
-
 
 func (re *PhaseStepper) cleanupPreviousPhase() {
 	models.Game().SelectedPhaseUnit = nil
