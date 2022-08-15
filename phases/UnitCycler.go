@@ -1,8 +1,6 @@
 package phases
 
 import (
-	"log"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kenoyer130/wartgame/engine"
 	"github.com/kenoyer130/wartgame/models"
@@ -110,10 +108,6 @@ func (re *UnitCycler) selectNextUnit(index int, start int) {
 		re.selectNextUnit(index, start)
 		return
 	}
-
-	log.Print(&re.player.Army.Units[index])
-	log.Print(&models.Game().Players[0].Army.Units[0])
-	log.Print(&models.Game().Players[1].Army.Units[0])
 
 	re.currentUnit = re.player.Army.Units[index]
 }

@@ -21,6 +21,6 @@ func GetWoundColor() color.Color {
 	return color.RGBA{222, 0, 0, 255}
 }
 
-func GetTokenColor() color.Color {
-	return color.RGBA{35, 31, 33, 255}
+func GetMoveRangeColor() color.Color {
+	return color.RGBA{231, 180, 206, 255}
 }

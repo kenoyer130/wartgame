@@ -45,3 +45,21 @@ func TestUnitMoveRange(t *testing.T) {
 	// assert
 	assert.Equal(t, ui.Rect{X: -6, Y: -6, W: 15, H: 15}, unit.MovementRect)
 }
+
+
+// assuming a 3 x 3 Unit with movement range 6 should include all open spaces EXCEPT the space taken by the unit
+func TestSetUnitMovementRange(t *testing.T) {
+	// assemble
+	unit := Game().Players[0].Army.Units[0]
+	unit.Location.X = 20
+	unit.Location.Y = 20
+
+	unit.Place()
+
+	// act
+	unit.SetMoveRange()
+
+	// assert
+	assert.Equal(t, 3, unit.Width)
+	assert.Equal(t, 3, unit.Height)
+}

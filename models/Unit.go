@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -15,7 +16,6 @@ type Unit struct {
 	DestroyedModels    []*Model
 	Power              int
 	Location           Location
-	Rect               ui.Rect
 	UnitState          []UnitState
 	Destroyed          bool
 	OriginalModelCount int
@@ -23,8 +23,9 @@ type Unit struct {
 	PlayerIndex        int
 	Width              int
 	Height             int
+	Rect               ui.Rect
 	MovementRect       ui.Rect
-	RangeRect          ui.Rect
+	MovementRange      map[string]Location
 }
 
 func (re *Unit) Place() {
@@ -57,13 +58,21 @@ func (re *Unit) Place() {
 		}
 
 		index++
-
 	}
 
 	// adjust height
-	re.Height++
+	re.Height = re.Height + 2
+
+	re.Rect = ui.Rect{X: re.Location.X, Y: re.Location.Y, W: re.Width, H: re.Height}
 
 	re.setMovementRect()
+}
+
+func (re *Unit) Remove() {
+	for i := 0; i < len(re.Models); i++ {
+		model := re.Models[i]
+		RemoveBattleGroundEntity(model, &Game().BattleGround)
+	}
 }
 
 func (re *Unit) setMovementRect() {
@@ -143,17 +152,17 @@ func (re Unit) CanMove() bool {
 
 func (re Unit) DrawUnitSelected(screen *ebiten.Image) {
 
-	if (re.Rect == ui.Rect{}) {
+	if (re.Location == Location{}) {
 		return
 	}
 
 	rect := ui.Rect{}
 
-	rect.X = re.Rect.X * ui.TileSize
-	rect.Y = re.Rect.Y * ui.TileSize
+	rect.X = re.Location.X * ui.TileSize
+	rect.Y = re.Location.Y * ui.TileSize
 
-	rect.W = (re.Rect.W + 1) * ui.TileSize
-	rect.H = (re.Rect.H + 1) * ui.TileSize
+	rect.W = (re.Width + 1) * ui.TileSize
+	rect.H = (re.Height + 1) * ui.TileSize
 
 	ui.DrawSelectorBox(rect, screen)
 }
@@ -225,4 +234,66 @@ func (re *Unit) removeModel(destroyedModel *Model) {
 
 	// remove from active duty
 	re.Models = append(re.Models[:index], re.Models[index+1:]...)
+}
+
+func (re *Unit) SetMoveRange() {
+
+	// remove unit temporarily so it doesn't conflict with itself
+	re.Remove()
+
+	movement := re.Models[0].Movement + 1
+
+	movementRange := make(map[string]Location)
+
+	floodfill(movementRange, re.Location.X, re.Location.Y, re.Width, re.Height, movement)
+
+	re.Place()
+
+	for k, l := range movementRange {
+		if !IsBattleGroundLocationFree(l, &Game().BattleGround) {
+			delete(movementRange, k)
+		}
+	}
+
+	re.MovementRange = movementRange
+}
+
+func floodfill(tiles map[string]Location, x int, y int, w int, h int, moves int) {
+
+	if !IsBattleGroundLocationRectFree(x, y, w, h, &Game().BattleGround) {
+		return
+	}
+
+	for c := 0; c < w; c++ {
+		for r := 0; r < h; r++ {
+			l := Location{X: x + c, Y: y + r}
+
+			key := fmt.Sprintf("%d_%d", l.X, l.Y)
+
+			tiles[key] = l
+		}
+	}
+
+	moves = moves - 1
+
+	if moves == 0 {
+		return
+	}
+
+	// check up
+	floodfill(tiles, x, y-1, w, h, moves)
+
+	floodfill(tiles, x-1, y-1, w, h, moves)
+	floodfill(tiles, x+1, y+1, w, h, moves)
+	floodfill(tiles, x-1, y+1, w, h, moves)
+	floodfill(tiles, x+1, y-1, w, h, moves)
+
+	// check right
+	floodfill(tiles, x+1, y, w, h, moves)
+
+	// check down
+	floodfill(tiles, x, y+1, w, h, moves)
+
+	// check left
+	floodfill(tiles, x-1, y, w, h, moves)
 }

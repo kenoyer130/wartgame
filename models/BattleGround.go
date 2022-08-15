@@ -31,11 +31,7 @@ func NewBattleGround(x int, y int) *BattleGround {
 	b.Size.X = x
 	b.Size.Y = y
 
-	b.Grid = make([][]Entity, x)
-
-	for i := range b.Grid {
-		b.Grid[i] = make([]Entity, y)
-	}
+	b.Grid = New2DArray[Entity](x, y)
 
 	b.ViewPort = ViewPort{X: 0, Y: 0, Height: 28, Width: 45}
 
@@ -74,4 +70,22 @@ func IsBattleGroundLocationFree(l Location, battleGround *BattleGround) bool {
 	} else {
 		return true
 	}
+}
+
+func IsBattleGroundLocationRectFree(x int, y int, w int, h int, battleGround *BattleGround) bool {
+
+	for i := 0; i < w; i++ {
+		for j := 0; j < h; j++ {
+
+			if(x+i < 0 || x+i > len(battleGround.Grid)) || (x+i < 0 || y+j > len(battleGround.Grid[i])){
+				return false
+			}
+
+			if battleGround.Grid[x+i][y+j] != nil {
+				return false
+			}
+		}	
+	}
+
+	return true
 }

@@ -1,4 +1,4 @@
 * TODO   
  ** if zero units moral phase loops 
  ** weapon phase looping
- **  switch to single unit tiles
+ **  off viewport movement range really laggy

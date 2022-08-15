@@ -43,6 +43,8 @@ func (re MovePhase) MoverSelected(unit *models.Unit) {
 		return
 	}
 
+	unit.SetMoveRange()
+
 	models.Game().SelectedPhaseUnit = unit
 	engine.WriteMessage("Selected Unit to move: " + unit.Name)
 
