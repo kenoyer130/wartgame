@@ -2,6 +2,15 @@
     "Name": "Intercessor Unit",
     "Army": "Space Marines",
     "Power": 5,
+    "Token": {
+        "ID": "IU",
+        "RGBA": {
+            "R": 47,
+            "G": 82,
+            "B": 145,
+            "A": 255
+        }
+    },
     "Models": [
         {
             "Name": "Intercessor",
@@ -19,15 +28,6 @@
             "Leadership": 7,
             "Save": "3+",
             "Base": 1,
-            "Token": {
-                "ID": "Int",
-                "RGBA": {
-                    "R": 47,
-                    "G": 82,
-                    "B": 145,
-                    "A": 255
-                }
-            },
             "DefaultWeapons": [
                 "AutoBoltRifle",
                 "FragGrenades"
@@ -50,15 +50,6 @@
             "Save": "3+",
             "ModelType": "Leader",
             "Base": 1,
-            "Token": {
-                "ID": "InS",
-                "RGBA": {
-                    "R": 47,
-                    "G": 82,
-                    "B": 145,
-                    "A": 255
-                }
-            },
             "DefaultWeapons": [
                 "AutoBoltRifle",
                 "FragGrenades"

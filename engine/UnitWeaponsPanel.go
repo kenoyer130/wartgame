@@ -94,7 +94,7 @@ func (re UnitWeaponsPanel) drawWeapons(weaponPanel *PanelVertical) {
 
 				selected := ""
 
-				if(thisWeapon.Name == models.Game().SelectedWeaponName) {
+				if(models.Game().SelectedWeapon != nil && thisWeapon.Name == models.Game().SelectedWeapon.Weapon.Name) {
 					selected = "X"
 				}
 

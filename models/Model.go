@@ -1,13 +1,8 @@
 package models
 
 import (
-	"image/color"
 	"strconv"
 	"strings"
-
-	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text"
-	"github.com/kenoyer130/wartgame/ui"
 )
 
 type ModelType string
@@ -33,10 +28,8 @@ type Model struct {
 	Save           string
 	DefaultWeapons []string
 	Weapons        []Weapon
-	SelectedWeapon Weapon
-	Location       Location
-	ModelType      ModelType
-	Token          Token
+	SelectedWeapon Weapon	
+	ModelType      ModelType	
 	PlayerIndex    int
 }
 
@@ -117,32 +110,4 @@ func (re *Model) ClearFiredWeapon() {
 	for i := 0; i < len(re.Weapons); i++ {
 		re.Weapons[i].Fired = false
 	}
-}
-
-func (re Model) GetLocation() Location {
-	return re.Location
-}
-
-func (re *Model) SetLocation(location Location) {
-	re.Location = location
-}
-
-func (re Model) GetEntityType() EntityType {
-	return ModelEntityType
-}
-
-func (re Model) GetToken() *ebiten.Image {
-	token := ebiten.NewImage(31, 31)
-	color := color.RGBA{uint8(re.Token.RGBA.R), uint8(re.Token.RGBA.G), uint8(re.Token.RGBA.B), uint8(re.Token.RGBA.A)}
-
-	token.Fill(color)
-
-	text.Draw(token, re.Token.ID, ui.GetFontNormalFace(), 2, 24, ui.GetTextColor())
-
-	if re.Wounds != re.CurrentWounds {
-		wounds := re.Wounds - re.CurrentWounds
-		text.Draw(token, strconv.Itoa(wounds), ui.GetFontTiny(), 2, 10, ui.GetWoundColor())
-	}
-
-	return token
 }

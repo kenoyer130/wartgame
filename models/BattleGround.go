@@ -33,7 +33,7 @@ func NewBattleGround(x int, y int) *BattleGround {
 
 	b.Grid = New2DArray[Entity](x, y)
 
-	b.ViewPort = ViewPort{X: 0, Y: 0, Height: 28, Width: 45}
+	b.ViewPort = ViewPort{X: 0, Y: 0, Height: 14, Width: 23}
 
 	return &b
 }

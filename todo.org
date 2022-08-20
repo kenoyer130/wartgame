@@ -1,4 +1,4 @@
 * TODO   
- ** if zero units moral phase loops 
- ** weapon phase looping
+ ** if zero units moral phase loops  
  **  off viewport movement range really laggy
+ ** morale phase looping

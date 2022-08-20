@@ -7,7 +7,7 @@ import (
 )
 
 type ShootingTargetingPhase struct {
-	ShootingWeaponPhase *ShootingWeaponPhase
+	OnCompleted func()
 }
 
 func (re ShootingTargetingPhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
@@ -49,5 +49,12 @@ func (re ShootingTargetingPhase) targetSelected(unit *models.Unit, target *model
 	engine.WriteMessage("Selected Target: " + target.Name)
 
 	engine.ClearKeyBoardRegistry()
-	re.ShootingWeaponPhase.Start()
+
+	shootingWeaponPhase := ShootingWeaponPhase {}
+
+	shootingWeaponPhase.OnCompleted = func() {
+		re.OnCompleted()
+	}
+
+	shootingWeaponPhase.Start()
 }

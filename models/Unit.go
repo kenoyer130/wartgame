@@ -1,7 +1,7 @@
 package models
 
 import (
-	"fmt"
+	"image/color"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -24,71 +24,70 @@ type Unit struct {
 	Width              int
 	Height             int
 	Rect               ui.Rect
-	MovementRect       ui.Rect
-	MovementRange      map[string]Location
+	Token              Token
 }
 
-func (re *Unit) Place() {
-	size := re.findLargest(len(re.Models))
+func (re *Unit) GetLocation() Location {
+	return re.Location
+}
+
+func (re *Unit) SetLocation(location Location) {
+	re.Location = location
+	PlaceBattleGroundEntity(re, &Game().BattleGround)
+}
+
+func (re *Unit) GetEntityType() EntityType {
+	return UnitEntityType
+}
+
+func (re *Unit) GetToken() *ebiten.Image {
+
+	x := re.Location.X
+	y := re.Location.Y
+
+	token := ebiten.NewImage(64, 64)
+	color := color.RGBA{uint8(re.Token.RGBA.R), uint8(re.Token.RGBA.G), uint8(re.Token.RGBA.B), uint8(re.Token.RGBA.A)}
+
+	tline := ui.DrawLine(64)
+
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(float64(x-32), float64(y-32))
+
+	token.DrawImage(tline, op)
+
+	token.Fill(color)
 
 	index := 0
 
-	row := 0
-	col := 0
+	for col := 0; col < 4; col++ {
+		for row := 0; row < 4; row++ {
+			if len(re.Models) < index {
+				break
+			}
 
-	for index < len(re.Models) {
+			model := ebiten.NewImage(12, 12)
+			color := ui.GetMoveRangeColor()  
 
-		model := re.Models[index]
-		RemoveBattleGroundEntity(model, &Game().BattleGround)
+			model.Fill(color)
 
-		model.Location = Location{re.Location.X + row, re.Location.Y + col}
+			op := &ebiten.DrawImageOptions{}
+			op.GeoM.Translate(float64(col*14)+5, float64(row*14)+5)
 
-		PlaceBattleGroundEntity(model, &Game().BattleGround)
+			token.DrawImage(model, op)
 
-		Game().GameStateUpdater.UpdateModel(model.PlayerIndex, model)
-
-		re.Width = int(math.Max(float64(re.Width), float64(col)))
-		re.Height = int(math.Max(float64(re.Height), float64(row)))
-
-		col++
-
-		if col > size {
-			col = 0
-			row++
+			index++
 		}
-
-		index++
 	}
 
-	// adjust height
-	re.Height = re.Height + 2
+	return token
+}
 
-	re.Rect = ui.Rect{X: re.Location.X, Y: re.Location.Y, W: re.Width, H: re.Height}
-
-	re.setMovementRect()
+func (re *Unit) GetID() string {
+	return re.ID
 }
 
 func (re *Unit) Remove() {
-	for i := 0; i < len(re.Models); i++ {
-		model := re.Models[i]
-		RemoveBattleGroundEntity(model, &Game().BattleGround)
-	}
-}
-
-func (re *Unit) setMovementRect() {
-	m := re.Models[0].Movement
-
-	x := re.Location.X - m
-	w := (m * 2) + re.Width
-
-	y := re.Location.Y - m
-	h := (m * 2) + re.Height
-
-	re.MovementRect = ui.Rect{X: x, Y: y, W: w, H: h}
-}
-
-func (re Unit) findLargest(x int) int {
-	return int(math.Sqrt(float64(x)))
+	RemoveBattleGroundEntity(re, &Game().BattleGround)
 }
 
 func (re *Unit) Cleanup() {
@@ -177,10 +176,9 @@ func (re *Unit) InflictWounds(targetModel Model, str int) bool {
 	if model.CurrentWounds <= 0 {
 		re.removeModel(model)
 		return true
-	} else {
-		UpdateBattleGroundEntity(model, &Game().BattleGround)
-		return false
 	}
+
+	return false
 }
 
 func (re *Unit) GetModelByID(id string) *Model {
@@ -226,74 +224,9 @@ func (re *Unit) removeModel(destroyedModel *Model) {
 
 	index := re.GetModelIndexByID(destroyedModel.ID)
 
-	// remove from map
-	Game().BattleGround.RemoveEntity(destroyedModel.Location)
-
 	// add model to killed list
 	re.DestroyedModels = append(re.DestroyedModels, destroyedModel)
 
 	// remove from active duty
 	re.Models = append(re.Models[:index], re.Models[index+1:]...)
-}
-
-func (re *Unit) SetMoveRange() {
-
-	// remove unit temporarily so it doesn't conflict with itself
-	re.Remove()
-
-	movement := re.Models[0].Movement + 1
-
-	movementRange := make(map[string]Location)
-
-	floodfill(movementRange, re.Location.X, re.Location.Y, re.Width, re.Height, movement)
-
-	re.Place()
-
-	for k, l := range movementRange {
-		if !IsBattleGroundLocationFree(l, &Game().BattleGround) {
-			delete(movementRange, k)
-		}
-	}
-
-	re.MovementRange = movementRange
-}
-
-func floodfill(tiles map[string]Location, x int, y int, w int, h int, moves int) {
-
-	if !IsBattleGroundLocationRectFree(x, y, w, h, &Game().BattleGround) {
-		return
-	}
-
-	for c := 0; c < w; c++ {
-		for r := 0; r < h; r++ {
-			l := Location{X: x + c, Y: y + r}
-
-			key := fmt.Sprintf("%d_%d", l.X, l.Y)
-
-			tiles[key] = l
-		}
-	}
-
-	moves = moves - 1
-
-	if moves == 0 {
-		return
-	}
-
-	// check up
-	floodfill(tiles, x, y-1, w, h, moves)
-
-	floodfill(tiles, x-1, y-1, w, h, moves)
-	floodfill(tiles, x+1, y+1, w, h, moves)
-	floodfill(tiles, x-1, y+1, w, h, moves)
-	floodfill(tiles, x+1, y-1, w, h, moves)
-
-	// check right
-	floodfill(tiles, x+1, y, w, h, moves)
-
-	// check down
-	floodfill(tiles, x, y+1, w, h, moves)
-
-	// check left
-	floodfill(tiles, x-1, y, w, h, moves)
 }

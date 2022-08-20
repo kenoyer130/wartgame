@@ -9,9 +9,16 @@ import (
 
 func main() {
 
+	// f, err := os.Create("perf.log")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// pprof.StartCPUProfile(f)
+	// defer pprof.StopCPUProfile()
+
 	models.InitGameState()
-	
-	setMainWindow()	
+
+	setMainWindow()
 
 	if err := initilizer.StartGame(); err != nil {
 		engine.Error(err.Error())

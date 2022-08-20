@@ -43,8 +43,6 @@ func (re MovePhase) MoverSelected(unit *models.Unit) {
 		return
 	}
 
-	unit.SetMoveRange()
-
 	models.Game().SelectedPhaseUnit = unit
 	engine.WriteMessage("Selected Unit to move: " + unit.Name)
 
@@ -116,7 +114,7 @@ func (re MovePhase) registerMovementKeys(unit *models.Unit) {
 
 	engine.KeyBoardRegistry[ebiten.KeyNumpad3] = func() {
 		unit.Location.Y = unit.Location.Y + 1
-		unit.Location.Y = unit.Location.X + 1
+		unit.Location.X = unit.Location.X + 1
 		re.doMove(unit)
 	}
 
@@ -136,8 +134,6 @@ func (re MovePhase) doMove(unit *models.Unit) {
 	unit.CurrentMoves--
 
 	models.Game().StatusMessage.Keys = fmt.Sprintf("%d moves left! Use [Num] keys to move. Press [Space] to for next unit!", unit.CurrentMoves)
-
-	unit.Place()
 
 	if unit.CurrentMoves < 1 {
 		unit.AddState(models.UnitMoved)

@@ -19,30 +19,29 @@ func Game() *GameState {
 }
 
 type GameState struct {
-	Initialized         bool
-	CurrentGameState    GameStates
-	Round               int
-	BattleGround        BattleGround
-	PhaseStepper        interfaces.PhaseStepper
-	DiceRoller          DiceRoller
-	Players             [consts.MaxPlayers]Player
-	CurrentPlayer       *Player
-	CurrentPlayerIndex  int
-	StartPlayerIndex    int
-	SelectedUnit        *Unit
-	DraggingUnit        *Unit
-	SelectedPhaseUnit   *Unit
-	SelectedTargetUnit  *Unit
-	SelectedModel       *Model
-	SelectedWeaponName  string
-	SelectedWeaponIndex int
-	SelectedWeapons     []Weapon
-	Assets              Assets
-	UIState             UIState
-	StatusMessage       StatusMessage
-	Dice                []int
-	GameStateUpdater    GameStateUpdater
-	Drawer              interfaces.Draw
+	Initialized          bool
+	CurrentGameState     GameStates
+	Round                int
+	BattleGround         BattleGround
+	PhaseStepper         interfaces.PhaseStepper
+	DiceRoller           DiceRoller
+	Players              [consts.MaxPlayers]Player
+	CurrentPlayer        *Player
+	CurrentPlayerIndex   int
+	StartPlayerIndex     int
+	SelectedUnit         *Unit
+	DraggingUnit         *Unit
+	DraggingUnitLocation Location
+	SelectedPhaseUnit    *Unit
+	SelectedTargetUnit   *Unit
+	SelectedModel        *Model
+	SelectedWeapon       *ShootingWeapon		
+	Assets               Assets
+	UIState              UIState
+	StatusMessage        StatusMessage
+	Dice                 []int
+	GameStateUpdater     GameStateUpdater
+	Drawer               interfaces.Draw
 }
 
 type UIState struct {

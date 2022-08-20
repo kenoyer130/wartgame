@@ -90,8 +90,7 @@ func drawModelInfo(unit string, model models.Model, panel *Panel, c int) {
 
 	var values []string
 	r := 2
-
-	values = append(values, model.Token.ID)
+	
 	values = append(values, strconv.Itoa(model.Movement))
 	values = append(values, model.WeaponSkill)
 	values = append(values, model.BallisticSkill)

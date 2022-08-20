@@ -22,7 +22,7 @@ func DrawEntities(background interfaces.Draw) {
 			token := entity.GetToken()
 
 			entityX := entity.GetLocation().X
-			entitY := entity.GetLocation().Y			
+			entitY := entity.GetLocation().Y
 
 			x := float64((entityX * ui.TileSize) + 1)
 			y := float64((entitY * ui.TileSize) + 1)
@@ -33,27 +33,16 @@ func DrawEntities(background interfaces.Draw) {
 		}
 	}
 
-	DrawMoveRange(background)
-}
+	if models.Game().DraggingUnit != nil {
 
-func DrawMoveRange(background interfaces.Draw) {
-	if models.Game().PhaseStepper.GetPhase() != interfaces.MovementPhase || models.Game().SelectedPhaseUnit.Name == "" {
-		return
-	}
-
-	mUnit := models.Game().SelectedPhaseUnit
-
-	for _, loc := range mUnit.MovementRange {
-
-		tile := ebiten.NewImage(31, 31)
-		color := ui.GetMoveRangeColor()
-		tile.Fill(color)
-
-		x := loc.X
-		y := loc.Y
-
+		marker := ebiten.NewImage(31, 31)
 		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(float64((x*ui.TileSize)+1), float64((y*ui.TileSize)+1))
-		background.DrawImage(tile, op)
+		op.GeoM.Translate(float64(models.Game().DraggingUnitLocation.X), float64(models.Game().DraggingUnitLocation.Y))
+		color := ui.GetGridOutlineColor()
+		marker.Fill(color)
+
+		//text.Draw(token, re.Token.ID, ui.GetFontNormalFace(), 2, 24, ui.GetTextColor())
+		background.DrawImage(marker, op)
+
 	}
 }

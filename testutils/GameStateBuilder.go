@@ -19,9 +19,4 @@ func initDate() {
 	models.Game().Assets.Weapons["testW2"] = models.Weapon{
 		Name: "testW2",
 	}
-
-	models.Game().SelectedWeapons = []models.Weapon{
-		{
-			Damage: 1,
-		}}
 }

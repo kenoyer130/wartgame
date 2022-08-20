@@ -1,7 +1,16 @@
 {
     "Name": "Guardian Defenders",
     "Army": "Aeldari",
-    "Power": 4,
+    "Power": 4,   
+    "Token": {
+        "ID": "GD",        
+        "RGBA": {
+            "R": 177,
+            "G": 68,
+            "B": 52,
+            "A": 255
+        }
+    },
     "Models": [
         {
             "Name": "Guardian Defender",
@@ -18,16 +27,6 @@
             "Attacks": 1,
             "Leadership": 7,
             "Save": "4+",
-            "Token": {
-                "ID": "GD",
-                "Base": 1,
-                "RGBA": {
-                    "R": 177,
-                    "G": 68,
-                    "B": 52,
-                    "A": 255
-                }
-            },
             "DefaultWeapons": [
                 "ShurikenCatapult"
             ]
@@ -47,17 +46,7 @@
             "Attacks": 1,
             "Leadership": 7,
             "Save": "3+",
-            "ModelType": "Leader",
-            "Token": {
-                "ID": "HWP",
-                "Base": 2,
-                "RGBA": {
-                    "R": 177,
-                    "G": 68,
-                    "B": 52,
-                    "A": 255
-                }
-            },
+            "ModelType": "Leader",            
             "DefaultWeapons": [
                 "ShurikenCannon"
             ]

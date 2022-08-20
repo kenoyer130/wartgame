@@ -41,9 +41,7 @@ func TestMain(m *testing.M) {
 
 		targetUnit.Models = append(targetUnit.Models, &target)
 	}
-
-	models.Game().SelectedWeaponName = "testW1"
-	models.Game().SelectedWeaponIndex = 0
+	
 	models.Game().SelectedPhaseUnit = &shootingUnit
 	models.Game().SelectedTargetUnit = &targetUnit
 

@@ -35,8 +35,8 @@ func StartGame() error {
 	}
 
 	// for now just place units across from each other
-	setPlayerUnitStartingLocation(0, 24, 12)
-	setPlayerUnitStartingLocation(1, 4, 12)
+	setPlayerUnitStartingLocation(0, 12, 6)
+	setPlayerUnitStartingLocation(1, 2, 6)
 
 	// roll and set first player
 	rand.Seed(time.Now().UnixNano())
@@ -61,9 +61,6 @@ func setPlayerUnitStartingLocation(player int, x int, y int) {
 	for i := 0; i < len(models.Game().Players[player].Army.Units); i++ {
 
 		unit := models.Game().Players[player].Army.Units[i]
-
-		unit.Location = models.Location{X: x, Y: y}
-
-		unit.Place()
+		unit.SetLocation(models.Location{X: x, Y: y})
 	}
 }

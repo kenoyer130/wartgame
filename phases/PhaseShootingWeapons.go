@@ -8,8 +8,8 @@ import (
 )
 
 type ShootingWeaponPhase struct {
-	ShootingAttackPhase *ShootingAttackPhase
-	ShootingPhase       *ShootingPhase
+	UnitWeapons map[string]*models.ShootingWeapon
+	OnCompleted func()
 }
 
 func (re ShootingWeaponPhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
@@ -18,34 +18,55 @@ func (re ShootingWeaponPhase) GetName() (interfaces.GamePhase, interfaces.PhaseS
 
 func (re ShootingWeaponPhase) Start() {
 
+	re.UnitWeapons = make(map[string]*models.ShootingWeapon)
+
 	models.Game().SelectedUnit = models.Game().SelectedPhaseUnit
 
 	models.Game().StatusMessage.Messsage = "Weapon Selection Phase!"
 	models.Game().StatusMessage.Keys = "Press [Space] to attack with current weapon or [X] to skip!"
 
-	models.Game().SelectedWeaponName = ""
-
 	for _, model := range models.Game().SelectedPhaseUnit.Models {
-		weapon := model.GetUnfiredWeapon()
-
-		if weapon != nil {
-			models.Game().SelectedWeaponName = weapon.Name
-			for i := 0; i < len(models.Game().SelectedPhaseUnit.Models); i++ {
-				models.Game().SelectedPhaseUnit.Models[i].SetFiredWeapon(weapon)
+		for _, weapon := range model.Weapons {
+			if re.UnitWeapons[weapon.Name] == nil {
+				shootingWeapon := models.ShootingWeapon{Model: *model, Weapon: weapon, Count: 1}
+				re.UnitWeapons[weapon.Name] = &shootingWeapon
+			} else {
+				shootingWeapon := re.UnitWeapons[weapon.Name]
+				shootingWeapon.Count++
+				re.UnitWeapons[weapon.Name] = shootingWeapon
 			}
-
-			break
 		}
 	}
 
-	if models.Game().SelectedWeaponName == "" {
+	re.loop()
+}
+
+func (re ShootingWeaponPhase) loop() {
+
+	if len(re.UnitWeapons) == 0 {
 		models.Game().SelectedPhaseUnit.AddState(models.UnitShot)
-		re.ShootingPhase.Start()
+		re.OnCompleted();
 		return
 	}
 
+	shootingWeapon := models.ShootingWeapon{}
+
+	for _, currentWeapon := range re.UnitWeapons {
+		shootingWeapon = *currentWeapon
+		break
+	}
+
+	models.Game().SelectedWeapon = &shootingWeapon
+
 	//TODO skip weapons out of range
 	engine.KeyBoardRegistry[ebiten.KeySpace] = func() {
-		re.ShootingAttackPhase.Start()
+		shootingAttackPhase := ShootingAttackPhase{}
+
+		shootingAttackPhase.OnCompleted = func() {
+			delete(re.UnitWeapons, shootingWeapon.Weapon.Name)
+			re.loop()
+		}
+
+		shootingAttackPhase.Start()
 	}
 }

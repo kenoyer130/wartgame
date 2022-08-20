@@ -43,27 +43,12 @@ func checkKeyboardRegistery() {
 }
 
 func checkUnitSelection() {
-	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-		
-		for _, player := range models.Game().Players {
-			for _, unit := range player.Army.Units {
-				cx, cy := ebiten.CursorPosition()
-				if unit.Rect.InPixelBounds(cx, cy) {
-					models.Game().SelectedUnit = unit
-					models.Game().SelectedModel = unit.Models[0]
-					models.Game().DraggingUnit = unit
-				}
-			}
-		}		
-	}
-
-	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
-		//models.Game().DraggingUnit = nil
-	}
+	
 }
 
 func checkEsc() {
 	if inpututil.IsKeyJustReleased(ebiten.KeyEscape) {
+		//pprof.StopCPUProfile()
 		os.Exit(0)
 	}
 }

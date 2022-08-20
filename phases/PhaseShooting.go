@@ -18,29 +18,15 @@ func (re ShootingPhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
 
 func (re ShootingPhase) Start() {
 
-	if re.ShootingTargetingPhase == nil {
-		re.init()
-	}
-
 	models.Game().StatusMessage.Phase = "Shooting Phase"
 	models.Game().StatusMessage.Messsage = "Select next unit to shoot!"
 	models.Game().StatusMessage.Keys = "Press [Q] and [E] to cycle units! Press [Space] to select!"
-
-	unitCycler := NewUnitCycler(models.Game().CurrentPlayer, re.UnitIsValidShooter, re.ShooterSelected, false)
-
-	unitCycler.CycleUnits()
+	re.loop()
 }
 
-func (re *ShootingPhase) init() {
-	re.ShootingTargetingPhase = &ShootingTargetingPhase{}
-	re.ShootingWeaponPhase = &ShootingWeaponPhase{}
-	re.ShootingAttackPhase = &ShootingAttackPhase{}
-
-	// this sets up our combat cycle
-	re.ShootingTargetingPhase.ShootingWeaponPhase = re.ShootingWeaponPhase
-	re.ShootingWeaponPhase.ShootingAttackPhase = re.ShootingAttackPhase
-	re.ShootingAttackPhase.ShootingWeaponPhase = re.ShootingWeaponPhase
-	re.ShootingWeaponPhase.ShootingPhase = re
+func (re ShootingPhase) loop() {
+	unitCycler := NewUnitCycler(models.Game().CurrentPlayer, re.UnitIsValidShooter, re.ShooterSelected, false)
+	unitCycler.CycleUnits()
 }
 
 func (re ShootingPhase) UnitIsValidShooter(unit *models.Unit) bool {
@@ -57,5 +43,9 @@ func (re ShootingPhase) ShooterSelected(unit *models.Unit) {
 	models.Game().SelectedPhaseUnit = unit
 	engine.WriteMessage("Selected Unit to shoot: " + unit.Name)
 
-	re.ShootingTargetingPhase.Start()
+	shootingTargetingPhase := ShootingTargetingPhase{}
+	shootingTargetingPhase.OnCompleted = func() {
+		re.loop()
+	}
+	shootingTargetingPhase.Start()
 }

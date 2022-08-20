@@ -7,7 +7,7 @@ import (
 type EntityType int64
 
 const (
-	ModelEntityType EntityType = 0
+	UnitEntityType EntityType = 0
 )
 
 type Entity interface {
