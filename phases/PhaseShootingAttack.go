@@ -18,6 +18,7 @@ type ShootingAttackPhase struct {
 	weaponCount         int
 	OnCompleted         func()
 	TargetUnits         models.Stack
+	WeaponAttacks       int
 }
 
 func (re ShootingAttackPhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
@@ -36,8 +37,9 @@ func (re ShootingAttackPhase) Start() {
 	models.Game().StatusMessage.Messsage = fmt.Sprintf("%s is shooting %s with %d %s ", models.Game().SelectedPhaseUnit.Name, models.Game().SelectedTargetUnit.Name, re.weaponCount, re.weapon.Name)
 
 	shots := weaponabilities.ApplyWeaponAbilityShot(re.weapon)
-	
-	re.shootWeapon(re.weaponCount * shots, re.model)
+	re.WeaponAttacks = shots
+
+	re.shootWeapon(re.weaponCount*shots, re.model)
 }
 
 // break apart the unit models into toughness brackets for quicker rolling
@@ -72,7 +74,20 @@ func (re ShootingAttackPhase) setModelsByToughness() *models.Stack {
 		}
 	}
 
+	randomizeUnit(&targetUnits)
+
 	return &targetUnits
+}
+
+func randomizeUnit(targetUnits *models.Stack) {
+	targetUnits.Randomize()
+
+	for i, _ := range targetUnits.Array() {
+		modelPeek := targetUnits.Array()[i]
+		modelStack := modelPeek.(models.Stack)
+		modelStack.Randomize()
+		targetUnits.Array()[i] = modelStack
+	}
 }
 
 func (re ShootingAttackPhase) shootWeapon(weaponCount int, model models.Model) {
@@ -110,8 +125,8 @@ func (re ShootingAttackPhase) rollWoundsToUnit(model *models.Model, hits int, ta
 
 func (re ShootingAttackPhase) onWoundsRolled(hits int, targetModels models.Stack, model *models.Model) {
 
-	if(hits == 0) {
-		re.OnCompleted();
+	if hits == 0 {
+		re.OnCompleted()
 		return
 	}
 
@@ -129,51 +144,82 @@ func (re ShootingAttackPhase) onWoundsRolled(hits int, targetModels models.Stack
 		Dice:   count,
 		Target: save,
 	}, func(success int, dice []int) {
-		re.allocateAttack(hits, success, count, targetModels, model)
+		re.allocateAttacks(hits, success, count, targetModels, model)
 		hits = hits - count
 		re.onWoundsRolled(hits, targetModels, model)
 	})
 }
 
-func (re ShootingAttackPhase) allocateAttack(hits int, success int, count int, targetModels models.Stack, model *models.Model) {
+func (re ShootingAttackPhase) allocateAttacks(hits int, success int, count int, targetModels models.Stack, model *models.Model) {
 
 	failed := count - success
 
-	engine.WriteMessage(fmt.Sprintf("%d models failed Saves!", failed))
+	attackCount := 0
 
-	for i := 0; i < failed; i++ {
+	if failed > 0 {
+		attackCount = (failed / re.WeaponAttacks) + 1
+	}
 
-		if hits < 1 {
+	engine.WriteMessage(fmt.Sprintf("Unit %s took %d wounds from %d attacks!", models.Game().SelectedTargetUnit.Name, failed, attackCount))
+
+	allocatedHits := failed
+
+	for attacks := 0; attacks < attackCount; attacks++ {
+
+		if allocatedHits < 1 {
 			break
 		}
 
 		popped, _ := targetModels.Pop()
 		targetModel := popped.(*models.Model)
 
-		hits = re.inflictWound(targetModel, model, hits)
+		if targetModel == nil {
+			break
+		}
+
+		allocatedHits = re.allocateAttack(allocatedHits, model, targetModel)
 	}
 
 	if len(models.Game().SelectedTargetUnit.Models) <= 0 {
 		engine.WriteMessage(fmt.Sprintf("Unit %s wiped out!", models.Game().SelectedTargetUnit.Name))
 		models.Game().SelectedTargetUnit.Destroyed = true
-		re.OnCompleted();
+		re.OnCompleted()
 
 	} else {
-		engine.WriteMessage(fmt.Sprintf("%s took %d casulties!", models.Game().SelectedTargetUnit.Name, len(models.Game().SelectedTargetUnit.DestroyedModels)))			
+		engine.WriteMessage(fmt.Sprintf("%s took %d casulties!", models.Game().SelectedTargetUnit.Name, len(models.Game().SelectedTargetUnit.DestroyedModels)))
 	}
+}
+
+func (re ShootingAttackPhase) allocateAttack(hits int, model *models.Model, targetModel *models.Model) int {
+
+	// we need to resolve per attack per model to allow extra wounds to be lost
+	// for example an Assult 3 makes 5 wounds, we need to allocate 3 wounds to one model and 2 wounds to a second model
+	for shots := 0; shots < re.WeaponAttacks; shots++ {
+
+		if hits < 1 {
+			break
+		}
+
+		hits = re.inflictWound(targetModel, model, hits)
+	}
+
+	return hits
 }
 
 func (re ShootingAttackPhase) inflictWound(target *models.Model, model *models.Model, hits int) int {
 
 	dmg := re.weapon.Damage
-
-	engine.WriteMessage(fmt.Sprintf("Model Saved Failed! %d wounds infliced!", dmg))
-
 	dead := false
 
 	for hits > 0 && !dead {
 		hits--
-		dead = models.Game().SelectedTargetUnit.InflictWounds(*target, dmg)
+		engine.WriteMessage(fmt.Sprintf("inflicting %d damage wound!", dmg))
+		dead, deadModel := models.Game().SelectedTargetUnit.InflictWounds(*target, dmg)
+
+		if dead {
+			engine.WriteMessage(fmt.Sprintf("%s was destroyed!", deadModel.Name))
+			hits = 0
+		}
 	}
 
 	return hits

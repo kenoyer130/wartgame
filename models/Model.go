@@ -14,6 +14,7 @@ const (
 type Model struct {
 	ID             string
 	Name           string
+	ShortName      string
 	Count          int
 	ModelNumber    ModelNumber
 	Movement       int
@@ -28,8 +29,8 @@ type Model struct {
 	Save           string
 	DefaultWeapons []string
 	Weapons        []Weapon
-	SelectedWeapon Weapon	
-	ModelType      ModelType	
+	SelectedWeapon Weapon
+	ModelType      ModelType
 	PlayerIndex    int
 }
 

@@ -68,7 +68,7 @@ func (re EndPhase) startNextTurn() {
 		re.startNewRound()
 	}
 
-	models.Game().PhaseStepper.Move(interfaces.ShootingPhase)
+	models.Game().PhaseStepper.Move(interfaces.MovementPhase)
 }
 
 func (re EndPhase) startNewRound() {

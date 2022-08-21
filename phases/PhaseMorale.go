@@ -54,7 +54,7 @@ func (re MoralePhase) MoraleCheckSelected(unit *models.Unit, onCompleted func())
 
 	leadership := unit.GetMoraleCheck()
 
-	engine.WriteMessage(fmt.Sprintf("Morale check for Unit %s with Leadership %d against %d", unit.Name, leadership, len(unit.DestroyedModels)))
+	engine.WriteMessage(fmt.Sprintf("Morale check for Unit %s with Leadership %d adding %d", unit.Token.ID, leadership, len(unit.DestroyedModels)))
 
 	models.Game().DiceRoller.Roll("Rolling for Morale Test", models.DiceRollType{
 		Dice:      1,

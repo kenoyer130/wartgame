@@ -8,6 +8,8 @@ import (
 
 var messages []string
 
+const messageCount = 10
+
 func WriteMessage(msg string) {
 	messages = append(messages, msg)
 	log.Println(msg)
@@ -15,14 +17,14 @@ func WriteMessage(msg string) {
 
 func getMessagePanel() *ebiten.Image {
 
-	panel := NewPanel(400, 400)
+	panel := NewPanel(400, 800)
 
 	panel.addTitle("Messages")
 
 	var msgs []string
 
-	if len(messages) > 4 {
-		msgs = messages[len(messages)-4:]
+	if len(messages) > messageCount {
+		msgs = messages[len(messages)-messageCount:]
 	} else {
 		msgs = messages
 	}

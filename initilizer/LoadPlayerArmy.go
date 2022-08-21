@@ -34,34 +34,37 @@ func LoadPlayerArmy(p *models.Player, assets models.Assets) error {
 		}
 
 		loadedModels := []*models.Model{}
+		army.Units[u].ModelCount = make(map[string]int)
 
 		// break out Models into individual
-		for _, Model := range Unit.Models {
-			count := Model.Count
+		for _, model := range Unit.Models {
+			count := model.Count
+
+			army.Units[u].ModelCount[model.Name] = count
 
 			for i := 0; i < count; i++ {
 
 				for _, assetModel := range assets.Units[Unit.Name].Models {
 
-					model := *assetModel
+					asset := *assetModel
 
-					model.CurrentWounds = model.Wounds
-					model.ID = uuid.New().String()
+					asset.CurrentWounds = model.Wounds
+					asset.ID = uuid.New().String()
 
-					for _, weaponKey := range Model.DefaultWeapons {
-						model.Weapons = append(Model.Weapons , assets.Weapons[weaponKey])
+					for _, weaponKey := range model.DefaultWeapons {
+						asset.Weapons = append(model.Weapons , assets.Weapons[weaponKey])
 					}
 
 					// find matching asset model
-					if assetModel.Name == Model.Name {
-						loadedModels = append(loadedModels, &model)
+					if assetModel.Name == model.Name {
+						loadedModels = append(loadedModels, &asset)
 					}
 				}
 			}
 		}
 
 		army.Units[u].Models = loadedModels
-		army.Units[u].OriginalModelCount = len(army.Units[u].Models)
+		army.Units[u].OriginalModelCount = len(army.Units[u].Models)		
 		army.Units[u].Token = assets.Units[Unit.Name].Token
 	}
 

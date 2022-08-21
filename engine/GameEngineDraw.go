@@ -13,11 +13,10 @@ func GameEngineDraw(screen *ebiten.Image) {
 	drawMainView(background)
 
 	drawGameInfoPanel(background)
-	drawModelPanel(background)
-	drawMessagePanel(background)
+	drawModelPanel(background)	
 	drawTopStatusPanel(background)
 	drawStatusPanel(background)
-	drawDiceRollerPanel(background)
+	drawMessagePanel(background)
 
 	screen.DrawImage(background, nil)
 }
@@ -28,14 +27,6 @@ func drawMainView(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(0, 40)
 	screen.DrawImage(mainViewPanel, op)
-}
-
-func drawDiceRollerPanel(screen *ebiten.Image) {
-	diceRollerPanel := models.Game().DiceRoller.GetUIPanel(models.Game().DiceRoller.GetDice())
-
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(getLeftXStartingPixel()+ui.Margin, 700)
-	screen.DrawImage(diceRollerPanel, op)
 }
 
 func drawStatusPanel(screen *ebiten.Image) {
@@ -56,7 +47,7 @@ func drawMessagePanel(screen *ebiten.Image) {
 	messagePanel := getMessagePanel()
 
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(getLeftXStartingPixel(), 125)
+	op.GeoM.Translate(getLeftXStartingPixel()+ui.Margin, 600)
 	screen.DrawImage(messagePanel, op)
 }
 
@@ -71,7 +62,7 @@ func drawGameInfoPanel(screen *ebiten.Image) {
 func drawModelPanel(screen *ebiten.Image) {
 	ModelPanel := getUnitPanel(models.Game().SelectedUnit)
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(getLeftXStartingPixel(), 275)
+	op.GeoM.Translate(getLeftXStartingPixel(), 155)
 	screen.DrawImage(ModelPanel, op)
 }
 

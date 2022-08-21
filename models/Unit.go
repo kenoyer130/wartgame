@@ -13,6 +13,7 @@ type Unit struct {
 	Name               string
 	Army               string
 	Models             []*Model
+	ModelCount         map[string]int
 	DestroyedModels    []*Model
 	Power              int
 	Location           Location
@@ -61,7 +62,7 @@ func (re *Unit) GetToken() *ebiten.Image {
 
 	for col := 0; col < 4; col++ {
 		for row := 0; row < 4; row++ {
-			if len(re.Models) < index {
+			if len(re.Models) -1 < index {
 				break
 			}
 
@@ -166,19 +167,19 @@ func (re Unit) DrawUnitSelected(screen *ebiten.Image) {
 	ui.DrawSelectorBox(rect, screen)
 }
 
-func (re *Unit) InflictWounds(targetModel Model, str int) bool {
+func (re *Unit) InflictWounds(targetModel Model, str int) (bool, Model) {
 
 	var model = re.GetModelByID(targetModel.ID)
 
 	hp := model.CurrentWounds - str
 	model.CurrentWounds = hp
 
-	if model.CurrentWounds <= 0 {
+	if model.CurrentWounds <= 0 {	
 		re.removeModel(model)
-		return true
+		return true, *model
 	}
 
-	return false
+	return false, Model {}
 }
 
 func (re *Unit) GetModelByID(id string) *Model {

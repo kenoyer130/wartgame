@@ -39,7 +39,7 @@ func (re DiceRoller) Roll(msg string, diceRollType models.DiceRollType, onRolled
 		die := rand.Intn(6) + 1
 
 		if diceRollType.AddToDice > 0 {
-			die = die + diceRollType.AddToDice
+			die = die + diceRollType.AddToDice			
 		}
 
 		results = append(results, die)
@@ -80,7 +80,7 @@ type DiceRollerUI struct {
 
 func (re DiceRoller) GetUIPanel(dice []int) *ebiten.Image {
 
-	panel := ebiten.NewImage(400, 300)
+	panel := ebiten.NewImage(400, 125)
 
 	text.Draw(panel, "Dice", ui.GetFontBold(), ui.Margin, 25, ui.GetTextColor())
 
