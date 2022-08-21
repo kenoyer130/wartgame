@@ -24,7 +24,7 @@ type GameState struct {
 	Round                int
 	BattleGround         BattleGround
 	PhaseStepper         interfaces.PhaseStepper
-	DiceRoller           DiceRoller
+	DiceRoller           interfaces.DiceRoller
 	Players              [consts.MaxPlayers]Player
 	CurrentPlayer        *Player
 	CurrentPlayerIndex   int
@@ -35,13 +35,14 @@ type GameState struct {
 	SelectedPhaseUnit    *Unit
 	SelectedTargetUnit   *Unit
 	SelectedModel        *Model
-	SelectedWeapon       *ShootingWeapon		
+	SelectedWeapon       *ShootingWeapon
 	Assets               Assets
 	UIState              UIState
 	StatusMessage        StatusMessage
 	Dice                 []int
 	GameStateUpdater     GameStateUpdater
 	Drawer               interfaces.Draw
+	WeaponAbilityList    interfaces.WeaponAbilityList
 }
 
 type UIState struct {

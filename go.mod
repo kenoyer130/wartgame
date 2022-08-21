@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/google/uuid v1.3.0
-	github.com/hajimehoshi/ebiten v1.12.12
 	github.com/hajimehoshi/ebiten/v2 v2.3.7
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/image v0.0.0-20220321031419-a8550c1d254a
@@ -24,7 +23,7 @@ require (
 	github.com/jezek/xgb v1.0.0 // indirect
 	golang.org/x/exp v0.0.0-20190731235908-ec7cb31e5a56 // indirect
 	golang.org/x/mobile v0.0.0-20220518205345-8578da9835fd // indirect
-	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.0.0-20220408201424-a24fb2fb8a0f // indirect
+	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
+	golang.org/x/sys v0.0.0-20220818161305-2296e01440c6 // indirect
 	golang.org/x/text v0.3.7 // indirect; indirect\
 )

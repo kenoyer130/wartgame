@@ -20,7 +20,7 @@
         "Strength": 3,
         "ArmorPiercing": 0,
         "Damage": 1,
-        "Abilities":[
+        "Abilities": [
             "Blast"
         ]
     },
@@ -34,7 +34,7 @@
         "Strength": 4,
         "ArmorPiercing": -1,
         "Damage": 1,
-        "Abilities" : [
+        "Abilities": [
             "Shuriken"
         ]
     },
@@ -48,7 +48,7 @@
         "Strength": 6,
         "ArmorPiercing": -1,
         "Damage": 2,
-        "Abilities" : [
+        "Abilities": [
             "Shuriken"
         ]
     }

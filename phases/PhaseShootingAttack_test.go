@@ -5,7 +5,6 @@ import (
 
 	"github.com/kenoyer130/wartgame/models"
 	"github.com/kenoyer130/wartgame/testutils"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestMain(m *testing.M) {
@@ -49,50 +48,20 @@ func TestMain(m *testing.M) {
 }
 
 func TestShootingPhase(t *testing.T) {
-	// assemble
-	phase := ShootingAttackPhase{}
+	// // assemble
+	// phase := ShootingAttackPhase{}
 
-	roller := testutils.DiceRollerFake{
-		Success: 1,
-		Dice:    []int{6},
-		Model:   *models.Game().SelectedPhaseUnit.Models[0],
-	}
+	// roller := testutils.DiceRollerFake{
+	// 	Success: 1,
+	// 	Dice:    []int{6},
+	// 	Model:   *models.Game().SelectedPhaseUnit.Models[0],
+	// }
 
-	models.Game().DiceRoller = roller
+	// models.Game().DiceRoller = roller
 
-	// act
-	phase.Start()
+	// // act
+	// phase.Start()
 
-	// assert
-	assert.Equal(t, len(models.Game().SelectedTargetUnit.DestroyedModels), 0)
-}
-
-func TestSetModelsByToughness(t *testing.T) {
-	// assemble
-	phase := ShootingAttackPhase{}
-
-	targetUnit := models.Unit{}
-	targets := [3]*models.Model{}
-
-	targets[0] = &models.Model{Toughness: 3}
-	targets[1] = &models.Model{Toughness: 3}
-	targets[2] = &models.Model{Toughness: 5}
-
-	targetUnit.Models = targets[:]
-
-	models.Game().SelectedTargetUnit = &targetUnit
-
-	// act
-	targetUnits := phase.setModelsByToughness()
-
-	// assert
-	assert.Equal(t, 2, targetUnits.Count())
-
-	pop1, _ := targetUnits.Pop()
-	firstSet := pop1.(models.Stack)
-	assert.Equal(t, 1, firstSet.Count())
-
-	pop2, _ := targetUnits.Pop()
-	secondSet := pop2.(models.Stack)
-	assert.Equal(t, 2, secondSet.Count())
+	// // assert
+	// assert.Equal(t, len(models.Game().SelectedTargetUnit.DestroyedModels), 0)
 }

@@ -13,3 +13,7 @@ func ApplyWeaponAbilityShot(weapon models.Weapon) int {
 
 	return weapon.WeaponType.Number
 }
+
+func GetWeaponAbility() {
+	
+}

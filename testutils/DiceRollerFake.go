@@ -2,6 +2,7 @@ package testutils
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kenoyer130/wartgame/interfaces"
 	"github.com/kenoyer130/wartgame/models"
 )
 
@@ -11,7 +12,11 @@ type DiceRollerFake struct {
 	Model	models.Model
 }
 
-func (re DiceRollerFake) Roll(msg string, diceRollType models.DiceRollType, onRolled func(int, []int)) {
+func (re DiceRollerFake) Suppress(suppress bool) {
+
+}
+
+func (re DiceRollerFake) Roll(msg string, diceRollType interfaces.DiceRollType,  onRoll func(die int) int, onRolled func(int, []int)) {
 	onRolled(re.Success, re.Dice)
 }
 

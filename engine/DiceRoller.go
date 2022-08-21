@@ -10,13 +10,19 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/kenoyer130/wartgame/interfaces"
 	"github.com/kenoyer130/wartgame/models"
 	"github.com/kenoyer130/wartgame/ui"
 )
 
 type DiceRoller struct {
-	DieImage map[int]*ebiten.Image
-	Dice     []int
+	DieImage   map[int]*ebiten.Image
+	Dice       []int
+	Suppressed bool
+}
+
+func (re *DiceRoller) Suppress(suppressed bool) {
+	re.Suppressed = suppressed
 }
 
 func (re DiceRoller) GetDice() []int {
@@ -24,7 +30,7 @@ func (re DiceRoller) GetDice() []int {
 }
 
 // rolls the indicated dice count and returns how many are equal to or greater then the target. Also returns each die result.
-func (re DiceRoller) Roll(msg string, diceRollType models.DiceRollType, onRolled func(int, []int)) {
+func (re DiceRoller) Roll(msg string, diceRollType interfaces.DiceRollType, onRoll func(die int) int, onRolled func(int, []int)) {
 
 	WriteMessage(msg)
 	WriteMessage(fmt.Sprintf("Rolling %d to hit target %d", diceRollType.Dice, diceRollType.Target))
@@ -32,14 +38,21 @@ func (re DiceRoller) Roll(msg string, diceRollType models.DiceRollType, onRolled
 	success := 0
 	results := []int{}
 
-	PlaySound("Roll")
+	if !re.Suppressed {
+		PlaySound("Roll")
+	}
 
 	for i := 0; i < diceRollType.Dice; i++ {
 
 		die := rand.Intn(6) + 1
 
+		// allows application of abilities that need the raw roll
+		if onRoll != nil {
+			onRoll(die)
+		}
+
 		if diceRollType.AddToDice > 0 {
-			die = die + diceRollType.AddToDice			
+			die = die + diceRollType.AddToDice
 		}
 
 		results = append(results, die)
@@ -49,7 +62,13 @@ func (re DiceRoller) Roll(msg string, diceRollType models.DiceRollType, onRolled
 		}
 	}
 
-	diceTimer := time.NewTimer(1 * time.Second)
+	diceTime := 1 * time.Second
+
+	if re.Suppressed {
+		diceTime = 0
+	}
+
+	diceTimer := time.NewTimer(diceTime)
 
 	go func() {
 		<-diceTimer.C
@@ -64,9 +83,12 @@ func (re DiceRoller) Roll(msg string, diceRollType models.DiceRollType, onRolled
 		WriteMessage(fmt.Sprintf("%d successes out of %d", success, diceRollType.Dice))
 		models.Game().Dice = results
 
-		models.Game().StatusMessage.Keys = "Press [Space] to continue"
+		diceTime := 500 * time.Millisecond
 
-		dicePauseTimer := time.NewTimer(500 * time.Millisecond)
+		if re.Suppressed {
+			diceTime = 0
+		}
+		dicePauseTimer := time.NewTimer(diceTime)
 
 		go func() {
 			<-dicePauseTimer.C

@@ -56,11 +56,13 @@ func (re MoralePhase) MoraleCheckSelected(unit *models.Unit, onCompleted func())
 
 	engine.WriteMessage(fmt.Sprintf("Morale check for Unit %s with Leadership %d adding %d", unit.Token.ID, leadership, len(unit.DestroyedModels)))
 
-	models.Game().DiceRoller.Roll("Rolling for Morale Test", models.DiceRollType{
+	models.Game().DiceRoller.Roll("Rolling for Morale Test", interfaces.DiceRollType{
 		Dice:      1,
 		Target:    leadership,
 		AddToDice: len(unit.DestroyedModels),
-	}, func(success int, dice []int) {
+	},
+	nil,
+	 func(success int, dice []int) {
 		if success < 1 {
 			onCompleted()
 		} else {
@@ -82,10 +84,12 @@ func (re MoralePhase) failMorale(unit *models.Unit, leadership int, onCompleted 
 		target = 2
 	}
 
-	models.Game().DiceRoller.Roll(fmt.Sprintf("%s rolling for Combat Attrition Test", unit.Name), models.DiceRollType{
+	models.Game().DiceRoller.Roll(fmt.Sprintf("%s rolling for Combat Attrition Test", unit.Name), interfaces.DiceRollType{
 		Dice:   count,
 		Target: target,
-	}, func(success int, dice []int) {
+	},
+	nil,
+	func(success int, dice []int) {
 
 		fail := (count - success)
 		engine.WriteMessage(fmt.Sprintf("%d lost model due to failed moral check", fail))

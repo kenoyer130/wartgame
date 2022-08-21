@@ -11,6 +11,10 @@ type Weapon struct {
 	Fired         bool
 }
 
+func (re Weapon) SetArmorPiercing(value int) {
+	re.ArmorPiercing = value
+}
+
 type WeaponType struct {
 	Type   string
 	Dice   int

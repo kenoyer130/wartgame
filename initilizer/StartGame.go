@@ -9,6 +9,7 @@ import (
 	"github.com/kenoyer130/wartgame/interfaces"
 	"github.com/kenoyer130/wartgame/models"
 	"github.com/kenoyer130/wartgame/phases"
+	"github.com/kenoyer130/wartgame/weaponabilities"
 )
 
 func StartGame() error {
@@ -53,8 +54,13 @@ func StartGame() error {
 
 func initGameState() {
 	models.Game().PhaseStepper = &phases.PhaseStepper{}
-	models.Game().DiceRoller = engine.DiceRoller{}
+	models.Game().DiceRoller = &engine.DiceRoller{}
 	models.Game().Drawer = interfaces.Drawer{}
+
+	wa := weaponabilities.WeaponAbilityList{}
+	wa.Init()
+
+	models.Game().WeaponAbilityList = &wa
 }
 
 func setPlayerUnitStartingLocation(player int, x int, y int) {
