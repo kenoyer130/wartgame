@@ -44,47 +44,65 @@ type Size struct {
 }
 
 // put an entity on the battleground thus taking up space
-func PlaceBattleGroundEntity(entity Entity, battleGround *BattleGround) {
+func (re *BattleGround) PlaceBattleGroundEntity(entity Entity) {
 	l := entity.GetLocation()
-	battleGround.Grid[l.X][l.Y] = entity
+	re.Grid[l.X][l.Y] = entity
 }
 
 // put an entity on the battleground thus taking up space
-func RemoveBattleGroundEntity(entity Entity, battleGround *BattleGround) {
+func (re *BattleGround) RemoveBattleGroundEntity(entity Entity) {
 	l := entity.GetLocation()
-	battleGround.Grid[l.X][l.Y] = nil
+	re.Grid[l.X][l.Y] = nil
 }
 
 // put an entity on the battleground thus taking up space
-func UpdateBattleGroundEntity(entity Entity, battleGround *BattleGround) {
+func (re *BattleGround) UpdateBattleGroundEntity(entity Entity) {
 
 	l := entity.GetLocation()
-	battleGround.Grid[l.X][l.Y] = entity
+	re.Grid[l.X][l.Y] = entity
 
+}
+
+// return entity at location if any
+func (re *BattleGround) GetEntityAtLocation(l Location) Entity {
+
+	if (l.X < 0) || (l.Y < 0) {
+		return nil
+	}
+
+	if (l.X > len(Game().BattleGround.Grid)) || (l.Y  > len(Game().BattleGround.Grid[l.X])) {
+		return nil
+	}
+
+	if re.Grid[l.X][l.Y] != nil {
+		return re.Grid[l.X][l.Y]
+	} else {
+		return nil
+	}
 }
 
 // check if a location is empty
-func IsBattleGroundLocationFree(l Location, battleGround *BattleGround) bool {
-	if battleGround.Grid[l.X][l.Y] != nil {
+func (re *BattleGround) IsBattleGroundLocationFree(l Location) bool {
+	if re.Grid[l.X][l.Y] != nil {
 		return false
 	} else {
 		return true
 	}
 }
 
-func IsBattleGroundLocationRectFree(x int, y int, w int, h int, battleGround *BattleGround) bool {
+func (re *BattleGround) IsBattleGroundLocationRectFree(x int, y int, w int, h int) bool {
 
 	for i := 0; i < w; i++ {
 		for j := 0; j < h; j++ {
 
-			if(x+i < 0 || x+i > len(battleGround.Grid)) || (x+i < 0 || y+j > len(battleGround.Grid[i])){
+			if (x+i < 0 || x+i > len(re.Grid)) || (x+i < 0 || y+j > len(re.Grid[i])) {
 				return false
 			}
 
-			if battleGround.Grid[x+i][y+j] != nil {
+			if re.Grid[x+i][y+j] != nil {
 				return false
 			}
-		}	
+		}
 	}
 
 	return true

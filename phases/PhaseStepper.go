@@ -39,6 +39,14 @@ func (re *PhaseStepper) Move(phase interfaces.GamePhase) {
 	if newPhase {
 		re.CurrentPhaseExecuter = re.phaseLookup(phase)
 		re.cleanupPreviousPhase()
+
+		for i := 0; i < 2; i++ {
+			if(len(models.Game().Players[i].Army.Units) == 0) {
+				endPhase := EndPhase {}
+				endPhase.Start()
+			}			
+		}
+
 		re.printPhase(fmt.Sprintf("Starting phase %s", phase))
 	}
 

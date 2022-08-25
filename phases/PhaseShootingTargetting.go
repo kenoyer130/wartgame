@@ -36,12 +36,20 @@ func (re ShootingTargetingPhase) Start() {
 }
 
 func (re ShootingTargetingPhase) canTarget(unit *models.Unit, target *models.Unit) bool {
-	return true
+
+	for _, entity := range models.Game().SelectedWeapon.Targets {
+		if(entity.GetID() == target.GetID()) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (re ShootingTargetingPhase) targetSelected(unit *models.Unit, target *models.Unit) {
-	if unit == nil {
-		//TODO: move to next phase
+	if target == nil {
+		engine.WriteMessage("No Targets in range!")
+		re.OnCompleted()
 		return
 	}
 
@@ -50,11 +58,11 @@ func (re ShootingTargetingPhase) targetSelected(unit *models.Unit, target *model
 
 	engine.ClearKeyBoardRegistry()
 
-	shootingWeaponPhase := ShootingWeaponPhase {}
+	shootingAttackPhase := ShootingAttackPhase {}
 
-	shootingWeaponPhase.OnCompleted = func() {
+	shootingAttackPhase.OnCompleted = func() {
 		re.OnCompleted()
 	}
 
-	shootingWeaponPhase.Start()
+	shootingAttackPhase.Start()
 }

@@ -10,14 +10,38 @@
                     "Name": "Intercessor",
                     "Count": 4,
                     "DefaultWeapons": [
-                        "AutoBoltRifle"
+                        "AutoBoltRifle",
+                        "FragGrenades"
                     ]
                 },
                 {
                     "Name": "Intercessor Sergeant",
                     "Count": 1,
                     "DefaultWeapons": [
-                        "AutoBoltRifle"
+                        "AutoBoltRifle",
+                        "FragGrenades"
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "Heavy Intercessor Unit",
+            "Army": "Space Marines",
+            "Models": [
+                {
+                    "Name": "Heavy Intercessor",
+                    "Count": 4,
+                    "DefaultWeapons": [
+                        "HeavyBoltRifle",
+                        "FragGrenades"
+                    ]
+                },
+                {
+                    "Name": "Heavy Intercessor Sergeant",
+                    "Count": 1,
+                    "DefaultWeapons": [
+                        "HeavyBoltRifle",
+                        "FragGrenades"
                     ]
                 }
             ]

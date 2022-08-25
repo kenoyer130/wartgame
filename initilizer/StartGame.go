@@ -67,6 +67,6 @@ func setPlayerUnitStartingLocation(player int, x int, y int) {
 	for i := 0; i < len(models.Game().Players[player].Army.Units); i++ {
 
 		unit := models.Game().Players[player].Army.Units[i]
-		unit.SetLocation(models.Location{X: x, Y: y})
+		unit.SetLocation(models.Location{X: x, Y: y + 1 + i})
 	}
 }

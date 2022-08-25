@@ -11,8 +11,12 @@ type Weapon struct {
 	Fired         bool
 }
 
-func (re Weapon) SetArmorPiercing(value int) {
+func (re *Weapon) SetArmorPiercing(value int) {
 	re.ArmorPiercing = value
+}
+
+func (re *Weapon) GetWeaponAbilities() []string {
+	return re.Abilities
 }
 
 type WeaponType struct {

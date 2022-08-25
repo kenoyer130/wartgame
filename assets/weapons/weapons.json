@@ -51,5 +51,16 @@
         "Abilities": [
             "Shuriken"
         ]
+    },
+    {
+        "Name": "HeavyBoltRifle",
+        "Range": 36,
+        "WeaponType": {
+            "Type": "RF",
+            "Number": 1
+        },
+        "Strength": 5,
+        "ArmorPiercing": -1,
+        "Damage": 1
     }
 ]

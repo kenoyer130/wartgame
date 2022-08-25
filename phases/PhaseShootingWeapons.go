@@ -28,8 +28,13 @@ func (re ShootingWeaponPhase) Start() {
 	for _, model := range models.Game().SelectedPhaseUnit.Models {
 		for _, weapon := range model.Weapons {
 			if re.UnitWeapons[weapon.Name] == nil {
-				shootingWeapon := models.ShootingWeapon{Model: *model, Weapon: weapon, Count: 1}
-				re.UnitWeapons[weapon.Name] = &shootingWeapon
+
+				inRangeEntities := models.InRange(models.Game().SelectedPhaseUnit.ID, weapon.Range, models.Game().SelectedPhaseUnit.Location.X, models.Game().SelectedPhaseUnit.Location.Y)
+
+				if len(inRangeEntities) > 0 {
+					shootingWeapon := models.ShootingWeapon{Model: *model, Weapon: weapon, Targets: inRangeEntities, Count: 1}
+					re.UnitWeapons[weapon.Name] = &shootingWeapon
+				}
 			} else {
 				shootingWeapon := re.UnitWeapons[weapon.Name]
 				shootingWeapon.Count++
@@ -45,7 +50,7 @@ func (re ShootingWeaponPhase) loop() {
 
 	if len(re.UnitWeapons) == 0 {
 		models.Game().SelectedPhaseUnit.AddState(models.UnitShot)
-		re.OnCompleted();
+		re.OnCompleted()
 		return
 	}
 
@@ -58,15 +63,16 @@ func (re ShootingWeaponPhase) loop() {
 
 	models.Game().SelectedWeapon = &shootingWeapon
 
-	//TODO skip weapons out of range
-	engine.KeyBoardRegistry[ebiten.KeySpace] = func() {
-		shootingAttackPhase := ShootingAttackPhase{}
+	engine.WriteMessage("Selected Weapon is " + models.Game().SelectedWeapon.Weapon.Name)
 
-		shootingAttackPhase.OnCompleted = func() {
+	engine.KeyBoardRegistry[ebiten.KeySpace] = func() {
+		shootingTargetingPhase := ShootingTargetingPhase{}
+
+		shootingTargetingPhase.OnCompleted = func() {
 			delete(re.UnitWeapons, shootingWeapon.Weapon.Name)
 			re.loop()
 		}
 
-		shootingAttackPhase.Start()
+		shootingTargetingPhase.Start()
 	}
 }

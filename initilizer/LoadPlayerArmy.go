@@ -52,7 +52,7 @@ func LoadPlayerArmy(p *models.Player, assets models.Assets) error {
 					asset.ID = uuid.New().String()
 
 					for _, weaponKey := range model.DefaultWeapons {
-						asset.Weapons = append(model.Weapons , assets.Weapons[weaponKey])
+						asset.Weapons = append(asset.Weapons , assets.Weapons[weaponKey])
 					}
 
 					// find matching asset model

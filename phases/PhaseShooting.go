@@ -43,9 +43,11 @@ func (re ShootingPhase) ShooterSelected(unit *models.Unit) {
 	models.Game().SelectedPhaseUnit = unit
 	engine.WriteMessage("Selected Unit to shoot: " + unit.Name)
 
-	shootingTargetingPhase := ShootingTargetingPhase{}
-	shootingTargetingPhase.OnCompleted = func() {
-		re.loop()
+	shootingWeaponPhase := ShootingWeaponPhase {}
+
+	shootingWeaponPhase.OnCompleted = func() {
+		re.loop()		
 	}
-	shootingTargetingPhase.Start()
+
+	shootingWeaponPhase.Start()
 }

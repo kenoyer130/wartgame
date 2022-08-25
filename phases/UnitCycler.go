@@ -12,6 +12,7 @@ type UnitCycler struct {
 	onUnitSelected func(unit *models.Unit)
 	currentUnit    *models.Unit
 	suppressSpace  bool
+	checkedUnits   map[string]bool
 }
 
 func NewUnitCycler(player *models.Player,
@@ -36,6 +37,8 @@ func indexOfUnit(element *models.Unit, data []*models.Unit) int {
 }
 
 func (re *UnitCycler) CycleUnits() {
+
+	re.checkedUnits = make(map[string]bool)
 
 	// cycle units and select first valid unit
 	re.selectNextUnit(0, -1)
@@ -95,9 +98,13 @@ func (re *UnitCycler) selectNextUnit(index int, start int) {
 	// fix index for cycling
 	index = re.wrapIndex(index)
 
-	if index == start {
+	key := re.player.Army.Units[index].Name
+
+	if(re.checkedUnits[key]) {
 		return
 	}
+
+	re.checkedUnits[key] = true
 
 	if start == -1 {
 		start = 0

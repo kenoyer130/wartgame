@@ -5,7 +5,6 @@ import (
 	"image"
 	"log"
 	"math/rand"
-	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -16,31 +15,24 @@ import (
 )
 
 type DiceRoller struct {
-	DieImage   map[int]*ebiten.Image
-	Dice       []int
-	Suppressed bool
+	DieImage map[int]*ebiten.Image
+	Dice     []int
+	msgs     []string
 }
 
-func (re *DiceRoller) Suppress(suppressed bool) {
-	re.Suppressed = suppressed
-}
-
-func (re DiceRoller) GetDice() []int {
-	return re.Dice
+func (re DiceRoller) PlaySound() {
+	PlaySound("Roll")
 }
 
 // rolls the indicated dice count and returns how many are equal to or greater then the target. Also returns each die result.
-func (re DiceRoller) Roll(msg string, diceRollType interfaces.DiceRollType, onRoll func(die int) int, onRolled func(int, []int)) {
+func (re DiceRoller) Roll(msg string, diceRollType interfaces.DiceRollType, onRoll func(die int) int) (int, []int) {
 
-	WriteMessage(msg)
-	WriteMessage(fmt.Sprintf("Rolling %d to hit target %d", diceRollType.Dice, diceRollType.Target))
+	re.msgs = []string{}
+	re.msgs = append(re.msgs, msg)
+	re.msgs = append(re.msgs, fmt.Sprintf("Rolling %d to hit target %d", diceRollType.Dice, diceRollType.Target))
 
 	success := 0
 	results := []int{}
-
-	if !re.Suppressed {
-		PlaySound("Roll")
-	}
 
 	for i := 0; i < diceRollType.Dice; i++ {
 
@@ -51,7 +43,8 @@ func (re DiceRoller) Roll(msg string, diceRollType interfaces.DiceRollType, onRo
 			onRoll(die)
 		}
 
-		if diceRollType.AddToDice > 0 {
+		if diceRollType.AddToDice != 0 {
+			re.msgs = append(re.msgs, fmt.Sprintf("applying modifier of %d to die %d", diceRollType.AddToDice, die))
 			die = die + diceRollType.AddToDice
 		}
 
@@ -62,39 +55,28 @@ func (re DiceRoller) Roll(msg string, diceRollType interfaces.DiceRollType, onRo
 		}
 	}
 
-	diceTime := 1 * time.Second
+	success, dice := re.diceRolled(results, success, diceRollType)
 
-	if re.Suppressed {
-		diceTime = 0
+	for _, msg := range re.msgs {
+		WriteMessage(msg)
 	}
 
-	diceTimer := time.NewTimer(diceTime)
+	return success, dice
+}
 
-	go func() {
-		<-diceTimer.C
+func (re *DiceRoller) diceRolled(results []int, success int, diceRollType interfaces.DiceRollType) (int, []int) {
+	rolled := "Dice Rolled:"
 
-		rolled := "Dice Rolled:"
+	for i := 0; i < len(results); i++ {
+		rolled += fmt.Sprintf(" %d", results[i])
+	}
 
-		for i := 0; i < len(results); i++ {
-			rolled += fmt.Sprintf(" %d", results[i])
-		}
+	re.msgs = append(re.msgs, rolled)
+	msg := fmt.Sprintf("%d successes out of %d", success, diceRollType.Dice)
+	re.msgs = append(re.msgs, msg)
+	models.Game().Dice = results
 
-		WriteMessage(rolled)
-		WriteMessage(fmt.Sprintf("%d successes out of %d", success, diceRollType.Dice))
-		models.Game().Dice = results
-
-		diceTime := 500 * time.Millisecond
-
-		if re.Suppressed {
-			diceTime = 0
-		}
-		dicePauseTimer := time.NewTimer(diceTime)
-
-		go func() {
-			<-dicePauseTimer.C
-			onRolled(success, results)
-		}()
-	}()
+	return success, results
 }
 
 type DiceRollerUI struct {

@@ -34,7 +34,7 @@ func (re *Unit) GetLocation() Location {
 
 func (re *Unit) SetLocation(location Location) {
 	re.Location = location
-	PlaceBattleGroundEntity(re, &Game().BattleGround)
+	Game().BattleGround.PlaceBattleGroundEntity(re)
 }
 
 func (re *Unit) GetEntityType() EntityType {
@@ -88,7 +88,7 @@ func (re *Unit) GetID() string {
 }
 
 func (re *Unit) Remove() {
-	RemoveBattleGroundEntity(re, &Game().BattleGround)
+	Game().BattleGround.RemoveBattleGroundEntity(re)
 }
 
 func (re *Unit) Cleanup() {
@@ -175,6 +175,8 @@ func (re *Unit) InflictWounds(targetModel Model, str int) (bool, Model) {
 	model.CurrentWounds = hp
 
 	if model.CurrentWounds <= 0 {	
+		model.Destroyed = true
+		re.ModelCount[model.Name]--
 		re.removeModel(model)
 		return true, *model
 	}
@@ -183,6 +185,7 @@ func (re *Unit) InflictWounds(targetModel Model, str int) (bool, Model) {
 }
 
 func (re *Unit) GetModelByID(id string) *Model {
+	
 	for _, model := range re.Models {
 		if model.ID == id {
 			return model

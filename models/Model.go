@@ -24,6 +24,7 @@ type Model struct {
 	Toughness      int
 	CurrentWounds  int
 	Wounds         int
+	Destroyed      bool
 	Attacks        int
 	Leadership     int
 	Save           string
