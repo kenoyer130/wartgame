@@ -21,10 +21,7 @@ func (re ShootingTargetingPhase) Start() {
 	models.Game().StatusMessage.Messsage = "Targetting Phase! Select a unit to target! "
 	models.Game().StatusMessage.Keys = "Press [Q] and [E] to cycle targets! Press [Space] to select!"
 
-	opponent := 0
-	if models.Game().CurrentPlayerIndex == 0 {
-		opponent = 1
-	}
+	opponent := models.Game().OpponetPlayerIndex
 
 	unitCycler := NewUnitCycler(&models.Game().Players[opponent], func(target *models.Unit) bool {
 		return re.canTarget(unit, target)
@@ -38,7 +35,7 @@ func (re ShootingTargetingPhase) Start() {
 func (re ShootingTargetingPhase) canTarget(unit *models.Unit, target *models.Unit) bool {
 
 	for _, entity := range models.Game().SelectedWeapon.Targets {
-		if(entity.GetID() == target.GetID()) {
+		if entity.GetID() == target.GetID() {
 			return true
 		}
 	}
@@ -58,7 +55,7 @@ func (re ShootingTargetingPhase) targetSelected(unit *models.Unit, target *model
 
 	engine.ClearKeyBoardRegistry()
 
-	shootingAttackPhase := ShootingAttackPhase {}
+	shootingAttackPhase := ShootingAttackPhase{}
 
 	shootingAttackPhase.OnCompleted = func() {
 		re.OnCompleted()

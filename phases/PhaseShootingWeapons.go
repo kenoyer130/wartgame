@@ -29,7 +29,7 @@ func (re ShootingWeaponPhase) Start() {
 		for _, weapon := range model.Weapons {
 			if re.UnitWeapons[weapon.Name] == nil {
 
-				inRangeEntities := models.InRange(models.Game().SelectedPhaseUnit.ID, weapon.Range, models.Game().SelectedPhaseUnit.Location.X, models.Game().SelectedPhaseUnit.Location.Y)
+				inRangeEntities := models.InRange(models.Game().SelectedPhaseUnit.ID, models.Game().CurrentPlayerIndex, weapon.Range, models.Game().SelectedPhaseUnit.Location.X, models.Game().SelectedPhaseUnit.Location.Y)
 
 				if len(inRangeEntities) > 0 {
 					shootingWeapon := models.ShootingWeapon{Model: *model, Weapon: weapon, Targets: inRangeEntities, Count: 1}

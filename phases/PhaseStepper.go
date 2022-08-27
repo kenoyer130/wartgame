@@ -21,8 +21,8 @@ func (re PhaseStepper) GetPhase() interfaces.GamePhase {
 	return re.CurrentPhase
 }
 
-func (re PhaseStepper) GetPhaseName() string {
-	return fmt.Sprintf("%s", re.CurrentPhase)
+func (re PhaseStepper) GetPhaseName() interfaces.GamePhase {
+	return re.CurrentPhase
 }
 
 func (re *PhaseStepper) Move(phase interfaces.GamePhase) {

@@ -90,7 +90,7 @@ func (re UnitWeaponsPanel) drawWeapons(weaponPanel *PanelVertical) {
 
 				thisWeapon := models.Game().Assets.Weapons[weapon.Name]
 
-				weaponType := fmt.Sprintf("%s %d%d", thisWeapon.WeaponType.Type, thisWeapon.WeaponType.Dice, thisWeapon.WeaponType.Number)
+				weaponType := fmt.Sprintf("%s %s%d", thisWeapon.WeaponType.Type, thisWeapon.WeaponType.Dice, thisWeapon.WeaponType.Number)
 
 				selected := ""
 

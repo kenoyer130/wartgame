@@ -1,0 +1,37 @@
+{
+    "Name": "Fire Prism",
+    "Army": "Aeldari",
+    "Power": 9,   
+    "Token": {
+        "ID": "GD",        
+        "RGBA": {
+            "R": 177,
+            "G": 68,
+            "B": 52,
+            "A": 255
+        }
+    },
+    "Models": [
+        {
+            "Name": "Fire Prism",
+            "ShortName" : "FP",
+            "ModelNumber": {
+                "Min": 1,
+                "Max": 1
+            },
+            "Movement": 16,
+            "WeaponSkill": "3+",
+            "BallisticSkill": "3+",
+            "Strength": 6,
+            "Toughness": 7,
+            "Wounds": 7,
+            "Attacks": 3,
+            "Leadership": 8,
+            "Save": "3+",
+            "DefaultWeapons": [
+                "PrismCannon",
+                "TwinCatapult"
+            ]
+        }
+    ]
+}

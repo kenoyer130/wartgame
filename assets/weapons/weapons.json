@@ -15,7 +15,7 @@
         "Range": 6,
         "WeaponType": {
             "Type": "Gre",
-            "Dice": 6
+            "Dice": "6"
         },
         "Strength": 3,
         "ArmorPiercing": 0,
@@ -62,5 +62,33 @@
         "Strength": 5,
         "ArmorPiercing": -1,
         "Damage": 1
+    },
+    {
+        "Name": "PrismCannon",
+        "Range": 60,
+        "WeaponType": {
+            "Type": "He",
+            "Dice": "3D3"
+        },
+        "Strength": 6,
+        "ArmorPiercing": -2,
+        "Damage": 2,
+        "Abilities": [
+            "Blast"
+        ]
+    },
+    {
+        "Name": "TwinCatapult",
+        "Range": 18,
+        "WeaponType": {
+            "Type": "As",
+            "Number": 4
+        },
+        "Strength": 4,
+        "ArmorPiercing": -1,
+        "Damage": 1,
+        "Abilities": [
+            "Shuriken"
+        ]
     }
 ]

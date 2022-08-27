@@ -70,7 +70,7 @@ func (re *BattleGround) GetEntityAtLocation(l Location) Entity {
 		return nil
 	}
 
-	if (l.X > len(Game().BattleGround.Grid)) || (l.Y  > len(Game().BattleGround.Grid[l.X])) {
+	if (l.X > len(Game().BattleGround.Grid)-1) || (l.Y > len(Game().BattleGround.Grid[l.X])-1) {
 		return nil
 	}
 

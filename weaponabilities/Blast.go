@@ -14,13 +14,13 @@ func ApplyBlast(weapon models.Weapon) int {
 
 	targetCount := len(models.Game().SelectedTargetUnit.Models)
 
+	dice := weapon.WeaponType.GetDice()
+
 	if targetCount > 11 {
 		shot = weapon.WeaponType.Number
+	} else {
+		shot = rand.Intn(dice) + 1
 	}
-
-	dice := weapon.WeaponType.Dice
-
-	shot = rand.Intn(dice) + 1
 
 	if targetCount > 6 && shot < 3 {
 		shot = 3

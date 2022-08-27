@@ -5,20 +5,24 @@ import (
 	"os"
 
 	"github.com/hajimehoshi/ebiten/v2/audio"
-	"github.com/hajimehoshi/ebiten/v2/audio/wav"
+	"github.com/hajimehoshi/ebiten/v2/audio/mp3"
 )
 
 const SampleRate = 48000
+
 var audioContext = audio.NewContext(SampleRate)
 
 func PlaySound(id string) {
 
-	f, err := os.Open("assets/audio/" + id + ".wav")
+	path := "assets/audio/" + id + "."
+
+	f, err := os.Open(path)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("warning ", id, " ", path, " file missing")
+		return
 	}
 
-	d, err := wav.DecodeWithSampleRate(SampleRate, f)
+	d, err := mp3.DecodeWithSampleRate(SampleRate, f)
 	if err != nil {
 		log.Fatal(err)
 	}

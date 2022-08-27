@@ -47,6 +47,13 @@ func StartGame() error {
 	models.Game().CurrentPlayerIndex = die
 	models.Game().StartPlayerIndex = die
 
+	opponent := 0
+	if die == 0 {
+		opponent = 1
+	}
+
+	models.Game().OpponetPlayerIndex = opponent
+
 	models.Game().Round = 1
 	models.Game().PhaseStepper.Move(interfaces.MovementPhase)
 	return nil

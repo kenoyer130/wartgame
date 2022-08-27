@@ -17,17 +17,17 @@ func (re MoralePhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
 
 func (re MoralePhase) Start() {
 
- 	models.Game().StatusMessage.Phase = "Morale Phase"
+	models.Game().StatusMessage.Phase = "Morale Phase"
 	models.Game().StatusMessage.Messsage = "Select unit to perform moral check!"
 	models.Game().StatusMessage.Keys = "Press [Q] and [E] to cycle units! Press [Space] to select!"
 
 	re.checkMoraleForPlayer(0, func() {
-		
+
 		models.Game().Players[0].Army.RemoveDestroyedUnits()
 
 		re.checkMoraleForPlayer(1, func() {
-			models.Game().PhaseStepper.Move(interfaces.EndPhase)
 			models.Game().Players[1].Army.RemoveDestroyedUnits()
+			models.Game().PhaseStepper.Move(interfaces.EndPhase)
 		})
 	})
 }
@@ -71,12 +71,12 @@ func (re MoralePhase) MoraleCheckSelected(unit *models.Unit, onCompleted func())
 		Target:    leadership,
 		AddToDice: len(unit.DestroyedModels),
 	},
-	nil)
+		nil)
 
-	if success > 0 {	
+	if success > 0 {
 		re.failMorale(unit, leadership, onCompleted)
 	}
-	
+
 	onCompleted()
 }
 
@@ -93,21 +93,28 @@ func (re MoralePhase) failMorale(unit *models.Unit, leadership int, onCompleted 
 		target = 2
 	}
 
-	success, _ := models.Game().DiceRoller.Roll(fmt.Sprintf("%s rolling for Combat Attrition Test", unit.Name), interfaces.DiceRollType{
+	_, dice := models.Game().DiceRoller.Roll(fmt.Sprintf("%s rolling for Combat Attrition Test", unit.Name), interfaces.DiceRollType{
 		Dice:   count,
 		Target: target,
 	},
 		nil)
 
-	fail := (count - success)
+	fail := 0
+
+	for _, die := range dice {
+		if die == 1 {
+			fail++
+		}
+	}
+
 	engine.WriteMessage(fmt.Sprintf("%d lost model due to failed moral check", fail))
 
 	if fail == 0 {
 		return
 	}
 
-	for i := 0; i < fail; i++ {
+	for fail > 0 {
 		unit.MoraleFailure()
-		return
+		fail--
 	}
 }

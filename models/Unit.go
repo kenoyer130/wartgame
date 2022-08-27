@@ -1,10 +1,16 @@
 package models
 
 import (
+	"errors"
+	"fmt"
 	"image/color"
 	"math"
+	"os"
+	"strconv"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/kenoyer130/wartgame/ui"
 )
 
@@ -28,6 +34,21 @@ type Unit struct {
 	Token              Token
 }
 
+func (re *Unit) GetAssetPath(assetName string, ext string) string {
+	path := fmt.Sprintf("./assets/armies/%s/images/%s.%s", re.getImgPath(re.Army), re.getImgPath(assetName), ext)
+
+	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
+		return ""
+	}
+
+	return path
+}
+
+func (re *Unit) getImgPath(path string) string {
+	path = strings.Replace(path, " ", "_", -1)
+	return path
+}
+
 func (re *Unit) GetLocation() Location {
 	return re.Location
 }
@@ -35,6 +56,10 @@ func (re *Unit) GetLocation() Location {
 func (re *Unit) SetLocation(location Location) {
 	re.Location = location
 	Game().BattleGround.PlaceBattleGroundEntity(re)
+}
+
+func (re *Unit) GetPlayerIndex() int {
+	return re.PlayerIndex
 }
 
 func (re *Unit) GetEntityType() EntityType {
@@ -46,7 +71,7 @@ func (re *Unit) GetToken() *ebiten.Image {
 	x := re.Location.X
 	y := re.Location.Y
 
-	token := ebiten.NewImage(64, 64)
+	token := ebiten.NewImage(60, 60)
 	color := color.RGBA{uint8(re.Token.RGBA.R), uint8(re.Token.RGBA.G), uint8(re.Token.RGBA.B), uint8(re.Token.RGBA.A)}
 
 	tline := ui.DrawLine(64)
@@ -62,17 +87,22 @@ func (re *Unit) GetToken() *ebiten.Image {
 
 	for col := 0; col < 4; col++ {
 		for row := 0; row < 4; row++ {
-			if len(re.Models) -1 < index {
+			if len(re.Models)-1 < index {
 				break
 			}
 
 			model := ebiten.NewImage(12, 12)
-			color := ui.GetMoveRangeColor()  
+			color := ui.GetMoveRangeColor()
 
 			model.Fill(color)
+			
+			if(re.Models[index].Wounds != re.Models[index].CurrentWounds) {
+				current:= strconv.Itoa(re.Models[index].CurrentWounds)
+				text.Draw(model, current, ui.GetFontTiny(), 1, 3, ui.GetTextColor())
+			}
 
 			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(float64(col*14)+5, float64(row*14)+5)
+			op.GeoM.Translate(float64(col*14)+3, float64(row*14)+3)
 
 			token.DrawImage(model, op)
 
@@ -174,18 +204,18 @@ func (re *Unit) InflictWounds(targetModel Model, str int) (bool, Model) {
 	hp := model.CurrentWounds - str
 	model.CurrentWounds = hp
 
-	if model.CurrentWounds <= 0 {	
+	if model.CurrentWounds <= 0 {
 		model.Destroyed = true
 		re.ModelCount[model.Name]--
 		re.removeModel(model)
 		return true, *model
 	}
 
-	return false, Model {}
+	return false, Model{}
 }
 
 func (re *Unit) GetModelByID(id string) *Model {
-	
+
 	for _, model := range re.Models {
 		if model.ID == id {
 			return model

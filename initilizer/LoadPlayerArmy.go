@@ -48,8 +48,8 @@ func LoadPlayerArmy(p *models.Player, assets models.Assets) error {
 
 					asset := *assetModel
 
-					asset.CurrentWounds = model.Wounds
 					asset.ID = uuid.New().String()
+					asset.CurrentWounds = asset.Wounds
 
 					for _, weaponKey := range model.DefaultWeapons {
 						asset.Weapons = append(asset.Weapons , assets.Weapons[weaponKey])

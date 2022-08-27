@@ -23,9 +23,7 @@ func (re MovePhase) Start() {
 
 	re.clearMovementKeys()
 
-	models.Game().StatusMessage.Phase = "Movement Phase"
-	models.Game().StatusMessage.Messsage = "Select next unit to Move!"
-	models.Game().StatusMessage.Keys = "Press [Q] and [E] to cycle units! Press [X] to Remain Stationary. Press [Space] to select!"
+	models.Game().StatusMessage.Phase = "Movement Phase"	
 
 	unitCycler := NewUnitCycler(models.Game().CurrentPlayer, re.UnitCanMove, re.MoverSelected, true)
 
@@ -45,6 +43,7 @@ func (re MovePhase) MoverSelected(unit *models.Unit) {
 
 	models.Game().SelectedPhaseUnit = unit
 	engine.WriteMessage("Selected Unit to move: " + unit.Name)
+	models.Game().StatusMessage.Keys = "Moving! Press [Space] to end movement. Press [A] to advance!"
 
 	unit.CurrentMoves = unit.Models[0].Movement
 
@@ -79,7 +78,7 @@ func (re MovePhase) clearMovementKeys() {
 }
 
 func (re MovePhase) registerMovementKeys(unit *models.Unit) {
-
+	
 	engine.KeyBoardRegistry[ebiten.KeySpace] = func() {
 		unit.AddState(models.UnitMoved)
 		re.Start()

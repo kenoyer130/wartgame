@@ -21,6 +21,20 @@
                     ]
                 }
             ]
+        },
+        {
+            "Name": "Fire Prism",
+            "Army": "Aeldari",
+            "Models": [
+                {
+                    "Name": "Fire Prism",
+                    "Count": 1,
+                    "DefaultWeapons": [
+                        "PrismCannon",
+                        "TwinCatapult"
+                    ]
+                }
+            ]
         }
     ]
 }

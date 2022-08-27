@@ -18,6 +18,8 @@ type ShootingAttackPhase struct {
 	weaponCount int
 	OnCompleted func()
 	hits        int
+	wounds      int
+	saves       int
 	kills       int
 }
 
@@ -50,6 +52,8 @@ func (re *ShootingAttackPhase) Start() {
 	re.shooter = models.Game().SelectedWeapon.Model
 
 	re.hits = 0
+	re.wounds = 0
+	re.saves = 0
 	re.kills = 0
 
 	engine.WriteMessage(fmt.Sprintf("Firing %d %s at %s ", re.weaponCount, models.Game().SelectedWeapon.Weapon.Name, re.targetUnit.Name))
@@ -57,6 +61,8 @@ func (re *ShootingAttackPhase) Start() {
 	max := re.weaponCount
 
 	models.Game().DiceRoller.PlaySound()
+
+	engine.PlaySound(models.Game().SelectedWeapon.Weapon.Name)
 
 	for i := 0; i < max; i++ {
 		re.setShootingWeapon(i, max)
@@ -74,12 +80,12 @@ func (re *ShootingAttackPhase) Start() {
 }
 
 func (re *ShootingAttackPhase) throwGernade() int {
-	die := rand.Intn(models.Game().SelectedWeapon.Weapon.WeaponType.Dice) + 1
+	die := rand.Intn(models.Game().SelectedWeapon.Weapon.WeaponType.GetDice()) + 1
 
 	modelCount := len(models.Game().SelectedTargetUnit.Models)
 
 	if modelCount > 10 {
-		die = models.Game().SelectedWeapon.Weapon.WeaponType.Dice
+		die = models.Game().SelectedWeapon.Weapon.WeaponType.GetDice()
 	} else if modelCount > 5 && die < 4 {
 		die = 3
 	}
@@ -95,7 +101,8 @@ func (re *ShootingAttackPhase) setShootingWeapon(i int, max int) {
 
 func (re *ShootingAttackPhase) endShootingWeaponPhase() {
 
-	engine.WriteMessage(fmt.Sprintf("%s %d hits and %d destroyed!", re.weapon.Name, re.hits, re.kills))
+	engine.WriteMessage(fmt.Sprintf("%s attack on %s completed.", re.shooter.Name, re.targetUnit.Name))
+	engine.WriteMessage(fmt.Sprintf("%s %d hits, %d wounds, %d saves, %d killed!", re.weapon.Name, re.hits,  re.wounds, re.saves, re.kills))
 	engine.WriteMessage("Press [Space] to continue")
 	engine.KeyBoardRegistry[ebiten.KeySpace] = func() {
 		re.OnCompleted()
@@ -123,7 +130,19 @@ func (re *ShootingAttackPhase) shootWeapon(i int, max int) {
 func (re *ShootingAttackPhase) onAttackRolled() {
 
 	re.hits++
-	target := re.targetUnit.Models[rand.Intn(len(re.targetUnit.Models))]
+	target := &models.Model{}
+
+	for _, model := range re.targetUnit.Models {
+		if model.CurrentWounds < model.Wounds {
+			target = model
+			break
+		}
+	}
+
+	if target.ID == "" {
+		target = re.targetUnit.Models[rand.Intn(len(re.targetUnit.Models))]
+	}
+
 	re.rollWoundsToModel(*target)
 }
 
@@ -144,6 +163,8 @@ func (re *ShootingAttackPhase) rollWoundsToModel(target models.Model) {
 		return
 	}
 
+	re.wounds++
+
 	re.onWoundsRolled(target)
 }
 
@@ -163,6 +184,7 @@ func (re *ShootingAttackPhase) onWoundsRolled(target models.Model) {
 	if success < 1 {
 		re.allocateAttacks(target)
 	} else {
+		re.saves++
 		engine.WriteMessage(fmt.Sprintf("%s made save!", target.Name))
 		engine.WriteMessage(fmt.Sprintf("%s attack failed.", re.shooter.Name))
 	}
@@ -182,11 +204,8 @@ func (re *ShootingAttackPhase) allocateAttacks(target models.Model) {
 
 	if len(re.targetUnit.Models) <= 0 {
 		re.targetUnit.Destroyed = true
-		opponent := 0
-		if models.Game().CurrentPlayerIndex == 0 {
-			opponent = 1
-		}
-
+		opponent := models.Game().OpponetPlayerIndex
+		
 		models.Game().Players[opponent].Army.RemoveDestroyedUnits()
 	}
 }
@@ -202,6 +221,7 @@ func (re *ShootingAttackPhase) InflictWounds(target models.Model) bool {
 	if dead {
 		re.kills++
 		engine.WriteMessage(fmt.Sprintf("%s was destroyed!", deadModel.Name))
+		models.Game().Players[models.Game().OpponetPlayerIndex].Army.RemoveDestroyedUnits()
 		return dead
 	}
 

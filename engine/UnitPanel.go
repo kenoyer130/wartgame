@@ -1,12 +1,8 @@
 package engine
 
 import (
-	"errors"
-	"fmt"
 	"log"
-	"os"
 	"strconv"
-	"strings"
 
 	_ "image/png"
 
@@ -129,29 +125,21 @@ var ModelPics = make(map[string]*ebiten.Image)
 
 func getProfilePic(model models.Model, unit *models.Unit) *ebiten.Image {
 
-	imgPath := getImgPath(model.Name)
+	assetName := model.Name
 
-	if ModelPics[imgPath] != nil {
-		return ModelPics[imgPath]
+	if ModelPics[assetName] != nil {
+		return ModelPics[assetName]
 	}
 
-	path := fmt.Sprintf("./assets/armies/%s/images/%s.png", getImgPath(unit.Army), imgPath)
-
-	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
-		return nil
-	}
+	path := unit.GetAssetPath(assetName, "png")
 
 	img, _, err := ebitenutil.NewImageFromFile(path)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	ModelPics[imgPath] = img
+	ModelPics[assetName] = img
 
 	return img
 }
 
-func getImgPath(path string) string {
-	path = strings.Replace(path, " ", "_", -1)
-	return path
-}

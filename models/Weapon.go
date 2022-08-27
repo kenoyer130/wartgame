@@ -1,5 +1,10 @@
 package models
 
+import (
+	"math/rand"
+	"strconv"
+)
+
 type Weapon struct {
 	Name          string
 	Range         int
@@ -21,6 +26,26 @@ func (re *Weapon) GetWeaponAbilities() []string {
 
 type WeaponType struct {
 	Type   string
-	Dice   int
+	Dice   string
 	Number int
+}
+
+func (re WeaponType) GetDice() int {
+	if re.Dice == "3d3" {
+		return getRndDice()
+	}
+	
+	dmg, _ := strconv.Atoi(re.Dice)
+
+	return dmg
+}
+
+func getRndDice() int {
+	dmg := 0
+
+	for i := 0; i < 3; i++ {
+		dmg = dmg + rand.Intn(3)
+	}
+
+	return dmg
 }

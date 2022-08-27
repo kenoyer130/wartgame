@@ -1,6 +1,6 @@
 package models
 
-func InRange(id string, r int, x int, y int) []Entity {
+func InRange(id string, playerIndex int, r int, x int, y int) []Entity {
 
 	entities := []Entity{}
 
@@ -9,7 +9,7 @@ func InRange(id string, r int, x int, y int) []Entity {
 
 			entity := Game().BattleGround.GetEntityAtLocation(Location{X: i, Y: j})
 
-			if entity != nil && entity.GetID() != id {
+			if entity != nil && entity.GetID() != id && entity.GetPlayerIndex() != playerIndex {
 				entities = append(entities, entity)
 			}
 		}

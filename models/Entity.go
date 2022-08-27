@@ -16,4 +16,5 @@ type Entity interface {
 	GetEntityType() EntityType
 	GetToken() *ebiten.Image
 	GetID() string
+	GetPlayerIndex() int
 }

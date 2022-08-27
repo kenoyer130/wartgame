@@ -58,6 +58,13 @@ func (re EndPhase) startNextTurn() {
 				allGone = false
 				models.Game().CurrentPlayer = player
 				models.Game().CurrentPlayerIndex = i
+				opponent := 1
+
+				if i == 1 {
+					opponent = 0
+				}
+
+				models.Game().OpponetPlayerIndex = opponent
 			}
 		}
 	}
@@ -78,6 +85,14 @@ func (re EndPhase) startNewRound() {
 	}
 
 	models.Game().CurrentPlayerIndex = models.Game().StartPlayerIndex
+	opponent := 1
+
+	if models.Game().CurrentPlayerIndex == 1 {
+		opponent = 0
+	}
+
+	models.Game().OpponetPlayerIndex = opponent
+
 	models.Game().CurrentPlayer = &models.Game().Players[models.Game().StartPlayerIndex]
 
 	models.Game().Round++
@@ -86,7 +101,7 @@ func (re EndPhase) startNewRound() {
 func (re EndPhase) EndPhaseCleanup() {
 	for i := 0; i < len(models.Game().Players); i++ {
 		models.Game().Players[i].PhaseCleanup()
-		for j := 0; j < len(models.Game().Players[j].Army.Units); j++ {
+		for j := 0; j < len(models.Game().Players[i].Army.Units); j++ {
 			models.Game().Players[i].Army.Units[j].Cleanup()
 		}
 	}

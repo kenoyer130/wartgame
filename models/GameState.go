@@ -28,6 +28,7 @@ type GameState struct {
 	Players              [consts.MaxPlayers]Player
 	CurrentPlayer        *Player
 	CurrentPlayerIndex   int
+	OpponetPlayerIndex   int
 	StartPlayerIndex     int
 	SelectedUnit         *Unit
 	DraggingUnit         *Unit
