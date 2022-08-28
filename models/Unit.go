@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"image/color"
+	"log"
 	"math"
 	"os"
 	"strconv"
@@ -38,6 +39,7 @@ func (re *Unit) GetAssetPath(assetName string, ext string) string {
 	path := fmt.Sprintf("./assets/armies/%s/images/%s.%s", re.getImgPath(re.Army), re.getImgPath(assetName), ext)
 
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
+		log.Println(path, " not found!")
 		return ""
 	}
 

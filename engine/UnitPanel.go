@@ -125,6 +125,10 @@ var ModelPics = make(map[string]*ebiten.Image)
 
 func getProfilePic(model models.Model, unit *models.Unit) *ebiten.Image {
 
+	if(model.Name == "") {
+		return nil
+	}
+
 	assetName := model.Name
 
 	if ModelPics[assetName] != nil {
@@ -135,6 +139,7 @@ func getProfilePic(model models.Model, unit *models.Unit) *ebiten.Image {
 
 	img, _, err := ebitenutil.NewImageFromFile(path)
 	if err != nil {
+		log.Println(path)
 		log.Fatal(err)
 	}
 

@@ -10,7 +10,8 @@
                     "Name": "Guardian Defender",
                     "Count": 10,
                     "DefaultWeapons": [
-                        "ShurikenCatapult"
+                        "ShurikenCatapult",
+                        "PlasmaGrenade"
                     ]
                 },
                 {

@@ -90,5 +90,19 @@
         "Abilities": [
             "Shuriken"
         ]
+    },
+    {
+        "Name": "PlasmaGrenade",
+        "Range": 6,
+        "WeaponType": {
+            "Type": "Gre",
+            "Dice": "6"
+        },
+        "Strength": 43,
+        "ArmorPiercing": -1,
+        "Damage": 1,
+        "Abilities": [
+            "Blast"
+        ]
     }
 ]

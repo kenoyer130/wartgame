@@ -73,6 +73,9 @@ func (re ShootingWeaponPhase) loop() {
 			re.loop()
 		}
 
+		models.Game().Players[0].Army.RemoveDestroyedUnits()
+		models.Game().Players[1].Army.RemoveDestroyedUnits()
+
 		shootingTargetingPhase.Start()
 	}
 }

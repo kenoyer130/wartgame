@@ -14,6 +14,7 @@ import (
 type ShootingAttackPhase struct {
 	shooter     models.Model
 	targetUnit  *models.Unit
+	targetName  string
 	weapon      *models.Weapon
 	weaponCount int
 	OnCompleted func()
@@ -46,9 +47,12 @@ func (re *ShootingAttackPhase) Start() {
 
 	if models.Game().SelectedWeapon.Weapon.WeaponType.Number > 0 {
 		re.weaponCount = re.weaponCount * models.Game().SelectedWeapon.Weapon.WeaponType.Number
+	} else if models.Game().SelectedWeapon.Weapon.WeaponType.Dice != "" {
+		re.weaponCount = re.weaponCount * models.Game().SelectedWeapon.Weapon.WeaponType.GetDice()
 	}
 
 	re.targetUnit = models.Game().SelectedTargetUnit
+	re.targetName = re.targetUnit.Name
 	re.shooter = models.Game().SelectedWeapon.Model
 
 	re.hits = 0
@@ -67,13 +71,9 @@ func (re *ShootingAttackPhase) Start() {
 	for i := 0; i < max; i++ {
 		re.setShootingWeapon(i, max)
 
-		if len(re.targetUnit.Models) <= 0 {
+		if re.targetUnit == nil {
 			break
 		}
-	}
-
-	if re.targetUnit.Destroyed {
-		engine.WriteMessage(fmt.Sprintf("Unit %s wiped out!", re.targetUnit.Name))
 	}
 
 	re.endShootingWeaponPhase()
@@ -101,8 +101,8 @@ func (re *ShootingAttackPhase) setShootingWeapon(i int, max int) {
 
 func (re *ShootingAttackPhase) endShootingWeaponPhase() {
 
-	engine.WriteMessage(fmt.Sprintf("%s attack on %s completed.", re.shooter.Name, re.targetUnit.Name))
-	engine.WriteMessage(fmt.Sprintf("%s %d hits, %d wounds, %d saves, %d killed!", re.weapon.Name, re.hits,  re.wounds, re.saves, re.kills))
+	engine.WriteMessage(fmt.Sprintf("%s attack on %s completed.", re.shooter.Name, re.targetName))
+	engine.WriteMessage(fmt.Sprintf("%s %d hits, %d wounds, %d saves, %d killed!", re.weapon.Name, re.hits, re.wounds, re.saves, re.kills))
 	engine.WriteMessage("Press [Space] to continue")
 	engine.KeyBoardRegistry[ebiten.KeySpace] = func() {
 		re.OnCompleted()
@@ -204,13 +204,14 @@ func (re *ShootingAttackPhase) allocateAttacks(target models.Model) {
 
 	if len(re.targetUnit.Models) <= 0 {
 		re.targetUnit.Destroyed = true
+		models.Game().BattleGround.RemoveBattleGroundEntity(re.targetUnit)
 		opponent := models.Game().OpponetPlayerIndex
-		
 		models.Game().Players[opponent].Army.RemoveDestroyedUnits()
+		re.targetUnit = nil
 	}
 }
 
-func (re *ShootingAttackPhase) InflictWounds(target models.Model) bool {
+func (re *ShootingAttackPhase) InflictWounds(target models.Model) {
 
 	dmg := re.weapon.Damage
 	dead := false
@@ -221,11 +222,10 @@ func (re *ShootingAttackPhase) InflictWounds(target models.Model) bool {
 	if dead {
 		re.kills++
 		engine.WriteMessage(fmt.Sprintf("%s was destroyed!", deadModel.Name))
-		models.Game().Players[models.Game().OpponetPlayerIndex].Army.RemoveDestroyedUnits()
-		return dead
+		if re.targetUnit.Destroyed {
+			engine.WriteMessage(fmt.Sprintf("Unit %s wiped out!", re.targetUnit.Name))
+		}
 	}
-
-	return dead
 }
 
 func getWoundTarget(str int, toughness int) int {

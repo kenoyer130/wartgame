@@ -21,12 +21,11 @@ func (re MoralePhase) Start() {
 	models.Game().StatusMessage.Messsage = "Select unit to perform moral check!"
 	models.Game().StatusMessage.Keys = "Press [Q] and [E] to cycle units! Press [Space] to select!"
 
+	models.Game().Players[0].Army.RemoveDestroyedUnits()
+	models.Game().Players[1].Army.RemoveDestroyedUnits()
+	
 	re.checkMoraleForPlayer(0, func() {
-
-		models.Game().Players[0].Army.RemoveDestroyedUnits()
-
 		re.checkMoraleForPlayer(1, func() {
-			models.Game().Players[1].Army.RemoveDestroyedUnits()
 			models.Game().PhaseStepper.Move(interfaces.EndPhase)
 		})
 	})

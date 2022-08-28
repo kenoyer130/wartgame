@@ -31,10 +31,10 @@ type WeaponType struct {
 }
 
 func (re WeaponType) GetDice() int {
-	if re.Dice == "3d3" {
+	if re.Dice == "3D3" {
 		return getRndDice()
 	}
-	
+
 	dmg, _ := strconv.Atoi(re.Dice)
 
 	return dmg
