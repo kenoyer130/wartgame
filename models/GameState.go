@@ -44,6 +44,7 @@ type GameState struct {
 	GameStateUpdater     GameStateUpdater
 	Drawer               interfaces.Draw
 	WeaponAbilityList    interfaces.WeaponAbilityList
+	GameOver             bool
 }
 
 type UIState struct {

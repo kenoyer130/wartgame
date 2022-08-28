@@ -30,21 +30,28 @@ type WeaponType struct {
 	Number int
 }
 
-func (re WeaponType) GetDice() int {
+func (re WeaponType) GetDice(weapon Weapon) int {
 	if re.Dice == "3D3" {
-		return getRndDice()
+		return re.getRndDice()
 	}
 
-	dmg, _ := strconv.Atoi(re.Dice)
+	die, _ := strconv.Atoi(re.Dice)
 
-	return dmg
+	for _, ability := range weapon.Abilities {
+
+		if ability == "Blast" {
+			return weapon.ApplyBlast(die)
+		}
+	}
+
+	return die
 }
 
-func getRndDice() int {
+func (re WeaponType) getRndDice() int {
 	dmg := 0
 
 	for i := 0; i < 3; i++ {
-		dmg = dmg + rand.Intn(3)
+		dmg = dmg + rand.Intn(3) + 1
 	}
 
 	return dmg

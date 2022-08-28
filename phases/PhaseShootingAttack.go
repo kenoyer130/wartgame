@@ -33,23 +33,11 @@ func (re *ShootingAttackPhase) Start() {
 	// figure out how many weapons are making the attack
 	re.weaponCount = models.Game().SelectedWeapon.Count
 
-	if models.Game().SelectedWeapon.Weapon.WeaponType.Type == "Gre" {
-		for _, weapon := range models.Game().SelectedPhaseUnit.Models {
-			if weapon.ModelType == "Gre" {
-				re.weaponCount--
-			}
-		}
-	}
-
-	if models.Game().SelectedWeapon.Weapon.WeaponType.Type == "Gre" {
-		re.weaponCount = re.throwGernade()
-	}
-
 	if models.Game().SelectedWeapon.Weapon.WeaponType.Number > 0 {
 		re.weaponCount = re.weaponCount * models.Game().SelectedWeapon.Weapon.WeaponType.Number
 	} else if models.Game().SelectedWeapon.Weapon.WeaponType.Dice != "" {
-		re.weaponCount = re.weaponCount * models.Game().SelectedWeapon.Weapon.WeaponType.GetDice()
-	}
+		re.weaponCount = re.weaponCount * models.Game().SelectedWeapon.Weapon.WeaponType.GetDice(models.Game().SelectedWeapon.Weapon)
+	}	
 
 	re.targetUnit = models.Game().SelectedTargetUnit
 	re.targetName = re.targetUnit.Name
@@ -77,20 +65,6 @@ func (re *ShootingAttackPhase) Start() {
 	}
 
 	re.endShootingWeaponPhase()
-}
-
-func (re *ShootingAttackPhase) throwGernade() int {
-	die := rand.Intn(models.Game().SelectedWeapon.Weapon.WeaponType.GetDice()) + 1
-
-	modelCount := len(models.Game().SelectedTargetUnit.Models)
-
-	if modelCount > 10 {
-		die = models.Game().SelectedWeapon.Weapon.WeaponType.GetDice()
-	} else if modelCount > 5 && die < 4 {
-		die = 3
-	}
-
-	return die
 }
 
 func (re *ShootingAttackPhase) setShootingWeapon(i int, max int) {

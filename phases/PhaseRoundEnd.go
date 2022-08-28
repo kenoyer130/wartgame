@@ -37,7 +37,8 @@ func (re EndPhase) Start() {
 
 func (re EndPhase) checkPlayerHasUnits(player models.Player) bool {
 	if len(player.Army.Units) < 1 {
-		engine.WriteMessage(fmt.Sprintf("%s player has lost the game due to no units left!", player.Name))
+		engine.WriteMessage(fmt.Sprintf("%s player has lost the game due to no units left!", player.Name))		
+		models.Game().PhaseStepper.Move(interfaces.GameOverPhase)
 		return true
 	}
 

@@ -13,6 +13,7 @@ const (
 	FightPhase       GamePhase = "Fight Phase"
 	MoralePhase      GamePhase = "Morale Phase"
 	EndPhase         GamePhase = "End Phase"
+	GameOverPhase    GamePhase = "Game Over Phase"
 )
 
 type PhaseStep string

@@ -8,8 +8,9 @@ import (
 )
 
 type ShootingWeaponPhase struct {
-	UnitWeapons map[string]*models.ShootingWeapon
-	OnCompleted func()
+	UnitWeapons  map[string]*models.ShootingWeapon
+	deductAttack int
+	OnCompleted  func()
 }
 
 func (re ShootingWeaponPhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
@@ -19,6 +20,7 @@ func (re ShootingWeaponPhase) GetName() (interfaces.GamePhase, interfaces.PhaseS
 func (re ShootingWeaponPhase) Start() {
 
 	re.UnitWeapons = make(map[string]*models.ShootingWeapon)
+	re.deductAttack = 0
 
 	models.Game().SelectedUnit = models.Game().SelectedPhaseUnit
 
@@ -43,6 +45,14 @@ func (re ShootingWeaponPhase) Start() {
 		}
 	}
 
+	// check for gernades
+	for key, currentWeapon := range re.UnitWeapons {
+		if currentWeapon.Weapon.WeaponType.Type == "Gre" {
+			re.UnitWeapons[key].Count = 1
+			re.deductAttack = 1
+		}
+	}
+
 	re.loop()
 }
 
@@ -62,6 +72,13 @@ func (re ShootingWeaponPhase) loop() {
 	}
 
 	models.Game().SelectedWeapon = &shootingWeapon
+
+	if models.Game().SelectedWeapon.Weapon.WeaponType.Type != "Gre" && re.deductAttack > 0 {
+		models.Game().SelectedWeapon.Count = models.Game().SelectedWeapon.Count - 1
+		if models.Game().SelectedWeapon.Count < 1 {
+			models.Game().SelectedWeapon.Count = 1
+		}
+	}
 
 	engine.WriteMessage("Selected Weapon is " + models.Game().SelectedWeapon.Weapon.Name)
 
