@@ -17,13 +17,16 @@ func (re EndPhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
 
 func (re EndPhase) Start() {
 
-	lost := false
+  	lost := false
+	
+	models.Game().Players[0].Army.RemoveDestroyedUnits()
+	models.Game().Players[1].Army.RemoveDestroyedUnits()
 
 	for _, player := range models.Game().Players {
 		lost := re.checkPlayerHasUnits(player)
 
 		if lost {
-			break
+ 			break
 		}
 	}
 
@@ -99,10 +102,13 @@ func (re EndPhase) startNewRound() {
 }
 
 func (re EndPhase) EndPhaseCleanup() {
+
 	for i := 0; i < len(models.Game().Players); i++ {
 		models.Game().Players[i].PhaseCleanup()
 		for j := 0; j < len(models.Game().Players[i].Army.Units); j++ {
-			models.Game().Players[i].Army.Units[j].Cleanup()
+			if models.Game().Players[i].Army.Units[j] != nil {
+				models.Game().Players[i].Army.Units[j].Cleanup()
+			}
 		}
 	}
 }
