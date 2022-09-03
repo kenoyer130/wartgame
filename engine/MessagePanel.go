@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kenoyer130/wartgame/models"
 )
 
 var messages []string
@@ -13,6 +14,16 @@ const messageCount = 10
 func WriteMessage(msg string) {
 	messages = append(messages, msg)
 	log.Println(msg)
+}
+
+func WriteStatusMessage(msg string) {
+	models.Game().StatusMessage.Messsage = msg
+	WriteMessage(msg)
+}
+
+func WriteStatusKeys(msg string) {
+	models.Game().StatusMessage.Keys = msg
+	WriteMessage(msg)
 }
 
 func getMessagePanel() *ebiten.Image {

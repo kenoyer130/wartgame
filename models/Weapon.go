@@ -2,7 +2,8 @@ package models
 
 import (
 	"math/rand"
-	"strconv"
+
+	"github.com/kenoyer130/wartgame/interfaces"
 )
 
 type Weapon struct {
@@ -30,21 +31,38 @@ type WeaponType struct {
 	Number int
 }
 
-func (re WeaponType) GetDice(weapon Weapon) int {
+func (re WeaponType) GetAttacks(attacks int, target interfaces.Entity, shootingWeapon ShootingWeapon) int {
+	if shootingWeapon.Weapon.WeaponType.Type == "RF" {
+		distance := shootingWeapon.Unit.Location.Subtract(target.GetLocation())
+		rapidFireRange := shootingWeapon.Weapon.Range / 2
+
+		if (distance.X <= rapidFireRange) && (distance.Y <= rapidFireRange) {
+			return attacks * 2
+		}
+
+		return attacks
+	}
+
+	if shootingWeapon.Weapon.WeaponType.Type == "As" {
+		return attacks * shootingWeapon.Weapon.WeaponType.Number
+	}	
+
 	if re.Dice == "3D3" {
 		return re.getRndDice()
 	}
 
-	die, _ := strconv.Atoi(re.Dice)
-
-	for _, ability := range weapon.Abilities {
+	for _, ability := range shootingWeapon.Weapon.Abilities {
 
 		if ability == "Blast" {
-			return weapon.ApplyBlast(die)
+			return shootingWeapon.Weapon.ApplyBlast(attacks)
 		}
 	}
 
-	return die
+	if shootingWeapon.Weapon.WeaponType.Number > 0 {
+		attacks = attacks * shootingWeapon.Weapon.WeaponType.Number
+	}
+
+	return attacks
 }
 
 func (re WeaponType) getRndDice() int {

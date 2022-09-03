@@ -55,12 +55,13 @@ func StartGame() error {
 	models.Game().OpponetPlayerIndex = opponent
 
 	models.Game().Round = 1
-	models.Game().PhaseStepper.Move(interfaces.MovementPhase)
+	models.Game().PhaseEventBus.Fire("StartBattleRound")
 	return nil
 }
 
 func initGameState() {
-	models.Game().PhaseStepper = &phases.PhaseStepper{}
+	models.Game().PhaseEventBus = *models.NewPhaseEventBus()
+	models.Game().PhaseStepper = *phases.NewPhaseStepper()
 	models.Game().DiceRoller = &engine.DiceRoller{}
 	models.Game().Drawer = interfaces.Drawer{}
 
@@ -74,6 +75,6 @@ func setPlayerUnitStartingLocation(player int, x int, y int) {
 	for i := 0; i < len(models.Game().Players[player].Army.Units); i++ {
 
 		unit := models.Game().Players[player].Army.Units[i]
-		unit.SetLocation(models.Location{X: x, Y: y + 1 + i})
+		unit.SetLocation(interfaces.Location{X: x, Y: y + 1 + i})
 	}
 }

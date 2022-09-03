@@ -9,5 +9,5 @@ type StatusMessage struct {
 func (re *StatusMessage) Clear() {
 	re.Phase = ""
 	re.Messsage = ""
-	re.Phase = ""
+	re.Keys = ""
 }

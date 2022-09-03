@@ -9,6 +9,7 @@ import (
 )
 
 type MoralePhase struct {
+	moraleLoss int
 }
 
 func (re MoralePhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
@@ -17,18 +18,20 @@ func (re MoralePhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
 
 func (re MoralePhase) Start() {
 
-	models.Game().StatusMessage.Phase = "Morale Phase"
-	models.Game().StatusMessage.Messsage = "Select unit to perform moral check!"
-	models.Game().StatusMessage.Keys = "Press [Q] and [E] to cycle units! Press [Space] to select!"
+	re.moraleLoss = 0
 
+	models.Game().StatusMessage.Phase = "Morale Phase"
+	
 	models.Game().Players[0].Army.RemoveDestroyedUnits()
 	models.Game().Players[1].Army.RemoveDestroyedUnits()
 	
 	re.checkMoraleForPlayer(0, func() {
 		re.checkMoraleForPlayer(1, func() {
-			models.Game().PhaseStepper.Move(interfaces.EndPhase)
+			models.Game().PhaseEventBus.Fire("MoralePhaseEnded")
 		})
 	})
+
+	engine.WriteMessage(fmt.Sprintf("%d lost due to failed moral check!", re.moraleLoss))
 }
 
 func (re MoralePhase) checkMoraleForPlayer(player int, onCompleted func()) {
@@ -80,8 +83,9 @@ func (re MoralePhase) MoraleCheckSelected(unit *models.Unit, onCompleted func())
 }
 
 // always lose one
-func (re MoralePhase) failMorale(unit *models.Unit, leadership int, onCompleted func()) {
+func (re *MoralePhase) failMorale(unit *models.Unit, leadership int, onCompleted func()) {
 	engine.WriteMessage("1 lost model due to failed moral check")
+	re.moraleLoss++
 	unit.MoraleFailure()
 
 	target := 1
@@ -103,6 +107,7 @@ func (re MoralePhase) failMorale(unit *models.Unit, leadership int, onCompleted 
 	for _, die := range dice {
 		if die == 1 {
 			fail++
+			re.moraleLoss++
 		}
 	}
 

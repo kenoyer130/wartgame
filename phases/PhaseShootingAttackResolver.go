@@ -11,38 +11,33 @@ import (
 	"github.com/kenoyer130/wartgame/models"
 )
 
-type ShootingAttackPhase struct {
+type PhaseShootingAttackResolver struct {
 	shooter     models.Model
 	targetUnit  *models.Unit
 	targetName  string
 	weapon      *models.Weapon
 	weaponCount int
-	OnCompleted func()
+	attacks     int
 	hits        int
 	wounds      int
 	saves       int
 	kills       int
 }
 
-func (re ShootingAttackPhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
+func (re PhaseShootingAttackResolver) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
 	return interfaces.ShootingPhase, interfaces.Nil
 }
 
-func (re *ShootingAttackPhase) Start() {
-
-	// figure out how many weapons are making the attack
-	re.weaponCount = models.Game().SelectedWeapon.Count
-
-	if models.Game().SelectedWeapon.Weapon.WeaponType.Number > 0 {
-		re.weaponCount = re.weaponCount * models.Game().SelectedWeapon.Weapon.WeaponType.Number
-	} else if models.Game().SelectedWeapon.Weapon.WeaponType.Dice != "" {
-		re.weaponCount = re.weaponCount * models.Game().SelectedWeapon.Weapon.WeaponType.GetDice(models.Game().SelectedWeapon.Weapon)
-	}	
+func (re *PhaseShootingAttackResolver) Start() {
 
 	re.targetUnit = models.Game().SelectedTargetUnit
 	re.targetName = re.targetUnit.Name
 	re.shooter = models.Game().SelectedWeapon.Model
 
+	// figure out how many weapons are making the attack
+	re.weaponCount = models.Game().SelectedWeapon.Weapon.WeaponType.GetAttacks(models.Game().SelectedWeapon.Count, models.Game().SelectedTargetUnit, *models.Game().SelectedWeapon)
+
+	re.attacks = 0
 	re.hits = 0
 	re.wounds = 0
 	re.saves = 0
@@ -51,6 +46,7 @@ func (re *ShootingAttackPhase) Start() {
 	engine.WriteMessage(fmt.Sprintf("Firing %d %s at %s ", re.weaponCount, models.Game().SelectedWeapon.Weapon.Name, re.targetUnit.Name))
 
 	max := re.weaponCount
+	re.attacks = max
 
 	models.Game().DiceRoller.PlaySound()
 
@@ -67,23 +63,23 @@ func (re *ShootingAttackPhase) Start() {
 	re.endShootingWeaponPhase()
 }
 
-func (re *ShootingAttackPhase) setShootingWeapon(i int, max int) {
+func (re *PhaseShootingAttackResolver) setShootingWeapon(i int, max int) {
 	selectedWeapon := *models.Game().SelectedWeapon
 	re.weapon = &selectedWeapon.Weapon
 	re.shootWeapon(i, max)
 }
 
-func (re *ShootingAttackPhase) endShootingWeaponPhase() {
+func (re *PhaseShootingAttackResolver) endShootingWeaponPhase() {
 
-	engine.WriteMessage(fmt.Sprintf("%s attack on %s completed.", re.shooter.Name, re.targetName))
-	engine.WriteMessage(fmt.Sprintf("%s %d hits, %d wounds, %d saves, %d killed!", re.weapon.Name, re.hits, re.wounds, re.saves, re.kills))
+	engine.WriteMessage(fmt.Sprintf("%s %s attack on %s completed.", re.shooter.Name, re.weapon.Name, re.targetName))
+	engine.WriteMessage(fmt.Sprintf("%d attacks %d hits, %d wounds, %d saves, %d killed!", re.attacks, re.hits, re.wounds, re.saves, re.kills))
 	engine.WriteMessage("Press [Space] to continue")
 	engine.KeyBoardRegistry[ebiten.KeySpace] = func() {
-		re.OnCompleted()
+		models.Game().PhaseEventBus.Fire("ShooterAttackCompleted")
 	}
 }
 
-func (re *ShootingAttackPhase) shootWeapon(i int, max int) {
+func (re *PhaseShootingAttackResolver) shootWeapon(i int, max int) {
 	engine.WriteMessage(fmt.Sprintf("%s firing %s %d of %d attacks", re.shooter.Name, re.weapon.Name, i+1, max))
 
 	hits, _ := models.Game().DiceRoller.Roll("Rolling for Attack",
@@ -101,7 +97,7 @@ func (re *ShootingAttackPhase) shootWeapon(i int, max int) {
 	re.onAttackRolled()
 }
 
-func (re *ShootingAttackPhase) onAttackRolled() {
+func (re *PhaseShootingAttackResolver) onAttackRolled() {
 
 	re.hits++
 	target := &models.Model{}
@@ -120,7 +116,7 @@ func (re *ShootingAttackPhase) onAttackRolled() {
 	re.rollWoundsToModel(*target)
 }
 
-func (re *ShootingAttackPhase) rollWoundsToModel(target models.Model) {
+func (re *PhaseShootingAttackResolver) rollWoundsToModel(target models.Model) {
 
 	toughnessTarget := getWoundTarget(re.weapon.Strength, target.Toughness)
 
@@ -142,7 +138,7 @@ func (re *ShootingAttackPhase) rollWoundsToModel(target models.Model) {
 	re.onWoundsRolled(target)
 }
 
-func (re *ShootingAttackPhase) onWoundsRolled(target models.Model) {
+func (re *PhaseShootingAttackResolver) onWoundsRolled(target models.Model) {
 
 	ap := re.weapon.ArmorPiercing
 
@@ -164,13 +160,13 @@ func (re *ShootingAttackPhase) onWoundsRolled(target models.Model) {
 	}
 }
 
-func (re *ShootingAttackPhase) onWoundDie(die int) int {
+func (re *PhaseShootingAttackResolver) onWoundDie(die int) int {
 
 	models.Game().WeaponAbilityList.ApplyWeaponAbilities(interfaces.WeaponAbilityPhaseWounds, die, re.weapon)
 	return die
 }
 
-func (re *ShootingAttackPhase) allocateAttacks(target models.Model) {
+func (re *PhaseShootingAttackResolver) allocateAttacks(target models.Model) {
 
 	engine.WriteMessage(fmt.Sprintf("%s failed save!", target.Name))
 
@@ -185,7 +181,7 @@ func (re *ShootingAttackPhase) allocateAttacks(target models.Model) {
 	}
 }
 
-func (re *ShootingAttackPhase) InflictWounds(target models.Model) {
+func (re *PhaseShootingAttackResolver) InflictWounds(target models.Model) {
 
 	dmg := re.weapon.Damage
 	dead := false

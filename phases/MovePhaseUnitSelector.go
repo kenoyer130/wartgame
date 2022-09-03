@@ -5,21 +5,14 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kenoyer130/wartgame/engine"
-	"github.com/kenoyer130/wartgame/interfaces"
 	"github.com/kenoyer130/wartgame/models"
 )
 
-type MovePhase struct {
-	ShootingTargetingPhase *ShootingTargetingPhase
-	ShootingAttackPhase    *ShootingAttackPhase
-	ShootingWeaponPhase    *ShootingWeaponPhase
+type MovePhaseUnitSelector struct {
+	
 }
 
-func (re MovePhase) GetName() (interfaces.GamePhase, interfaces.PhaseStep) {
-	return interfaces.ShootingPhase, interfaces.Nil
-}
-
-func (re MovePhase) Start() {
+func (re MovePhaseUnitSelector) Start() {
 
 	re.clearMovementKeys()
 
@@ -30,27 +23,27 @@ func (re MovePhase) Start() {
 	unitCycler.CycleUnits()
 }
 
-func (re MovePhase) UnitCanMove(unit *models.Unit) bool {
+func (re MovePhaseUnitSelector) UnitCanMove(unit *models.Unit) bool {
 	return unit.CanMove()
 }
 
-func (re MovePhase) MoverSelected(unit *models.Unit) {
+func (re MovePhaseUnitSelector) MoverSelected(unit *models.Unit) {
 	if unit == nil {
 		engine.WriteMessage("No valid units for movement phase.")
-		models.Game().PhaseStepper.Move(interfaces.ShootingPhase)
+		models.Game().PhaseEventBus.Fire("MovePhaseEnded")
 		return
 	}
 
 	models.Game().SelectedPhaseUnit = unit
-	engine.WriteMessage("Selected Unit to move: " + unit.Name)
-	models.Game().StatusMessage.Keys = "Moving! Press [Space] to end movement. Press [A] to advance!"
+	engine.WriteStatusMessage("Selected Unit to move: " + unit.Name)
+	engine.WriteStatusKeys("Moving! Press [Space] to end movement. Press [A] to advance!")
 
 	unit.CurrentMoves = unit.Models[0].Movement
 
 	re.registerMovementKeys(unit)
 }
 
-func (re MovePhase) clearMovementKeys() {
+func (re MovePhaseUnitSelector) clearMovementKeys() {
 
 	engine.KeyBoardRegistry[ebiten.KeyNumpad9] = func() {
 	}
@@ -77,7 +70,7 @@ func (re MovePhase) clearMovementKeys() {
 	}
 }
 
-func (re MovePhase) registerMovementKeys(unit *models.Unit) {
+func (re MovePhaseUnitSelector) registerMovementKeys(unit *models.Unit) {
 	
 	engine.KeyBoardRegistry[ebiten.KeySpace] = func() {
 		unit.AddState(models.UnitMoved)
@@ -129,10 +122,10 @@ func (re MovePhase) registerMovementKeys(unit *models.Unit) {
 	}
 }
 
-func (re MovePhase) doMove(unit *models.Unit) {
+func (re MovePhaseUnitSelector) doMove(unit *models.Unit) {
 	unit.CurrentMoves--
 
-	models.Game().StatusMessage.Keys = fmt.Sprintf("%d moves left! Use [Num] keys to move. Press [Space] to for next unit!", unit.CurrentMoves)
+	engine.WriteStatusKeys( fmt.Sprintf("%d moves left! Use [Num] keys to move. Press [Space] to for next unit!", unit.CurrentMoves))
 
 	if unit.CurrentMoves < 1 {
 		unit.AddState(models.UnitMoved)

@@ -3,6 +3,7 @@ package models
 import (
 	"testing"
 
+	"github.com/kenoyer130/wartgame/interfaces"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -12,25 +13,25 @@ func TestMain(m *testing.M) {
 	unit := Unit{}
 	unit.ID = "5"
 	unit.PlayerIndex = 0
-	unit.Location = Location{X: 10, Y: 10}
+	unit.Location = interfaces.Location{X: 10, Y: 10}
 	Game().BattleGround.PlaceBattleGroundEntity(&unit)
 
 	friendly := Unit{}
 	friendly.ID = "2"
 	friendly.PlayerIndex = 0
-	friendly.Location = Location{X: 11, Y: 11}
+	friendly.Location = interfaces.Location{X: 11, Y: 11}
 	Game().BattleGround.PlaceBattleGroundEntity(&friendly)
 
 	target := Unit{}
 	target.ID = "4"
 	target.PlayerIndex = 1
-	target.Location = Location{X: 5, Y: 5}
+	target.Location = interfaces.Location{X: 5, Y: 5}
 	Game().BattleGround.PlaceBattleGroundEntity(&target)
 
 	outOfRange := Unit{}
 	outOfRange.ID = "3"
 	friendly.PlayerIndex = 1
-	outOfRange.Location = Location{X: 25, Y: 25}
+	outOfRange.Location = interfaces.Location{X: 25, Y: 25}
 
 	Game().BattleGround.PlaceBattleGroundEntity(&outOfRange)
 

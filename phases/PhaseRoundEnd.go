@@ -37,8 +37,9 @@ func (re EndPhase) Start() {
 
 func (re EndPhase) checkPlayerHasUnits(player models.Player) bool {
 	if len(player.Army.Units) < 1 {
-		engine.WriteMessage(fmt.Sprintf("%s player has lost the game due to no units left!", player.Name))		
-		models.Game().PhaseStepper.Move(interfaces.GameOverPhase)
+		engine.WriteMessage(fmt.Sprintf("%s player has lost the game due to no units left!", player.Name))	
+		models.Game().GameOver = true	
+		models.Game().PhaseEventBus.Fire("StartBattleRound")
 		return true
 	}
 
@@ -79,7 +80,7 @@ func (re EndPhase) startNextTurn() {
 		re.startNewRound()
 	}
 
-	models.Game().PhaseStepper.Move(interfaces.MovementPhase)
+	models.Game().PhaseEventBus.Fire("StartBattleRound")
 }
 
 func (re EndPhase) startNewRound() {

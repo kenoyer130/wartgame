@@ -1,4 +1,4 @@
-package models
+package interfaces
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
@@ -17,4 +17,6 @@ type Entity interface {
 	GetToken() *ebiten.Image
 	GetID() string
 	GetPlayerIndex() int
+	SetTargetRange(location Location)
+	GetTargetRange() Location
 }

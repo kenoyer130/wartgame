@@ -14,7 +14,7 @@ var audioContext = audio.NewContext(SampleRate)
 
 func PlaySound(id string) {
 
-	path := "assets/audio/" + id + "."
+	path := "assets/audio/" + id + ".mp3"
 
 	f, err := os.Open(path)
 	if err != nil {

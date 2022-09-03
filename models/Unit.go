@@ -12,6 +12,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/kenoyer130/wartgame/interfaces"
 	"github.com/kenoyer130/wartgame/ui"
 )
 
@@ -23,7 +24,7 @@ type Unit struct {
 	ModelCount         map[string]int
 	DestroyedModels    []*Model
 	Power              int
-	Location           Location
+	Location           interfaces.Location
 	UnitState          []UnitState
 	Destroyed          bool
 	OriginalModelCount int
@@ -33,6 +34,15 @@ type Unit struct {
 	Height             int
 	Rect               ui.Rect
 	Token              Token
+	TargetRange        interfaces.Location
+}
+
+func (re *Unit)SetTargetRange(l interfaces.Location) {
+	re.TargetRange = l
+}
+
+func (re *Unit)	GetTargetRange() interfaces.Location {
+	return re.TargetRange
 }
 
 func (re *Unit) GetAssetPath(assetName string, ext string) string {
@@ -51,11 +61,11 @@ func (re *Unit) getImgPath(path string) string {
 	return path
 }
 
-func (re *Unit) GetLocation() Location {
+func (re *Unit) GetLocation() interfaces.Location {
 	return re.Location
 }
 
-func (re *Unit) SetLocation(location Location) {
+func (re *Unit) SetLocation(location interfaces.Location) {
 	re.Location = location
 	Game().BattleGround.PlaceBattleGroundEntity(re)
 }
@@ -64,8 +74,8 @@ func (re *Unit) GetPlayerIndex() int {
 	return re.PlayerIndex
 }
 
-func (re *Unit) GetEntityType() EntityType {
-	return UnitEntityType
+func (re *Unit) GetEntityType() interfaces.EntityType {
+	return interfaces.UnitEntityType
 }
 
 func (re *Unit) GetToken() *ebiten.Image {
@@ -97,10 +107,10 @@ func (re *Unit) GetToken() *ebiten.Image {
 			color := ui.GetMoveRangeColor()
 
 			model.Fill(color)
-			
-			if(re.Models[index].Wounds != re.Models[index].CurrentWounds) {
-				current:= strconv.Itoa(re.Models[index].CurrentWounds)
-				text.Draw(model, current, ui.GetFontTiny(), 1, 3, ui.GetTextColor())
+
+			if re.Models[index].Wounds != re.Models[index].CurrentWounds {
+				current := strconv.Itoa(re.Models[index].CurrentWounds)
+				text.Draw(model, current, ui.GetFontTiny(), 1, 8, ui.GetDarkColor())
 			}
 
 			op := &ebiten.DrawImageOptions{}
@@ -184,7 +194,7 @@ func (re Unit) CanMove() bool {
 
 func (re Unit) DrawUnitSelected(screen *ebiten.Image) {
 
-	if (re.Location == Location{}) {
+	if (re.Location == interfaces.Location{}) {
 		return
 	}
 

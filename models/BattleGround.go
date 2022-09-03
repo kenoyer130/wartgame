@@ -1,13 +1,14 @@
 package models
 
 import (
+	"github.com/kenoyer130/wartgame/interfaces"
 	"github.com/kenoyer130/wartgame/ui"
 )
 
 type BattleGround struct {
 	Size     Size
 	ViewPort ViewPort
-	Grid     [][]Entity
+	Grid     [][]interfaces.Entity
 }
 
 type ViewPort struct {
@@ -17,12 +18,12 @@ type ViewPort struct {
 	Width  int
 }
 
-func (re *BattleGround) RemoveEntity(l Location) {
+func (re *BattleGround) RemoveEntity(l interfaces.Location) {
 	re.Grid[l.X][l.Y] = nil
 }
 
-func (re ViewPort) GetPixelRectangle() Rectangle {
-	return Rectangle{X: re.X * ui.TileSize, Y: re.Y * ui.TileSize, Width: re.Width * ui.TileSize, Height: re.Height * ui.TileSize}
+func (re ViewPort) GetPixelRectangle() interfaces.Rectangle {
+	return interfaces.Rectangle{X: re.X * ui.TileSize, Y: re.Y * ui.TileSize, Width: re.Width * ui.TileSize, Height: re.Height * ui.TileSize}
 }
 
 func NewBattleGround(x int, y int) *BattleGround {
@@ -31,7 +32,7 @@ func NewBattleGround(x int, y int) *BattleGround {
 	b.Size.X = x
 	b.Size.Y = y
 
-	b.Grid = New2DArray[Entity](x, y)
+	b.Grid = New2DArray[interfaces.Entity](x, y)
 
 	b.ViewPort = ViewPort{X: 0, Y: 0, Height: 14, Width: 23}
 
@@ -44,19 +45,19 @@ type Size struct {
 }
 
 // put an entity on the battleground thus taking up space
-func (re *BattleGround) PlaceBattleGroundEntity(entity Entity) {
+func (re *BattleGround) PlaceBattleGroundEntity(entity interfaces.Entity) {
 	l := entity.GetLocation()
 	re.Grid[l.X][l.Y] = entity
 }
 
 // put an entity on the battleground thus taking up space
-func (re *BattleGround) RemoveBattleGroundEntity(entity Entity) {
+func (re *BattleGround) RemoveBattleGroundEntity(entity interfaces.Entity) {
 	l := entity.GetLocation()
 	re.Grid[l.X][l.Y] = nil
 }
 
 // put an entity on the battleground thus taking up space
-func (re *BattleGround) UpdateBattleGroundEntity(entity Entity) {
+func (re *BattleGround) UpdateBattleGroundEntity(entity interfaces.Entity) {
 
 	l := entity.GetLocation()
 	re.Grid[l.X][l.Y] = entity
@@ -64,7 +65,7 @@ func (re *BattleGround) UpdateBattleGroundEntity(entity Entity) {
 }
 
 // return entity at location if any
-func (re *BattleGround) GetEntityAtLocation(l Location) Entity {
+func (re *BattleGround) GetEntityAtLocation(l interfaces.Location) interfaces.Entity {
 
 	if (l.X < 0) || (l.Y < 0) {
 		return nil
@@ -82,7 +83,7 @@ func (re *BattleGround) GetEntityAtLocation(l Location) Entity {
 }
 
 // check if a location is empty
-func (re *BattleGround) IsBattleGroundLocationFree(l Location) bool {
+func (re *BattleGround) IsBattleGroundLocationFree(l interfaces.Location) bool {
 	if re.Grid[l.X][l.Y] != nil {
 		return false
 	} else {

@@ -32,7 +32,7 @@ type GameState struct {
 	StartPlayerIndex     int
 	SelectedUnit         *Unit
 	DraggingUnit         *Unit
-	DraggingUnitLocation Location
+	DraggingUnitLocation interfaces.Location
 	SelectedPhaseUnit    *Unit
 	SelectedTargetUnit   *Unit
 	SelectedModel        *Model
@@ -45,6 +45,7 @@ type GameState struct {
 	Drawer               interfaces.Draw
 	WeaponAbilityList    interfaces.WeaponAbilityList
 	GameOver             bool
+	PhaseEventBus        PhaseEventBus
 }
 
 type UIState struct {
